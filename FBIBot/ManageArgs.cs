@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Discord.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,8 @@ namespace FBIBot
             largs.RemoveAll(x => x == SecurityInfo.botID);
             args = largs.ToArray();
         }
+
+        public static bool HasBotID(string[] args, SocketCommandContext Context) =>
+            args.Contains(SecurityInfo.botID) || !Context.Message.HasCharPrefix(CommandHandler.prefix, ref CommandHandler.argPos);
     }
 }

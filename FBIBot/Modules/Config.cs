@@ -13,7 +13,7 @@ namespace FBIBot.Modules
         [Command("help")]
         public async Task Help(params string[] args)
         {
-            if (!args.Contains(SecurityInfo.botID) && Context.Message.HasCharPrefix(CommandHandler.prefix, ref CommandHandler.argPos))
+            if (ManageArgs.HasBotID(args, Context))
             {
                 return;
             }
