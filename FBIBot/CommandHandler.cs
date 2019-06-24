@@ -26,7 +26,7 @@ namespace FBIBot
             _commands = new CommandService(config);
         }
 
-        public async Task InstallCommandsAsync()
+        public async Task InitCommandsAsync()
         {
             _client.Connected += SendConnectMessage;
             _client.Disconnected += SendDisconnectError;
