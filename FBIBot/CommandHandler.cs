@@ -59,7 +59,7 @@ namespace FBIBot
             }
 
             int argPos = 0;
-            if (!msg.Author.IsBot && msg.HasCharPrefix(prefix, ref argPos))
+            if (!msg.Author.IsBot && (msg.HasCharPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)))
             {
                 SocketCommandContext context = new SocketCommandContext(_client, msg);
                 var result = await _commands.ExecuteAsync(context, argPos, _services);

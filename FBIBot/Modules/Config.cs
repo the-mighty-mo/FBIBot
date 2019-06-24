@@ -22,13 +22,15 @@ namespace FBIBot.Modules
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("The FBI")
                 .WithCurrentTimestamp();
-            List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>();
-
-            fields.Add(new EmbedFieldBuilder()
+            List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>
+            {
+                new EmbedFieldBuilder()
                 .WithIsInline(false)
                 .WithName("Prefix")
-                .WithValue(CommandHandler.prefix.ToString() + "\n\u200b")
-            );
+                .WithValue(CommandHandler.prefix.ToString() +
+                "\nOR\n" +
+                Context.Client.CurrentUser.Mention + "\n\u200b")
+            };
 
             bool jumpToHelp = false;
 
@@ -37,8 +39,10 @@ namespace FBIBot.Modules
             {
                 fields.Add(new EmbedFieldBuilder()
                     .WithIsInline(true)
-                    .WithName("`\\help 0205` Parameters")
+                    .WithName("`help` Parameters")
                     .WithValue(
+                    $"{SecurityInfo.botID}\n" +
+                    $"  - Required parameter if using the prefix \"{CommandHandler.prefix}\"" +
                     "admin\n" +
                     "  - Displays administrator commands\n\n" +
                     "mod\n" +
