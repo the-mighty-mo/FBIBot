@@ -29,7 +29,7 @@ namespace FBIBot.Modules
                 .WithIsInline(false)
                 .WithName("Prefix")
                 .WithValue(CommandHandler.prefix.ToString() +
-                "\nOR\n" +
+                "\n**or**\n" +
                 Context.Client.CurrentUser.Mention + "\n\u200b")
             };
 
@@ -84,7 +84,11 @@ namespace FBIBot.Modules
             }
 
             embed.WithFields(fields);
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+
+            await Context.Channel.SendMessageAsync("Need a little democracy, freedom, and justice?\n" +
+                "No? Just want my commands?");
+            await Task.Delay(500);
+            await Context.Channel.SendMessageAsync("Fine, here you go.", false, embed.Build());
         }
     }
 }
