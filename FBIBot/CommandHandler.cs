@@ -31,7 +31,7 @@ namespace FBIBot
         {
             if (Program.isConsole)
             {
-                await Console.Out.WriteLineAsync($"{SecurityInfo.botName} Online");
+                await Console.Out.WriteLineAsync($"{SecurityInfo.botName} is online");
             }
         }
 
