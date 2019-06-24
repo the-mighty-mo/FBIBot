@@ -9,7 +9,6 @@ namespace FBIBot.Modules
 {
     public class Admin : ModuleBase<SocketCommandContext>
     {
-        [Command("", RunMode.Async)]
 
     }
 }
