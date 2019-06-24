@@ -50,7 +50,7 @@ namespace FBIBot
             await _client.LoginAsync(TokenType.Bot, SecurityInfo.token);
             await _client.StartAsync();
 
-            await _client.SetGameAsync($"{_client.CurrentUser.Mention} help", null, ActivityType.Listening);
+            await _client.SetGameAsync("@The FBI help", null, ActivityType.Listening);
 
             IServiceProvider _services = new ServiceCollection().BuildServiceProvider();
 

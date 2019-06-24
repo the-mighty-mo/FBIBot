@@ -9,6 +9,7 @@ namespace FBIBot
     class CommandHandler
     {
         public const char prefix = '\\';
+        public static int argPos = 0;
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
@@ -58,7 +59,6 @@ namespace FBIBot
                 return;
             }
 
-            int argPos = 0;
             if (!msg.Author.IsBot && (msg.HasCharPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)))
             {
                 SocketCommandContext context = new SocketCommandContext(_client, msg);

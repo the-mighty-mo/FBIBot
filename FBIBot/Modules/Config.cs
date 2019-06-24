@@ -13,10 +13,12 @@ namespace FBIBot.Modules
         [Command("help")]
         public async Task Help(params string[] args)
         {
-            if (args.Length == 0 || args[0] != SecurityInfo.botID)
+            bool usedPrefix = Context.Message.HasCharPrefix(CommandHandler.prefix, ref CommandHandler.argPos);
+            if ((args.Length == 0 || !args.Contains(SecurityInfo.botID)) && usedPrefix)
             {
                 return;
             }
+            ManageArgs.RemoveBotID(ref args);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
@@ -35,14 +37,15 @@ namespace FBIBot.Modules
             bool jumpToHelp = false;
 
             Help:
-            if (args.Length == 1 || jumpToHelp)
+            if (args.Length == 0 || jumpToHelp)
             {
+                string _prefix = CommandHandler.prefix.ToString() == @"\" ? @"\\" : CommandHandler.prefix.ToString();
                 fields.Add(new EmbedFieldBuilder()
                     .WithIsInline(true)
                     .WithName("`help` Parameters")
                     .WithValue(
                     $"{SecurityInfo.botID}\n" +
-                    $"  - Required parameter if using the prefix \"{CommandHandler.prefix}\"" +
+                    $"  - Required parameter **only** if using the prefix \"{_prefix}\" for **all** commands\n\n" +
                     "admin\n" +
                     "  - Displays administrator commands\n\n" +
                     "mod\n" +
@@ -56,7 +59,7 @@ namespace FBIBot.Modules
                 EmbedFieldBuilder field = new EmbedFieldBuilder()
                     .WithIsInline(true);
 
-                switch (args[1])
+                switch (args[0])
                 {
                 case "admin":
                     field.WithName("Administrator Commands")
