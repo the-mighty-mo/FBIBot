@@ -55,12 +55,14 @@ namespace FBIBot
             IServiceProvider _services = new ServiceCollection().BuildServiceProvider();
 
             _handler = new CommandHandler(_client, _services);
+            Task initCmd = _handler.InstallCommandsAsync();
 
             if (isConsole)
             {
                 Console.WriteLine($"{SecurityInfo.botName} has finished loading");
             }
 
+            await initCmd;
             await Task.Delay(-1);
         }
     }

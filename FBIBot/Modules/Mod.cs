@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules
 {
-    public class Base : ModuleBase<SocketCommandContext>
+    public class Mod : ModuleBase<SocketCommandContext>
     {
 
     }

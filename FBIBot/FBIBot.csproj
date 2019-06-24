@@ -247,7 +247,9 @@
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Modules\Admin.cs" />
-    <Compile Include="Modules\Base.cs" />
+    <Compile Include="Modules\AutoMod.cs" />
+    <Compile Include="Modules\Config.cs" />
+    <Compile Include="Modules\Mod.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityInfo.cs" />

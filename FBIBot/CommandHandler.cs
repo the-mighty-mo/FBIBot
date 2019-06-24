@@ -11,7 +11,7 @@ namespace FBIBot
         public const char prefix = '\\';
 
         private readonly DiscordSocketClient _client;
-        private readonly CommandService _service;
+        private readonly CommandService _commands;
         private readonly IServiceProvider _services;
 
         public CommandHandler(DiscordSocketClient client, IServiceProvider services)
@@ -19,12 +19,20 @@ namespace FBIBot
             _client = client;
             _services = services;
 
-            _service = new CommandService();
-            _service.AddModulesAsync(Assembly.GetEntryAssembly(), services);
+            CommandServiceConfig config = new CommandServiceConfig()
+            {
+                DefaultRunMode = RunMode.Async
+            };
+            _commands = new CommandService(config);
+        }
 
+        public async Task InstallCommandsAsync()
+        {
             _client.Connected += SendConnectMessage;
             _client.Disconnected += SendDisconnectError;
             _client.MessageReceived += HandleCommandAsync;
+
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         private async Task SendConnectMessage()
@@ -50,20 +58,15 @@ namespace FBIBot
                 return;
             }
 
-            SocketCommandContext context = new SocketCommandContext(_client, msg);
-
             int argPos = 0;
-            if (!context.User.IsBot)
+            if (!msg.Author.IsBot && msg.HasCharPrefix(prefix, ref argPos))
             {
-                // Commands
-                if (msg.HasCharPrefix(prefix, ref argPos))
-                {
-                    var result = await _service.ExecuteAsync(context, argPos, _services);
+                SocketCommandContext context = new SocketCommandContext(_client, msg);
+                var result = await _commands.ExecuteAsync(context, argPos, _services);
 
-                    if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
-                    {
-                        await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
-                    }
+                if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+                {
+                    await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
                 }
             }
         }
