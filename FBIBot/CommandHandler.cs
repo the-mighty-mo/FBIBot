@@ -61,7 +61,11 @@ namespace FBIBot
             {
                 "Don't even think about it.",
                 "**FBI OPEN U**...wait...we'll be back shortly with a warrant.",
-                "Where do you think you're going?"
+                "Where do you think you're going?",
+                "Ladies and gentlemen, we got 'em.",
+                "Give us a moment while we send a representative into your camera...",
+                "You thought it was a normal server, but it was me! THE FBI!",
+                "Walk out slowly with your arms i...wait, wrong person."
             };
             int index = Program.rng.Next(messages.Count);
 
