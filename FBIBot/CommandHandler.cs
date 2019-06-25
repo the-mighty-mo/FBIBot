@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -31,6 +32,7 @@ namespace FBIBot
         {
             _client.Connected += SendConnectMessage;
             _client.Disconnected += SendDisconnectError;
+            _client.UserJoined += SendJoinMessage;
             _client.MessageReceived += HandleCommandAsync;
 
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
@@ -50,6 +52,20 @@ namespace FBIBot
             {
                 await Console.Out.WriteLineAsync(e.Message);
             }
+        }
+
+        private async Task SendJoinMessage(SocketGuildUser u)
+        {
+            SocketTextChannel channel = u.Guild.DefaultChannel;
+            List<string> messages = new List<string>()
+            {
+                "Don't even think about it.",
+                "**FBI OPEN U**...wait...we'll be back shortly with a warrant.",
+                "Where do you think you're going?"
+            };
+            int index = Program.rng.Next(messages.Count);
+
+            await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
         }
 
         private async Task HandleCommandAsync(SocketMessage m)

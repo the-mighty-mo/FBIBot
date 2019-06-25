@@ -86,9 +86,8 @@ namespace FBIBot.Modules
             embed.WithFields(fields);
 
             await Context.Channel.SendMessageAsync("Need a little democracy, freedom, and justice?\n" +
-                "No? Just want my commands?");
-            await Task.Delay(500);
-            await Context.Channel.SendMessageAsync("Fine, here you go.", false, embed.Build());
+                "No? Just want my commands?\n" +
+                "Fine, here you go.", false, embed.Build());
         }
     }
 }

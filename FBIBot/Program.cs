@@ -16,6 +16,8 @@ namespace FBIBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
+        public static readonly Random rng = new Random();
+
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
 
         static void Main(string[] args) => new Program().StartAsync(args).GetAwaiter().GetResult();
