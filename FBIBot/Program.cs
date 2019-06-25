@@ -1,7 +1,9 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -65,7 +67,30 @@ namespace FBIBot
             }
 
             await initCmd;
+            await InitSqlite();
+
             await Task.Delay(-1);
+        }
+
+        async Task InitSqlite()
+        {
+            using (SqliteConnection cn = new SqliteConnection("Verification.db"))
+            {
+                List<Task> cmds = new List<Task>();
+                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Users (id INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL UNIQUE);", cn))
+                {
+                    cmds.Add(cmd.ExecuteNonQueryAsync());
+                }
+                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (id INTEGER NOT NULL UNIQUE PRIMARY KEY, captcha TEXT NOT NULL);", cn))
+                {
+                    cmds.Add(cmd.ExecuteNonQueryAsync());
+                }
+                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (id INTEGER NOT NULL UNIQUE PRIMARY KEY);"))
+                {
+                    cmds.Add(cmd.ExecuteNonQueryAsync());
+                }
+                await Task.WhenAll(cmds);
+            }
         }
     }
 }

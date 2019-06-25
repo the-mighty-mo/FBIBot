@@ -78,12 +78,12 @@ namespace FBIBot
 
         private async Task HandleCommandAsync(SocketMessage m)
         {
-            if (!(m is SocketUserMessage msg))
+            if (!(m is SocketUserMessage msg) || msg.Author.IsBot)
             {
                 return;
             }
 
-            if (!msg.Author.IsBot && (msg.HasCharPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos)))
+            if (msg.HasCharPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 SocketCommandContext context = new SocketCommandContext(_client, msg);
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
