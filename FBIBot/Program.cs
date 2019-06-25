@@ -74,21 +74,24 @@ namespace FBIBot
 
         async Task InitSqlite()
         {
-            using (SqliteConnection cn = new SqliteConnection("Verification.db"))
+            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
             {
+                cn.Open();
+
                 List<Task> cmds = new List<Task>();
                 using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Users (id INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL UNIQUE);", cn))
                 {
                     cmds.Add(cmd.ExecuteNonQueryAsync());
                 }
-                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (id INTEGER NOT NULL UNIQUE PRIMARY KEY, captcha TEXT NOT NULL);", cn))
+                using (SqliteCommand cmda = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (id INTEGER NOT NULL UNIQUE PRIMARY KEY, captcha TEXT NOT NULL);", cn))
                 {
-                    cmds.Add(cmd.ExecuteNonQueryAsync());
+                    cmds.Add(cmda.ExecuteNonQueryAsync());
                 }
-                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (id INTEGER NOT NULL UNIQUE PRIMARY KEY);"))
+                using (SqliteCommand cmdb = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (id INTEGER NOT NULL UNIQUE PRIMARY KEY);", cn))
                 {
-                    cmds.Add(cmd.ExecuteNonQueryAsync());
+                    cmds.Add(cmdb.ExecuteNonQueryAsync());
                 }
+
                 await Task.WhenAll(cmds);
             }
         }

@@ -40,6 +40,8 @@ namespace FBIBot.Modules.AutoMod
         {
             using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
             {
+                cn.Open();
+
                 string createView = "CREATE VIEW IF NOT EXISTS captchainsert AS SELECT Users.id, Users.user_id, Captcha.captcha FROM Users LEFT OUTER JOIN Captcha ON Users.id = Captcha.id;";
                 string createTrigger = "CREATE TRIGGER IF NOT EXISTS insertcaptcha INSTEAD OF INSERT ON captchainsert" +
                     "BEGIN" +
