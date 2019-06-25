@@ -79,17 +79,13 @@ namespace FBIBot
                 cn.Open();
 
                 List<Task> cmds = new List<Task>();
-                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Users (id INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL UNIQUE);", cn))
+                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (user_id TEXT NOT NULL UNIQUE PRIMARY KEY, captcha TEXT NOT NULL);", cn))
                 {
                     cmds.Add(cmd.ExecuteNonQueryAsync());
                 }
-                using (SqliteCommand cmda = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (id INTEGER NOT NULL UNIQUE PRIMARY KEY, captcha TEXT NOT NULL);", cn))
+                using (SqliteCommand cmda = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (user_id TEXT NOT NULL UNIQUE PRIMARY KEY);", cn))
                 {
                     cmds.Add(cmda.ExecuteNonQueryAsync());
-                }
-                using (SqliteCommand cmdb = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (id INTEGER NOT NULL UNIQUE PRIMARY KEY);", cn))
-                {
-                    cmds.Add(cmdb.ExecuteNonQueryAsync());
                 }
 
                 await Task.WhenAll(cmds);
