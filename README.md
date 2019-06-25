@@ -9,9 +9,10 @@ Discord Admin bot, created for Hack Week.
 
 ## Build instructions
 
-1. Download/clone the repository
+1. Download/clone the repository.
 2. Open `FBIBot.sln` in Visual Studio on a Windows machine with .NET Framework 4.7.2.  
 **NOTE:** This project was created in Visual Studio 2019, and it may not be backwards compatible with older versions of Visual Studio.
-3. Add your Client ID, Token, and Discriminator to `SecurityInfo.cs` so the bot can come online and respond to commands.
+3. Add your Client ID, Token, and Discriminator to `SecurityInfo.cs` so the bot can come online and respond to commands.  
+**NOTE:** It is recommended that you set your bot's profile picture to FBIBot/FBI.png and its name to "The FBI" for maximum effect.
 4. Restore NuGet packages (if necessary before build).
 5. Build the project in Release mode (Any CPU) and run `FBIBot.exe` (in FBIBot\bin\Release).
