@@ -8,10 +8,23 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules
 {
-    public class Config : ModuleBase<SocketCommandContext>
+    public class Help : ModuleBase<SocketCommandContext>
     {
+        private static readonly string _prefix = CommandHandler.prefix.ToString() == @"\" ? @"\\" : CommandHandler.prefix.ToString();
+        private static readonly string help = $"{SecurityInfo.botID}\n" +
+                    $"  - Required parameter **only** if using the prefix \"{_prefix}\" for **all** commands\n\n" +
+                    "admin\n" +
+                    "  - Displays administrator commands\n\n" +
+                    "mod\n" +
+                    "  - Displays moderator commands\n\n" +
+                    "config\n" +
+                    "  - Displays configuration commands";
+        private static readonly string admin = "WIP";
+        private static readonly string mod = "WIP";
+        private static readonly string config = "WIP";
+
         [Command("help")]
-        public async Task Help(params string[] args)
+        public async Task HelpAsync(params string[] args)
         {
             if (!ManageArgs.HasBotID(args, Context))
             {
@@ -42,16 +55,7 @@ namespace FBIBot.Modules
                 fields.Add(new EmbedFieldBuilder()
                     .WithIsInline(true)
                     .WithName("`help` Parameters")
-                    .WithValue(
-                    $"{SecurityInfo.botID}\n" +
-                    $"  - Required parameter **only** if using the prefix \"{_prefix}\" for **all** commands\n\n" +
-                    "admin\n" +
-                    "  - Displays administrator commands\n\n" +
-                    "mod\n" +
-                    "  - Displays moderator commands\n\n" +
-                    "config\n" +
-                    "  - Displays configuration commands")
-                );
+                    .WithValue(help));
             }
             else
             {
@@ -62,18 +66,15 @@ namespace FBIBot.Modules
                 {
                 case "admin":
                     field.WithName("Administrator Commands")
-                        .WithValue(
-                        "WIP");
+                        .WithValue(admin);
                     break;
                 case "mod":
                     field.WithName("Moderator Commands")
-                        .WithValue(
-                        "WIP");
+                        .WithValue(mod);
                     break;
                 case "config":
                     field.WithName("Configuration Commands")
-                        .WithValue(
-                        "WIP");
+                        .WithValue(config);
                     break;
                 default:
                     jumpToHelp = true;
