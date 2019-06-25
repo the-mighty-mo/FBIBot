@@ -32,7 +32,8 @@ namespace FBIBot
         {
             _client.Connected += SendConnectMessage;
             _client.Disconnected += SendDisconnectError;
-            _client.UserJoined += SendJoinMessage;
+            _client.JoinedGuild += SendJoinMessage;
+            _client.UserJoined += SendWelcomeMessage;
             _client.MessageReceived += HandleCommandAsync;
 
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
@@ -54,7 +55,9 @@ namespace FBIBot
             }
         }
 
-        private async Task SendJoinMessage(SocketGuildUser u)
+        private async Task SendJoinMessage(SocketGuild g) => await g.DefaultChannel.SendMessageAsync("Someone called for some democracy and justice?");
+
+        private async Task SendWelcomeMessage(SocketGuildUser u)
         {
             SocketTextChannel channel = u.Guild.DefaultChannel;
             List<string> messages = new List<string>()
