@@ -65,7 +65,8 @@ namespace FBIBot
                 "Ladies and gentlemen, we got 'em.",
                 "Give us a moment while we send a representative into your camera...",
                 "You thought it was a normal server, but it was me! THE FBI!",
-                "Walk out slowly with your arms i...wait, wrong person."
+                "Walk out slowly with your arms i...wait, wrong person.",
+                "You want to know how we figured it out?"
             };
             int index = Program.rng.Next(messages.Count);
 
