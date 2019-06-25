@@ -1,4 +1,7 @@
 # The FBI
+
+[![CodeFactor](https://www.codefactor.io/repository/github/josedolf-staller/fbibot/badge)](https://www.codefactor.io/repository/github/josedolf-staller/fbibot)
+
 Discord Admin bot, created for Hack Week.
 
 **Someone has to keep the server in check, and who better than the FBI?**
