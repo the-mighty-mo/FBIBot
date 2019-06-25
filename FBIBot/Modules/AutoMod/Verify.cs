@@ -43,11 +43,11 @@ namespace FBIBot.Modules.AutoMod
                 cn.Open();
 
                 string createView = "CREATE VIEW IF NOT EXISTS captchainsert AS SELECT Users.id, Users.user_id, Captcha.captcha FROM Users LEFT OUTER JOIN Captcha ON Users.id = Captcha.id;";
-                string createTrigger = "CREATE TRIGGER IF NOT EXISTS insertcaptcha INSTEAD OF INSERT ON captchainsert" +
-                    "BEGIN" +
-                    "INSERT INTO Users(user_id) SELECT NEW.user_id WHERE NOT EXISTS(SELECT* FROM Users WHERE Users.user_id = NEW.user_id);" +
-                    "UPDATE Captcha SET captcha = NEW.captcha WHERE id = (SELECT id FROM Users WHERE Users.user_id = NEW.user_id);" +
-                    "INSERT INTO Captcha(captcha) SELECT NEW.captcha WHERE(Select Changes() = 0);" +
+                string createTrigger = "CREATE TRIGGER IF NOT EXISTS insertcaptcha INSTEAD OF INSERT ON captchainsert\n" +
+                    "BEGIN\n" +
+                    "INSERT INTO Users(user_id) SELECT NEW.user_id WHERE NOT EXISTS(SELECT* FROM Users WHERE Users.user_id = NEW.user_id);\n" +
+                    "UPDATE Captcha SET captcha = NEW.captcha WHERE id = (SELECT id FROM Users WHERE Users.user_id = NEW.user_id);\n" +
+                    "INSERT INTO Captcha(captcha) SELECT NEW.captcha WHERE(Select Changes() = 0);\n" +
                     "END;";
                 string insert = "INSERT INTO captchainsert (user_id, captcha) VALUES (@user_id, @captcha);";
                 string drop = "DROP TRIGGER insertcaptcha; DROP VIEW captchainsert;";
