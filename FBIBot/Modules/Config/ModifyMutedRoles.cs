@@ -17,7 +17,7 @@ namespace FBIBot.Modules.Config
         public async Task ModifyMutedRolesAsync(string modify)
         {
             bool isModify = modify == "true" || modify == "enable";
-            string state = isModify ? "permitted to" : "prohibited from";
+            string state = isModify ? "permitted to modify" : "prohibited from modifying";
 
             if (isModify && !await GetModifyMutedAsync(Context.Guild))
             {
@@ -29,10 +29,10 @@ namespace FBIBot.Modules.Config
             }
             else
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that we are already {state} modifying muted member's roles.");
+                await Context.Channel.SendMessageAsync($"Our security team has informed us that we are already {state} muted member's roles.");
             }
 
-            await Context.Channel.SendMessageAsync($"We are now {state} modifying muted member's roles.");
+            await Context.Channel.SendMessageAsync($"We are now {state} muted member's roles.");
         }
 
         public static async Task AddModifyMutedAsync(SocketGuild g)
