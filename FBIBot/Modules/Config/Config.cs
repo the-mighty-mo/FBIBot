@@ -18,14 +18,14 @@ namespace FBIBot.Modules.Config
             SocketRole verify = await SetVerify.GetVerificationRoleAsync(Context.Guild);
             SocketRole mute = await SetMute.GetMuteRole(Context.Guild);
 
-            string config = $"Prefix: {(prefix == @"\" ? @"\\" : prefix)}\n" +
-                $"Verification Role: {(verify == null ? "(none)" : verify.Name)}\n" +
-                $"Mute Role: {(mute == null ? "(none)" : mute.Name)}\n" +
-                $"Modify Muted Member's Roles: {(await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild) ? "enabled" : "disabled")}";
+            string config = $"Prefix: **{(prefix == @"\" ? @"\\" : prefix)}**\n" +
+                $"Verification Role: **{(verify == null ? "(none)" : verify.Name)}**\n" +
+                $"Mute Role: **{(mute == null ? "(none)" : mute.Name)}**\n" +
+                $"Modify Muted Member's Roles: **{(await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild) ? "Enabled" : "Disabled")}**";
 
-            string @default = $"Prefix: {CommandHandler.prefix}\n" +
-                $"Mute Role: (created on mute command)\n" +
-                $"Modify Muted Member's Roles: enabled";
+            string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
+                $"Mute Role: **(created on mute command)**\n" +
+                $"Modify Muted Member's Roles: **Disabled**";
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
