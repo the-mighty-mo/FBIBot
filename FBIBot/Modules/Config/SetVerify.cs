@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
 {
-    public class VerifyRole : ModuleBase<SocketCommandContext>
+    public class SetVerify : ModuleBase<SocketCommandContext>
     {
         [Command("setverify")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
@@ -29,6 +29,27 @@ namespace FBIBot.Modules.Config
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");
+        }
+
+        public static async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
+        {
+            SocketRole role = null;
+
+            string getRole = "SELECT role_id FROM Roles WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getRole, Program.cnVerify))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id);
+
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    ulong roleID = ulong.Parse(reader["role_id"].ToString());
+                    role = g.GetRole(roleID);
+                }
+                reader.Close();
+            }
+
+            return await Task.Run(() => role);
         }
 
         async Task SetVerificationRoleAsync(ulong role)

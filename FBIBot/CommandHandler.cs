@@ -76,13 +76,13 @@ namespace FBIBot
 
             if (await Modules.AutoMod.Verify.IsVerifiedAsync(u))
             {
-                SocketRole role = await Modules.AutoMod.Verify.GetVerificationRoleAsync(u.Guild);
+                SocketRole role = await Modules.Config.SetVerify.GetVerificationRoleAsync(u.Guild);
                 if (role != null && u.Guild.CurrentUser.GetPermissions(u.Guild.DefaultChannel).ManageRoles)
                 {
                     await u.AddRoleAsync(role);
                 }
             }
-            else if (!u.IsBot && await Modules.AutoMod.Verify.GetVerificationRoleAsync(u.Guild) != null)
+            else if (!u.IsBot && await Modules.Config.SetVerify.GetVerificationRoleAsync(u.Guild) != null)
             {
                 await Modules.AutoMod.Verify.SendCaptchaAsync(u.Guild, u as SocketUser);
             }

@@ -17,7 +17,7 @@ namespace FBIBot.Modules.AutoMod
         [Command("verify")]
         public async Task VerifyAsync([Remainder] string response = "")
         {
-            if (await IsVerifiedAsync())
+            if (await IsVerifiedAsync(Context.User))
             {
                 await GiveVerificationAsync();
                 await Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck.");
@@ -87,7 +87,7 @@ namespace FBIBot.Modules.AutoMod
         {
             foreach (SocketGuild g in Context.User.MutualGuilds)
             {
-                SocketRole role = await GetVerificationRoleAsync(g);
+                SocketRole role = await Config.SetVerify.GetVerificationRoleAsync(g);
                 if (role != null && g.CurrentUser.GetPermissions(g.DefaultChannel).ManageRoles)
                 {
                     await g.GetUser(Context.User.Id).AddRoleAsync(role);
@@ -173,8 +173,6 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        async Task<bool> IsVerifiedAsync() => await IsVerifiedAsync(Context.User);
-
         public static async Task<bool> IsVerifiedAsync(SocketUser u)
         {
             bool isVerified = false;
@@ -202,27 +200,6 @@ namespace FBIBot.Modules.AutoMod
                 cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
-        }
-
-        public static async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
-        {
-            SocketRole role = null;
-
-            string getRole = "SELECT role_id FROM Roles WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getRole, Program.cnVerify))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id);
-
-                SqliteDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    ulong roleID = ulong.Parse(reader["role_id"].ToString());
-                    role = g.GetRole(roleID);
-                }
-                reader.Close();
-            }
-
-            return await Task.Run(() => role);
         }
     }
 }

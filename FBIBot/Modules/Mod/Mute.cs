@@ -2,10 +2,8 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -72,7 +70,7 @@ namespace FBIBot.Modules.Mod
         async Task<SocketRole> CreateMuteRoleAsync()
         {
             SocketRole role;
-            GuildPermissions perms = new GuildPermissions(sendMessages: false, addReactions: false, speak: false);
+            GuildPermissions perms = new GuildPermissions(viewChannel: true, sendMessages: false, addReactions: false, connect: true, speak: false);
             Color color = new Color(54, 57, 63);
             ulong roleID = (await Context.Guild.CreateRoleAsync("Muted", perms, color)).Id;
             role = Context.Guild.GetRole(roleID);
