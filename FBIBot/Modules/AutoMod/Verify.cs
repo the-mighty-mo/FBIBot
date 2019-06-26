@@ -22,7 +22,7 @@ namespace FBIBot.Modules.AutoMod
             if (await IsVerifiedAsync())
             {
                 await GiveVerificationAsync();
-                await Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck again.");
+                await Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck.");
                 return;
             }
 
