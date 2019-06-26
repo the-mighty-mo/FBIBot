@@ -17,11 +17,11 @@ namespace FBIBot.Modules.AutoMod
     public class Verify : ModuleBase<SocketCommandContext>
     {
         [Command("verify")]
-        public async Task VerifyAsync([Remainder] string response)
+        public async Task VerifyAsync([Remainder] string response = "")
         {
             if (await IsVerifiedAsync())
             {
-                await Context.Channel.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck again.");
+                await Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck again.");
                 return;
             }
 
@@ -39,17 +39,18 @@ namespace FBIBot.Modules.AutoMod
                 if (attempts >= 3)
                 {
                     await RemoveCaptchaAsync();
-                    await Context.Channel.SendMessageAsync("You have run out of attempts, you communist spy.\n" +
-                        "If you would like to try again, please get a new captcha..");
+                    await Context.User.SendMessageAsync("You have run out of attempts, you communist spy.\n" +
+                        "If you would like to try again, please get a new captcha.");
                     return;
                 }
 
                 await UpdateAttemptsAsync(attempts);
-                await Context.Channel.SendMessageAsync($"Incorrect. You have {3 - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.");
+                await Context.User.SendMessageAsync($"Incorrect. You have {3 - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.");
+                return;
             }
 
             await SaveVerificationAsync();
-            await Context.Channel.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.");
+            await Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.");
         }
 
         async Task SendCaptchaAsync()
@@ -64,7 +65,7 @@ namespace FBIBot.Modules.AutoMod
             image.Save($"{Context.User.Id}.png", ImageFormat.Png);
 
             await save;
-            await Context.User.SendFileAsync($"{Context.User.Id}.png", $"Please type `\\verify` followed by this captcha code to continue to {Context.Guild.Name}.\n");
+            await Context.User.SendFileAsync($"{Context.User.Id}.png", $"Please type `\\verify` followed by this captcha code to continue.\n");
 
             image.Dispose();
             File.Delete($"{Context.User.Id}.png");
@@ -112,6 +113,7 @@ namespace FBIBot.Modules.AutoMod
                     {
                         captchas.Add((string)reader["captcha"]);
                     }
+                    reader.Close();
                 }
             }
 
@@ -126,7 +128,7 @@ namespace FBIBot.Modules.AutoMod
             {
                 cn.Open();
 
-                string read = "SELECT attempts FROM Attempts WHERE user_id = @user_id";
+                string read = "SELECT attempts FROM Attempts WHERE user_id = @user_id;";
                 using (SqliteCommand cmd = new SqliteCommand(read, cn))
                 {
                     cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
@@ -134,8 +136,9 @@ namespace FBIBot.Modules.AutoMod
                     SqliteDataReader reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
-                        attempts = (int)reader["attempts"];
+                        attempts = int.Parse(reader["attempts"].ToString());
                     }
+                    reader.Close();
                 }
             }
 
@@ -151,7 +154,7 @@ namespace FBIBot.Modules.AutoMod
                 string createView = "CREATE VIEW IF NOT EXISTS attemptsupdate AS SELECT user_id, attempts FROM Attempts;";
                 string createTrigger = "CREATE TRIGGER IF NOT EXISTS updateattempts INSTEAD OF INSERT ON attemptsupdate\n" +
                     "BEGIN\n" +
-                    "UPDATE Attempts SET attempts = NEW.captcha WHERE user_id = NEW.user_id;\n" +
+                    "UPDATE Attempts SET attempts = NEW.attempts WHERE user_id = NEW.user_id;\n" +
                     "INSERT INTO Attempts (user_id, attempts) SELECT NEW.user_id, NEW.attempts WHERE (Select Changes() = 0);\n" +
                     "END;";
                 string insert = "INSERT INTO attemptsupdate (user_id, attempts) VALUES (@user_id, @attempts);";
@@ -198,6 +201,7 @@ namespace FBIBot.Modules.AutoMod
 
                     SqliteDataReader reader = cmd.ExecuteReader();
                     isVerified = reader.Read();
+                    reader.Close();
                 }
             }
 
