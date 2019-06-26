@@ -14,69 +14,64 @@ namespace FBIBot.Modules.Mod
     {
         [Command("mute")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(SocketGuildUser user)
+        public async Task MuteAsync(SocketGuildUser user, string timeout = "")
         {
-            SocketRole role = await GetMuteRole();
+            SocketRole role = await Config.SetMute.GetMuteRole(Context.Guild);
             if (role == null)
             {
                 role = await CreateMuteRoleAsync();
                 await Config.SetMute.SetMuteRoleAsync(role, Context.Guild);
             }
+            else if (user.Roles.Contains(role))
+            {
+                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already muted.");
+            }
 
             List<SocketRole> roles = user.Roles.ToList();
             roles.Remove(Context.Guild.EveryoneRole);
-            await SaveUserRolesAsync(roles);
+            await SaveUserRolesAsync(roles, user);
 
             await user.RemoveRolesAsync(roles);
             await user.AddRoleAsync(role);
 
-            await Context.Channel.SendMessageAsync($"{user.Nickname ?? user.Username} has been muted.");
+            await Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout.Length > 0 ? $" for {timeout} minutes" : "")}.");
+
+            if (timeout.Length > 0 && double.TryParse(timeout, out double minutes))
+            {
+                await Task.Delay((int)(minutes * 60 * 1000));
+
+                await user.AddRolesAsync(roles);
+                await user.RemoveRoleAsync(role);
+                await Unmute.RemoveUserRolesAsync(user);
+
+                await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection.");
+            }
         }
 
         [Command("mute")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(string user)
+        public async Task MuteAsync(string user, string timeout = "")
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
             {
-                await MuteAsync(u);
+                await MuteAsync(u, timeout);
                 return;
             }
-            await Context.Channel.SendMessageAsync("Our intelligence tells us the given user does not exist.");
-        }
-
-        async Task<SocketRole> GetMuteRole()
-        {
-            SocketRole role = null;
-
-            string getRole = "SELECT role_id FROM Muted WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getRole, Program.cnModRoles))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id);
-
-                SqliteDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    ulong roleID = ulong.Parse(reader["role_id"].ToString());
-                    role = Context.Guild.GetRole(roleID);
-                }
-            }
-
-            return await Task.Run(() => role);
+            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
 
         async Task<SocketRole> CreateMuteRoleAsync()
         {
             SocketRole role;
-            GuildPermissions perms = new GuildPermissions(sendMessages: false);
+            GuildPermissions perms = new GuildPermissions(sendMessages: false, addReactions: false);
             ulong roleID = (await Context.Guild.CreateRoleAsync("Muted", perms)).Id;
             role = Context.Guild.GetRole(roleID);
 
             return await Task.Run(() => role);
         }
 
-        async Task SaveUserRolesAsync(List<SocketRole> roles)
+        public static async Task SaveUserRolesAsync(List<SocketRole> roles, SocketGuildUser user)
         {
             List<Task> cmds = new List<Task>();
             string insert = "INSERT INTO UserRoles (guild_id, user_id, role_id) SELECT @guild_id, @user_id, @role_id\n" +
@@ -86,8 +81,8 @@ namespace FBIBot.Modules.Mod
             {
                 using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnModRoles))
                 {
-                    cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id.ToString());
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                    cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
+                    cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
                     cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
                     cmds.Add(cmd.ExecuteNonQueryAsync());
                 }

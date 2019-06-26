@@ -33,6 +33,26 @@ namespace FBIBot.Modules.Config
             await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");
         }
 
+        public static async Task<SocketRole> GetMuteRole(SocketGuild g)
+        {
+            SocketRole role = null;
+
+            string getRole = "SELECT role_id FROM Muted WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getRole, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id);
+
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    ulong roleID = ulong.Parse(reader["role_id"].ToString());
+                    role = g.GetRole(roleID);
+                }
+            }
+
+            return await Task.Run(() => role);
+        }
+
         public static async Task SetMuteRoleAsync(SocketRole role, SocketGuild g)
         {
             string update = "UPDATE Muted SET role_id = @role_id WHERE guild_id = @guild_id;";
