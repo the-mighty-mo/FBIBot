@@ -97,16 +97,10 @@ namespace FBIBot.Modules.AutoMod
 
         static async Task SaveToSQLAsync(string captcha, SocketUser u)
         {
-            string createView = "CREATE VIEW IF NOT EXISTS captchainsert AS SELECT user_id, captcha FROM Captcha;";
-            string createTrigger = "CREATE TRIGGER IF NOT EXISTS insertcaptcha INSTEAD OF INSERT ON captchainsert\n" +
-                "BEGIN\n" +
-                "UPDATE Captcha SET captcha = NEW.captcha WHERE user_id = NEW.user_id;\n" +
-                "INSERT INTO Captcha (user_id, captcha) SELECT NEW.user_id, NEW.captcha WHERE (Select Changes() = 0);\n" +
-                "END;";
-            string insert = "INSERT INTO captchainsert (user_id, captcha) VALUES (@user_id, @captcha);";
-            string drop = "DROP TRIGGER insertcaptcha; DROP VIEW captchainsert;";
+            string update = "UPDATE Captcha SET captcha = @captcha WHERE user_id = @user_id;";
+            string insert = "INSERT INTO Captcha (user_id, captcha) SELECT @user_id, @captcha WHERE (Select Changes() = 0);";
 
-            using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, Program.cnVerify))
+            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnVerify))
             {
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
                 cmd.Parameters.AddWithValue("@captcha", captcha);
@@ -156,16 +150,10 @@ namespace FBIBot.Modules.AutoMod
 
         async Task UpdateAttemptsAsync(int attempts)
         {
-            string createView = "CREATE VIEW IF NOT EXISTS attemptsupdate AS SELECT user_id, attempts FROM Attempts;";
-            string createTrigger = "CREATE TRIGGER IF NOT EXISTS updateattempts INSTEAD OF INSERT ON attemptsupdate\n" +
-                "BEGIN\n" +
-                "UPDATE Attempts SET attempts = NEW.attempts WHERE user_id = NEW.user_id;\n" +
-                "INSERT INTO Attempts (user_id, attempts) SELECT NEW.user_id, NEW.attempts WHERE (Select Changes() = 0);\n" +
-                "END;";
-            string insert = "INSERT INTO attemptsupdate (user_id, attempts) VALUES (@user_id, @attempts);";
-            string drop = "DROP TRIGGER updateattempts; DROP VIEW attemptsupdate;";
+            string update = "UPDATE Attempts SET attempts = @attempts WHERE user_id = @user_id;";
+            string insert = "INSERT INTO Attempts (user_id, attempts) SELECT @user_id, @attempts WHERE (Select Changes() = 0);\n";
 
-            using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, Program.cnVerify))
+            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnVerify))
             {
                 cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
                 cmd.Parameters.AddWithValue("@attempts", attempts);

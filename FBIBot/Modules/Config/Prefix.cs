@@ -23,18 +23,12 @@ namespace FBIBot.Modules.Config
 
         async Task SavePrefixAsync(string prefix)
         {
-            string createView = "CREATE VIEW IF NOT EXISTS prefixupdate AS SELECT guild_id, prefix FROM Prefixes;";
-            string createTrigger = "CREATE TRIGGER IF NOT EXISTS updateprefix INSTEAD OF INSERT ON prefixupdate\n" +
-                "BEGIN\n" +
-                "UPDATE Prefixes SET prefix = NEW.prefix WHERE guild_id = NEW.guild_id;\n" +
-                "INSERT INTO Prefixes (guild_id, prefix) SELECT NEW.guild_id, NEW.prefix WHERE (Select Changes() = 0);\n" +
-                "END;";
-            string insert = "INSERT INTO prefixupdate (guild_id, prefix) VALUES (@guild_id, @prefix);";
-            string drop = "DROP TRIGGER updateprefix; DROP VIEW prefixupdate;";
+            string update = "UPDATE Prefixes SET prefix = @prefix WHERE guild_id = @guild_id;";
+            string insert = "INSERT INTO Prefixes (guild_id, prefix) SELECT @guild_id, @prefix WHERE (Select Changes() = 0);";
 
-            using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, Program.cnPrefix))
+            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnPrefix))
             {
-                cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id);
+                cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id.ToString());
                 cmd.Parameters.AddWithValue("@prefix", prefix);
 
                 await cmd.ExecuteNonQueryAsync();
@@ -48,7 +42,7 @@ namespace FBIBot.Modules.Config
             string getPrefix = "SELECT prefix FROM Prefixes WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(getPrefix, Program.cnPrefix))
             {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id);
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
                 SqliteDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())

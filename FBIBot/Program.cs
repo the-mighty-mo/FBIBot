@@ -21,6 +21,7 @@ namespace FBIBot
         public static readonly Random rng = new Random();
         public static readonly SqliteConnection cnVerify = new SqliteConnection("Filename=Verification.db");
         public static readonly SqliteConnection cnPrefix = new SqliteConnection("Filename=Prefix.db");
+        public static readonly SqliteConnection cnModRoles = new SqliteConnection("Filename=ModRoles.db");
 
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
 
@@ -65,6 +66,7 @@ namespace FBIBot
 
             await InitVerifySqlite();
             await InitPrefixSqlite();
+            await InitModRolesSqlite();
 
             if (isConsole)
             {
@@ -106,6 +108,23 @@ namespace FBIBot
 
             List<Task> cmds = new List<Task>();
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Prefixes (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, prefix TEXT NOT NULL);", cnPrefix))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+
+            await Task.WhenAll(cmds);
+        }
+
+        async Task InitModRolesSqlite()
+        {
+            cnModRoles.Open();
+
+            List<Task> cmds = new List<Task>();
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Muted (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, role_id TEXT NOT NULL);", cnModRoles))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS UserRoles (guild_id TEXT NOT NULL PRIMARY KEY, user_id TEXT NOT NULL, role_id TEXT NOT NULL, UNIQUE (guild_id, user_id, role_id));", cnModRoles))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
