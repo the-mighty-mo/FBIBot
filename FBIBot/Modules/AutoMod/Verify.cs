@@ -34,9 +34,11 @@ namespace FBIBot.Modules.AutoMod
 
             if (response != captchas[0])
             {
+                int maxAttempts = 5;
                 int attempts = await GetAttemptsAsync();
                 attempts++;
-                if (attempts >= 3)
+
+                if (attempts >= maxAttempts)
                 {
                     await RemoveCaptchaAsync();
                     await Context.User.SendMessageAsync("You have run out of attempts, you communist spy.\n" +
@@ -45,7 +47,7 @@ namespace FBIBot.Modules.AutoMod
                 }
 
                 await UpdateAttemptsAsync(attempts);
-                await Context.User.SendMessageAsync($"Incorrect. You have {3 - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.");
+                await Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.");
                 return;
             }
 
