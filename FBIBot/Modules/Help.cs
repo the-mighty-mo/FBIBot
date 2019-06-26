@@ -21,7 +21,7 @@ namespace FBIBot.Modules
             "arrest [user mention / user ID] [minutes (optional)]\n" +
             "  - Sends the user to Guantanamo Bay for a bit\n\n" +
             "free [user mention / user ID]\n" +
-            "  - Frees the user from Guantanamo Bay because the Constitution exists; **this command ignores modifymutedroles and creates its own role**\n\n" +
+            "  - Frees the user from Guantanamo Bay because the Constitution exists; **This command ignores modifymutedroles and creates its own role**\n\n" +
             "kick [user mention / user ID] [reason (optional)]\n" +
             "  - Deports the communist to probably Europe\n\n" +
             "tempban [user mention / user ID] [days] [reason (optional)]\n" +
