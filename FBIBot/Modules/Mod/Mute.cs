@@ -64,7 +64,7 @@ namespace FBIBot.Modules.Mod
         async Task<SocketRole> CreateMuteRoleAsync()
         {
             SocketRole role;
-            GuildPermissions perms = new GuildPermissions(sendMessages: false, addReactions: false);
+            GuildPermissions perms = new GuildPermissions(sendMessages: false, addReactions: false, speak: false);
             ulong roleID = (await Context.Guild.CreateRoleAsync("Muted", perms)).Id;
             role = Context.Guild.GetRole(roleID);
 
