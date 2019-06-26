@@ -30,6 +30,8 @@ namespace FBIBot.Modules.Mod
             await user.RemoveRolesAsync(roles);
             await user.AddRoleAsync(role);
 
+            await RecordPrisonerAsync(user);
+
             await Context.Channel.SendMessageAsync($"{user.Mention} has been sent to Guantanamo Bay{(timeout.Length > 0 ? $" for {timeout} minutes" : "")}.");
 
             if (timeout != null && double.TryParse(timeout, out double minutes))
@@ -44,6 +46,14 @@ namespace FBIBot.Modules.Mod
                 await user.AddRolesAsync(roles);
                 await user.RemoveRoleAsync(role);
                 await Unmute.RemoveUserRolesAsync(user);
+                await RemovePrisonerAsync(user);
+
+                if (!await Free.HasPrisoners(Context.Guild))
+                {
+                    await channel.DeleteAsync();
+                    await role.DeleteAsync();
+                    await RemovePrisonerRoleAsync(Context.Guild);
+                }
 
                 await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
             }
@@ -118,6 +128,39 @@ namespace FBIBot.Modules.Mod
             {
                 cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id.ToString());
                 cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemovePrisonerRoleAsync(SocketGuild g)
+        {
+            string delete = "REMOVE FROM Prisoner WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RecordPrisonerAsync(SocketGuildUser user)
+        {
+            string insert = "INSERT INTO Prisoners (guild_id, user_id) SELECT @guild_id, @user_id\n" +
+                "WHERE NOT EXISTS (SELECT 1 FROM Prisoners WHERE guild_id = @guild_id AND user_id = @user_id);";
+            using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemovePrisonerAsync(SocketGuildUser user)
+        {
+            string delete = "DELETE FROM Prisoners WHERE guild_id = @guild_id AND user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace FBIBot.Modules.Mod
 {
     public class Free : ModuleBase<SocketCommandContext>
     {
-        [Command("arrest")]
+        [Command("free")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireOwner()]
         public async Task FreeAsync(SocketGuildUser user)
@@ -31,11 +32,20 @@ namespace FBIBot.Modules.Mod
             {
                 await user.RemoveRoleAsync(role);
             }
+            await Arrest.RemovePrisonerAsync(user);
+            await Arrest.RemovePrisonerRoleAsync(Context.Guild);
+
+            if (!await HasPrisoners(Context.Guild))
+            {
+                SocketTextChannel channel = Context.Guild.TextChannels.FirstOrDefault(x => x.Name == "guantanamo");
+                await channel?.DeleteAsync();
+                await role?.DeleteAsync();
+            }
 
             await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
         }
 
-        [Command("arrest")]
+        [Command("free")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireOwner()]
         public async Task FreeAsync(string user)
@@ -47,6 +57,22 @@ namespace FBIBot.Modules.Mod
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
+        }
+
+        public static async Task<bool> HasPrisoners(SocketGuild g)
+        {
+            bool hasPrisoners = false;
+
+            string getUsers = "SELECT * FROM Prisoners WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getUsers, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+                SqliteDataReader reader = cmd.ExecuteReader();
+                hasPrisoners = reader.Read();
+            }
+
+            return await Task.Run(() => hasPrisoners);
         }
     }
 }
