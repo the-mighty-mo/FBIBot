@@ -257,6 +257,7 @@
     <Compile Include="Modules\Config\SetMute.cs" />
     <Compile Include="Modules\Config\VerifyAll.cs" />
     <Compile Include="Modules\Config\SetVerify.cs" />
+    <Compile Include="Modules\Mod\Ban.cs" />
     <Compile Include="Modules\Mod\Mute.cs" />
     <Compile Include="Modules\Help.cs" />
     <Compile Include="Modules\Mod\Unmute.cs" />

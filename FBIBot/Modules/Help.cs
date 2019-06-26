@@ -15,9 +15,11 @@ namespace FBIBot.Modules
                     "  - Displays configuration commands";
         private static readonly string admin = "WIP";
         private static readonly string mod = "mute [user mention / user ID]\n" +
-            "  - Mutes a user so they can't type in chat or speak in voice chat\n\n" +
+            "  - Mutes the user so they can't type in chat or speak in voice chat\n\n" +
             "unmute [user mention / user ID]\n" +
-            "  - Unmutes a muted user";
+            "  - Unmutes the muted user\n\n" +
+            "ban [user mention / user ID]\n" +
+            "  - Gives the user the ~~ban~~ freedom hammer";
         private static readonly string config = "config\n" +
             "  - Displays the current bot configuration\n\n" +
             "setprefix\n" +
