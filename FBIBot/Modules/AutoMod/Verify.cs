@@ -99,25 +99,20 @@ namespace FBIBot.Modules.AutoMod
 
         async Task SaveToSQLAsync(string captcha, SocketUser u)
         {
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            string createView = "CREATE VIEW IF NOT EXISTS captchainsert AS SELECT user_id, captcha FROM Captcha;";
+            string createTrigger = "CREATE TRIGGER IF NOT EXISTS insertcaptcha INSTEAD OF INSERT ON captchainsert\n" +
+                "BEGIN\n" +
+                "UPDATE Captcha SET captcha = NEW.captcha WHERE user_id = NEW.user_id;\n" +
+                "INSERT INTO Captcha (user_id, captcha) SELECT NEW.user_id, NEW.captcha WHERE (Select Changes() = 0);\n" +
+                "END;";
+            string insert = "INSERT INTO captchainsert (user_id, captcha) VALUES (@user_id, @captcha);";
+            string drop = "DROP TRIGGER insertcaptcha; DROP VIEW captchainsert;";
+
+            using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, Program.cnVerify))
             {
-                cn.Open();
-
-                string createView = "CREATE VIEW IF NOT EXISTS captchainsert AS SELECT user_id, captcha FROM Captcha;";
-                string createTrigger = "CREATE TRIGGER IF NOT EXISTS insertcaptcha INSTEAD OF INSERT ON captchainsert\n" +
-                    "BEGIN\n" +
-                    "UPDATE Captcha SET captcha = NEW.captcha WHERE user_id = NEW.user_id;\n" +
-                    "INSERT INTO Captcha (user_id, captcha) SELECT NEW.user_id, NEW.captcha WHERE (Select Changes() = 0);\n" +
-                    "END;";
-                string insert = "INSERT INTO captchainsert (user_id, captcha) VALUES (@user_id, @captcha);";
-                string drop = "DROP TRIGGER insertcaptcha; DROP VIEW captchainsert;";
-
-                using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, cn))
-                {
-                    cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-                    cmd.Parameters.AddWithValue("@captcha", captcha);
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+                cmd.Parameters.AddWithValue("@captcha", captcha);
+                await cmd.ExecuteNonQueryAsync();
             }
         }
 
@@ -125,22 +120,17 @@ namespace FBIBot.Modules.AutoMod
         {
             List<string> captchas = new List<string>();
 
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            string read = "SELECT captcha FROM Captcha WHERE user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(read, Program.cnVerify))
             {
-                cn.Open();
+                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
 
-                string read = "SELECT captcha FROM Captcha WHERE user_id = @user_id;";
-                using (SqliteCommand cmd = new SqliteCommand(read, cn))
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
-
-                    SqliteDataReader reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        captchas.Add((string)reader["captcha"]);
-                    }
-                    reader.Close();
+                    captchas.Add((string)reader["captcha"]);
                 }
+                reader.Close();
             }
 
             return await Task.Run(() => captchas);
@@ -150,22 +140,17 @@ namespace FBIBot.Modules.AutoMod
         {
             int attempts = 0;
 
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            string read = "SELECT attempts FROM Attempts WHERE user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(read, Program.cnVerify))
             {
-                cn.Open();
+                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
 
-                string read = "SELECT attempts FROM Attempts WHERE user_id = @user_id;";
-                using (SqliteCommand cmd = new SqliteCommand(read, cn))
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
-
-                    SqliteDataReader reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        attempts = int.Parse(reader["attempts"].ToString());
-                    }
-                    reader.Close();
+                    attempts = int.Parse(reader["attempts"].ToString());
                 }
+                reader.Close();
             }
 
             return await Task.Run(() => attempts);
@@ -173,42 +158,32 @@ namespace FBIBot.Modules.AutoMod
 
         async Task UpdateAttemptsAsync(int attempts)
         {
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            string createView = "CREATE VIEW IF NOT EXISTS attemptsupdate AS SELECT user_id, attempts FROM Attempts;";
+            string createTrigger = "CREATE TRIGGER IF NOT EXISTS updateattempts INSTEAD OF INSERT ON attemptsupdate\n" +
+                "BEGIN\n" +
+                "UPDATE Attempts SET attempts = NEW.attempts WHERE user_id = NEW.user_id;\n" +
+                "INSERT INTO Attempts (user_id, attempts) SELECT NEW.user_id, NEW.attempts WHERE (Select Changes() = 0);\n" +
+                "END;";
+            string insert = "INSERT INTO attemptsupdate (user_id, attempts) VALUES (@user_id, @attempts);";
+            string drop = "DROP TRIGGER updateattempts; DROP VIEW attemptsupdate;";
+
+            using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, Program.cnVerify))
             {
-                cn.Open();
-
-                string createView = "CREATE VIEW IF NOT EXISTS attemptsupdate AS SELECT user_id, attempts FROM Attempts;";
-                string createTrigger = "CREATE TRIGGER IF NOT EXISTS updateattempts INSTEAD OF INSERT ON attemptsupdate\n" +
-                    "BEGIN\n" +
-                    "UPDATE Attempts SET attempts = NEW.attempts WHERE user_id = NEW.user_id;\n" +
-                    "INSERT INTO Attempts (user_id, attempts) SELECT NEW.user_id, NEW.attempts WHERE (Select Changes() = 0);\n" +
-                    "END;";
-                string insert = "INSERT INTO attemptsupdate (user_id, attempts) VALUES (@user_id, @attempts);";
-                string drop = "DROP TRIGGER updateattempts; DROP VIEW attemptsupdate;";
-
-                using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, cn))
-                {
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
-                    cmd.Parameters.AddWithValue("@attempts", attempts);
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                cmd.Parameters.AddWithValue("@attempts", attempts);
+                await cmd.ExecuteNonQueryAsync();
             }
         }
 
         async Task RemoveCaptchaAsync()
         {
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            string removeCaptcha = "DELETE FROM Captcha WHERE user_id = @user_id;";
+            string removeAttempts = "DELETE FROM Attempts WHERE user_id = @user_id;";
+
+            using (SqliteCommand cmd = new SqliteCommand(removeCaptcha + removeAttempts, Program.cnVerify))
             {
-                cn.Open();
-
-                string removeCaptcha = "DELETE FROM Captcha WHERE user_id = @user_id;";
-                string removeAttempts = "DELETE FROM Attempts WHERE user_id = @user_id;";
-
-                using (SqliteCommand cmd = new SqliteCommand(removeCaptcha + removeAttempts, cn))
-                {
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
             }
         }
 
@@ -218,19 +193,14 @@ namespace FBIBot.Modules.AutoMod
         {
             bool isVerified = false;
 
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            string verify = "SELECT * FROM Verified WHERE user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(verify, Program.cnVerify))
             {
-                cn.Open();
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-                string verify = "SELECT * FROM Verified WHERE user_id = @user_id;";
-                using (SqliteCommand cmd = new SqliteCommand(verify, cn))
-                {
-                    cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-
-                    SqliteDataReader reader = cmd.ExecuteReader();
-                    isVerified = reader.Read();
-                    reader.Close();
-                }
+                SqliteDataReader reader = cmd.ExecuteReader();
+                isVerified = reader.Read();
+                reader.Close();
             }
 
             return await Task.Run(() => isVerified);
@@ -240,39 +210,30 @@ namespace FBIBot.Modules.AutoMod
         {
             await RemoveCaptchaAsync();
 
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            string verify = "INSERT INTO Verified (user_id) SELECT @user_id WHERE NOT EXISTS (SELECT 1 FROM Verified WHERE user_id = @user_id);";
+            using (SqliteCommand cmd = new SqliteCommand(verify, Program.cnVerify))
             {
-                cn.Open();
-
-                string verify = "INSERT INTO Verified (user_id) SELECT @user_id WHERE NOT EXISTS (SELECT 1 FROM Verified WHERE user_id = @user_id);";
-                using (SqliteCommand cmd = new SqliteCommand(verify, cn))
-                {
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
             }
         }
 
         public async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
         {
             SocketRole role = null;
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+
+            string getRole = "SELECT role_id FROM Roles WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getRole, Program.cnVerify))
             {
-                cn.Open();
+                cmd.Parameters.AddWithValue("@guild_id", g.Id);
 
-                string getRole = "SELECT role_id FROM Roles WHERE guild_id = @guild_id;";
-                using (SqliteCommand cmd = new SqliteCommand(getRole, cn))
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@guild_id", g.Id);
-
-                    SqliteDataReader reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        ulong roleID = ulong.Parse(reader["role_id"].ToString());
-                        role = g.GetRole(roleID);
-                    }
-                    reader.Close();
+                    ulong roleID = ulong.Parse(reader["role_id"].ToString());
+                    role = g.GetRole(roleID);
                 }
+                reader.Close();
             }
 
             return await Task.Run(() => role);

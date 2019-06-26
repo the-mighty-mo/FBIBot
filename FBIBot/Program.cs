@@ -19,6 +19,7 @@ namespace FBIBot
         private CommandHandler _handler;
 
         public static readonly Random rng = new Random();
+        public static readonly SqliteConnection cnVerify = new SqliteConnection("Filename=Verification.db");
 
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
 
@@ -74,30 +75,27 @@ namespace FBIBot
 
         async Task InitVerificationSqlite()
         {
-            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            cnVerify.Open();
+
+            List<Task> cmds = new List<Task>();
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (user_id TEXT NOT NULL UNIQUE PRIMARY KEY, captcha TEXT NOT NULL);", cnVerify))
             {
-                cn.Open();
-
-                List<Task> cmds = new List<Task>();
-                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (user_id TEXT NOT NULL UNIQUE PRIMARY KEY, captcha TEXT NOT NULL);", cn))
-                {
-                    cmds.Add(cmd.ExecuteNonQueryAsync());
-                }
-                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (user_id TEXT NOT NULL UNIQUE PRIMARY KEY);", cn))
-                {
-                    cmds.Add(cmd.ExecuteNonQueryAsync());
-                }
-                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Attempts (user_id TEXT NOT NULL UNIQUE PRIMARY KEY, attempts INTEGER NOT NULL);", cn))
-                {
-                    cmds.Add(cmd.ExecuteNonQueryAsync());
-                }
-                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Roles (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, role_id TEXT NOT NULL);", cn))
-                {
-                    cmds.Add(cmd.ExecuteNonQueryAsync());
-                }
-
-                await Task.WhenAll(cmds);
+                cmds.Add(cmd.ExecuteNonQueryAsync());
             }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (user_id TEXT NOT NULL UNIQUE PRIMARY KEY);", cnVerify))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Attempts (user_id TEXT NOT NULL UNIQUE PRIMARY KEY, attempts INTEGER NOT NULL);", cnVerify))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Roles (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, role_id TEXT NOT NULL);", cnVerify))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+
+            await Task.WhenAll(cmds);
         }
     }
 }
