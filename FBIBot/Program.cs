@@ -20,8 +20,8 @@ namespace FBIBot
 
         public static readonly Random rng = new Random();
         public static readonly SqliteConnection cnVerify = new SqliteConnection("Filename=Verification.db");
-        public static readonly SqliteConnection cnPrefix = new SqliteConnection("Filename=Prefix.db");
         public static readonly SqliteConnection cnModRoles = new SqliteConnection("Filename=ModRoles.db");
+        public static readonly SqliteConnection cnConfig = new SqliteConnection("Filename=Config.db");
 
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
 
@@ -65,8 +65,8 @@ namespace FBIBot
             Task initCmd = _handler.InitCommandsAsync();
 
             await InitVerifySqlite();
-            await InitPrefixSqlite();
             await InitModRolesSqlite();
+            await InitConfigSqlite();
 
             if (isConsole)
             {
@@ -102,19 +102,6 @@ namespace FBIBot
             await Task.WhenAll(cmds);
         }
 
-        async Task InitPrefixSqlite()
-        {
-            cnPrefix.Open();
-
-            List<Task> cmds = new List<Task>();
-            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Prefixes (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, prefix TEXT NOT NULL);", cnPrefix))
-            {
-                cmds.Add(cmd.ExecuteNonQueryAsync());
-            }
-
-            await Task.WhenAll(cmds);
-        }
-
         async Task InitModRolesSqlite()
         {
             cnModRoles.Open();
@@ -125,6 +112,23 @@ namespace FBIBot
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS UserRoles (guild_id TEXT NOT NULL PRIMARY KEY, user_id TEXT NOT NULL, role_id TEXT NOT NULL, UNIQUE (guild_id, user_id, role_id));", cnModRoles))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+
+            await Task.WhenAll(cmds);
+        }
+
+        async Task InitConfigSqlite()
+        {
+            cnConfig.Open();
+
+            List<Task> cmds = new List<Task>();
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Prefixes (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, prefix TEXT NOT NULL);", cnConfig))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS ModifyMuted (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY);", cnConfig))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }

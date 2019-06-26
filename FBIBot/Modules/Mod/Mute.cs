@@ -31,7 +31,12 @@ namespace FBIBot.Modules.Mod
             roles.Remove(Context.Guild.EveryoneRole);
             await SaveUserRolesAsync(roles, user);
 
-            await user.RemoveRolesAsync(roles);
+            bool modifyRoles = await Config.ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);
+
+            if (modifyRoles)
+            {
+                await user.RemoveRolesAsync(roles);
+            }
             await user.AddRoleAsync(role);
 
             await Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout.Length > 0 ? $" for {timeout} minutes" : "")}.");
@@ -40,7 +45,10 @@ namespace FBIBot.Modules.Mod
             {
                 await Task.Delay((int)(minutes * 60 * 1000));
 
-                await user.AddRolesAsync(roles);
+                if (modifyRoles)
+                {
+                    await user.AddRolesAsync(roles);
+                }
                 await user.RemoveRoleAsync(role);
                 await Unmute.RemoveUserRolesAsync(user);
 
@@ -65,7 +73,8 @@ namespace FBIBot.Modules.Mod
         {
             SocketRole role;
             GuildPermissions perms = new GuildPermissions(sendMessages: false, addReactions: false, speak: false);
-            ulong roleID = (await Context.Guild.CreateRoleAsync("Muted", perms)).Id;
+            Color color = new Color(54, 57, 63);
+            ulong roleID = (await Context.Guild.CreateRoleAsync("Muted", perms, color)).Id;
             role = Context.Guild.GetRole(roleID);
 
             return await Task.Run(() => role);

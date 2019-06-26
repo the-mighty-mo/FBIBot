@@ -14,16 +14,22 @@ namespace FBIBot.Modules
                     "config\n" +
                     "  - Displays configuration commands";
         private static readonly string admin = "WIP";
-        private static readonly string mod = "mute\n" +
+        private static readonly string mod = "mute [user mention / user ID]\n" +
             "  - Mutes a user so they can't type in chat or speak in voice chat\n\n" +
-            "unmute\n" +
+            "unmute [user mention / user ID]\n" +
             "  - Unmutes a muted user";
-        private static readonly string config = "setprefix\n" +
+        private static readonly string config = "config\n" +
+            "  - Displays the current bot configuration\n\n" +
+            "setprefix\n" +
             $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
             "setverify [role mention / role ID]\n" +
             "  - Sets the role for verified members\n\n" +
             "verifyall\n" +
-            "  - Verifies all current members";
+            "  - Verifies all current members\n\n" +
+            "setmute [role mention / role ID]\n" +
+            "  - Sets the role for muted members. Unsets if no role is given.\n\n" +
+            "modifymutedroles [true/enable / **false/disable** (default)]\n" +
+            "  - When enabled, allows the bot to remove and save the roles of the muted member; we recommend you enable thus unless you have manually configured the server's muted role";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)

@@ -26,7 +26,7 @@ namespace FBIBot.Modules.Config
             string update = "UPDATE Prefixes SET prefix = @prefix WHERE guild_id = @guild_id;";
             string insert = "INSERT INTO Prefixes (guild_id, prefix) SELECT @guild_id, @prefix WHERE (Select Changes() = 0);";
 
-            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnPrefix))
+            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id.ToString());
                 cmd.Parameters.AddWithValue("@prefix", prefix);
@@ -40,7 +40,7 @@ namespace FBIBot.Modules.Config
             string prefix = CommandHandler.prefix;
 
             string getPrefix = "SELECT prefix FROM Prefixes WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getPrefix, Program.cnPrefix))
+            using (SqliteCommand cmd = new SqliteCommand(getPrefix, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 

@@ -12,8 +12,19 @@ namespace FBIBot.Modules.Config
 {
     public class SetMute : ModuleBase<SocketCommandContext>
     {
+        public async Task SetMuteAsync()
+        {
+            if (GetMuteRole(Context.Guild) == null)
+            {
+                await Context.Channel.SendMessageAsync("Our intelligence team has informed us that you already don't have a muted role.");
+            }
+            await RemoveMuteRoleAsync(Context.Guild);
+            await Context.Channel.SendMessageAsync($"You no longer have a muted role. What a shame.");
+        }
+
         [Command("setmute")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireOwner()]
         public async Task SetMuteAsync(SocketRole role)
         {
             await SetMuteRoleAsync(role, Context.Guild);
@@ -22,6 +33,7 @@ namespace FBIBot.Modules.Config
 
         [Command("setmute")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireOwner()]
         public async Task SetMuteAsync(string role)
         {
             SocketRole r;
@@ -30,7 +42,7 @@ namespace FBIBot.Modules.Config
                 await SetMuteAsync(r);
                 return;
             }
-            await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");
+            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given role does not exist.");
         }
 
         public static async Task<SocketRole> GetMuteRole(SocketGuild g)
@@ -62,6 +74,16 @@ namespace FBIBot.Modules.Config
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemoveMuteRoleAsync(SocketGuild g)
+        {
+            string delete = "DELETE FROM Muted WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }
