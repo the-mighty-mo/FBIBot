@@ -43,7 +43,7 @@ namespace FBIBot.Modules.AutoMod
                 {
                     await RemoveCaptchaAsync();
                     await Context.User.SendMessageAsync("You have run out of attempts, you communist spy.\n" +
-                        "If you would like to try again, please get a new captcha.");
+                        "If you would like to try again, please get a new captcha by typing `\\verify`.");
                     return;
                 }
 
