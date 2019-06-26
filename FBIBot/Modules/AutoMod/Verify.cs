@@ -17,6 +17,7 @@ namespace FBIBot.Modules.AutoMod
     public class Verify : ModuleBase<SocketCommandContext>
     {
         [Command("verify")]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task VerifyAsync([Remainder] string response = "")
         {
             if (await IsVerifiedAsync())
@@ -52,6 +53,7 @@ namespace FBIBot.Modules.AutoMod
             }
 
             await SaveVerificationAsync();
+            await GiveVerificationAsync();
             await Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.");
         }
 
@@ -71,6 +73,18 @@ namespace FBIBot.Modules.AutoMod
 
             image.Dispose();
             File.Delete($"{Context.User.Id}.png");
+        }
+
+        async Task GiveVerificationAsync()
+        {
+            foreach (SocketGuild g in Context.User.MutualGuilds)
+            {
+                SocketRole role = await GetVerificationRoleAsync(g);
+                if (role != null)
+                {
+                    await g.GetUser(Context.User.Id).AddRoleAsync(role);
+                }
+            }
         }
 
         async Task SaveToSQLAsync(string captcha)
@@ -188,7 +202,7 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        async Task<bool> IsVerifiedAsync()
+        public async Task<bool> IsVerifiedAsync()
         {
             bool isVerified = false;
 
@@ -225,6 +239,32 @@ namespace FBIBot.Modules.AutoMod
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
+        }
+
+        public async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
+        {
+            SocketRole role = null;
+
+            using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
+            {
+                cn.Open();
+
+                string getRole = "SELECT role_id FROM Roles WHERE guild_id = @guild_id;";
+                using (SqliteCommand cmd = new SqliteCommand(getRole, cn))
+                {
+                    cmd.Parameters.AddWithValue("@guild_id", g.Id);
+
+                    SqliteDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        ulong roleID = ulong.Parse(reader["role_id"].ToString());
+                        role = g.GetRole(roleID);
+                    }
+                    reader.Close();
+                }
+            }
+
+            return await Task.Run(() => role);
         }
     }
 }

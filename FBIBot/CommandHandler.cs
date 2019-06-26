@@ -73,6 +73,15 @@ namespace FBIBot
             };
             int index = Program.rng.Next(messages.Count);
 
+            if (await new Modules.AutoMod.Verify().IsVerifiedAsync())
+            {
+                SocketRole role = await new Modules.AutoMod.Verify().GetVerificationRoleAsync(u.Guild);
+                if (role != null)
+                {
+                    await u.AddRoleAsync(role);
+                }
+            }
+
             await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
         }
 

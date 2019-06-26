@@ -61,18 +61,18 @@ namespace FBIBot
             _handler = new CommandHandler(_client, _services);
             Task initCmd = _handler.InitCommandsAsync();
 
+            await InitVerificationSqlite();
+
             if (isConsole)
             {
                 Console.WriteLine($"{SecurityInfo.botName} has finished loading");
             }
 
             await initCmd;
-            await InitSqlite();
-
             await Task.Delay(-1);
         }
 
-        async Task InitSqlite()
+        async Task InitVerificationSqlite()
         {
             using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
             {
@@ -88,6 +88,10 @@ namespace FBIBot
                     cmds.Add(cmd.ExecuteNonQueryAsync());
                 }
                 using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Attempts (user_id TEXT NOT NULL UNIQUE PRIMARY KEY, attempts INTEGER NOT NULL);", cn))
+                {
+                    cmds.Add(cmd.ExecuteNonQueryAsync());
+                }
+                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Roles (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, role_id TEXT NOT NULL);", cn))
                 {
                     cmds.Add(cmd.ExecuteNonQueryAsync());
                 }
