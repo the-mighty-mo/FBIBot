@@ -9,7 +9,7 @@ namespace FBIBot.Modules.Config
     {
         [Command("setprefix")]
         [RequireOwner()]
-        public async Task SetPrefixAsync(string prefix = CommandHandler.prefix)
+        public async Task PrefixAsync(string prefix = CommandHandler.prefix)
         {
             if (await GetPrefixAsync(Context.Guild) == prefix)
             {
@@ -17,22 +17,8 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await SavePrefixAsync(prefix);
+            await SetPrefixAsync(prefix);
             await Context.Channel.SendMessageAsync($"The FBI's prefix has been set to {(prefix == @"\" ? @"\\" : prefix)}.");
-        }
-
-        async Task SavePrefixAsync(string prefix)
-        {
-            string update = "UPDATE Prefixes SET prefix = @prefix WHERE guild_id = @guild_id;";
-            string insert = "INSERT INTO Prefixes (guild_id, prefix) SELECT @guild_id, @prefix WHERE (Select Changes() = 0);";
-
-            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@prefix", prefix);
-
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
 
         public static async Task<string> GetPrefixAsync(SocketGuild g)
@@ -53,6 +39,20 @@ namespace FBIBot.Modules.Config
             }
 
             return await Task.Run(() => prefix);
+        }
+
+        async Task SetPrefixAsync(string prefix)
+        {
+            string update = "UPDATE Prefixes SET prefix = @prefix WHERE guild_id = @guild_id;";
+            string insert = "INSERT INTO Prefixes (guild_id, prefix) SELECT @guild_id, @prefix WHERE (Select Changes() = 0);";
+
+            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnConfig))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@prefix", prefix);
+
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
     }
 }
