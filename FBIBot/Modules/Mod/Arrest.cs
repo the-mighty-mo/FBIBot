@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,11 +80,11 @@ namespace FBIBot.Modules.Mod
             ulong channelID = (await Context.Guild.CreateTextChannelAsync("guantanamo")).Id;
             channel = Context.Guild.GetTextChannel(channelID);
 
-            await channel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
-
-            OverwritePermissions perms = OverwritePermissions.DenyAll(channel)
-                .Modify(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);
+            OverwritePermissions perms = new OverwritePermissions(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);
             await channel.AddPermissionOverwriteAsync(role, perms);
+
+            await channel.AddPermissionOverwriteAsync(Context.Client.CurrentUser, OverwritePermissions.AllowAll(channel));
+            await channel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
 
             return await Task.Run(() => channel);
         }
