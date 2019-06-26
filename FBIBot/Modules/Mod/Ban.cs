@@ -36,7 +36,7 @@ namespace FBIBot.Modules.Mod
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
             {
-                await BanAsync(u, reason, prune);
+                await BanAsync(u, prune, reason);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

@@ -261,6 +261,7 @@
     <Compile Include="Modules\Mod\Kick.cs" />
     <Compile Include="Modules\Mod\Mute.cs" />
     <Compile Include="Modules\Help.cs" />
+    <Compile Include="Modules\Mod\TempBan.cs" />
     <Compile Include="Modules\Mod\Unmute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

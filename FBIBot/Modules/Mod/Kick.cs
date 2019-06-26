@@ -12,7 +12,7 @@ namespace FBIBot.Modules.Mod
     public class Kick : ModuleBase<SocketCommandContext>
     {
         [Command("kick")]
-        [RequireBotPermission(GuildPermission.BanMembers)]
+        [RequireBotPermission(GuildPermission.KickMembers)]
         [RequireOwner()]
         public async Task KickAsync(SocketGuildUser user, string reason = null)
         {
@@ -21,7 +21,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("kick")]
-        [RequireBotPermission(GuildPermission.BanMembers)]
+        [RequireBotPermission(GuildPermission.KickMembers)]
         [RequireOwner()]
         public async Task KickAsync(string user, string reason = null)
         {
