@@ -21,7 +21,10 @@ namespace FBIBot.Modules
                     "  - Displays configuration commands";
         private static readonly string admin = "WIP";
         private static readonly string mod = "WIP";
-        private static readonly string config = "WIP";
+        private static readonly string config = "setverify [role mention / role ID]\n" +
+            "  - Sets the role for verified members\n\n" +
+            "verifyall\n" +
+            "  - Verifies all current members";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)

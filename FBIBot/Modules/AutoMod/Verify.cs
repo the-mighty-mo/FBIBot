@@ -17,11 +17,11 @@ namespace FBIBot.Modules.AutoMod
     public class Verify : ModuleBase<SocketCommandContext>
     {
         [Command("verify")]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task VerifyAsync([Remainder] string response = "")
         {
             if (await IsVerifiedAsync())
             {
+                await GiveVerificationAsync();
                 await Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck again.");
                 return;
             }
@@ -33,7 +33,7 @@ namespace FBIBot.Modules.AutoMod
                 return;
             }
 
-            if (response != captchas[0])
+            if (response.ToLower() != captchas[0].ToLower())
             {
                 int maxAttempts = 5;
                 int attempts = await GetAttemptsAsync();
@@ -57,22 +57,32 @@ namespace FBIBot.Modules.AutoMod
             await Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.");
         }
 
-        async Task SendCaptchaAsync()
+        async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.Guild, Context.User);
+
+        public async Task SendCaptchaAsync(SocketGuild g, SocketUser u)
         {
-            string captchaCode = CaptchaCodeFactory.GenerateCaptchaCode(6);
-            Task save = SaveToSQLAsync(captchaCode);
+            string captchaCode = "";
+            List<string> badCaptcha = new List<string>() { "I", "l", "0", "O" };
+
+            do
+            {
+                captchaCode = CaptchaCodeFactory.GenerateCaptchaCode(6);
+            }
+            while (captchaCode.Any(x => badCaptcha.Contains(x.ToString())));
+
+            Task save = SaveToSQLAsync(captchaCode, u);
 
             var imageStream = ImageFactory.GenerateImage(captchaCode);
             imageStream.Position = 0;
 
             Image image = Image.FromStream(imageStream);
-            image.Save($"{Context.User.Id}.png", ImageFormat.Png);
+            image.Save($"{u.Id}.png", ImageFormat.Png);
 
             await save;
-            await Context.User.SendFileAsync($"{Context.User.Id}.png", $"Please type `\\verify` followed by this captcha code to continue.\n");
+            await u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{(g != null ? $" to {g.Name}" : "")}.\n");
 
             image.Dispose();
-            File.Delete($"{Context.User.Id}.png");
+            File.Delete($"{u.Id}.png");
         }
 
         async Task GiveVerificationAsync()
@@ -80,14 +90,14 @@ namespace FBIBot.Modules.AutoMod
             foreach (SocketGuild g in Context.User.MutualGuilds)
             {
                 SocketRole role = await GetVerificationRoleAsync(g);
-                if (role != null)
+                if (role != null && g.CurrentUser.GetPermissions(g.DefaultChannel).ManageRoles)
                 {
                     await g.GetUser(Context.User.Id).AddRoleAsync(role);
                 }
             }
         }
 
-        async Task SaveToSQLAsync(string captcha)
+        async Task SaveToSQLAsync(string captcha, SocketUser u)
         {
             using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
             {
@@ -104,7 +114,7 @@ namespace FBIBot.Modules.AutoMod
 
                 using (SqliteCommand cmd = new SqliteCommand(createView + createTrigger + insert + drop, cn))
                 {
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                    cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
                     cmd.Parameters.AddWithValue("@captcha", captcha);
                     await cmd.ExecuteNonQueryAsync();
                 }
@@ -202,7 +212,9 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        public async Task<bool> IsVerifiedAsync()
+        async Task<bool> IsVerifiedAsync() => await IsVerifiedAsync(Context.User);
+
+        public async Task<bool> IsVerifiedAsync(SocketUser u)
         {
             bool isVerified = false;
 
@@ -213,7 +225,7 @@ namespace FBIBot.Modules.AutoMod
                 string verify = "SELECT * FROM Verified WHERE user_id = @user_id;";
                 using (SqliteCommand cmd = new SqliteCommand(verify, cn))
                 {
-                    cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                    cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
                     SqliteDataReader reader = cmd.ExecuteReader();
                     isVerified = reader.Read();
@@ -244,7 +256,6 @@ namespace FBIBot.Modules.AutoMod
         public async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
         {
             SocketRole role = null;
-
             using (SqliteConnection cn = new SqliteConnection("Filename=Verification.db"))
             {
                 cn.Open();

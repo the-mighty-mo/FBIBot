@@ -72,17 +72,20 @@ namespace FBIBot
                 "You want to know how we figured it out?"
             };
             int index = Program.rng.Next(messages.Count);
+            await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
 
-            if (await new Modules.AutoMod.Verify().IsVerifiedAsync())
+            if (await new Modules.AutoMod.Verify().IsVerifiedAsync(u))
             {
                 SocketRole role = await new Modules.AutoMod.Verify().GetVerificationRoleAsync(u.Guild);
-                if (role != null)
+                if (role != null && u.Guild.CurrentUser.GetPermissions(u.Guild.DefaultChannel).ManageRoles)
                 {
                     await u.AddRoleAsync(role);
                 }
             }
-
-            await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
+            else if (!u.IsBot && await new Modules.AutoMod.Verify().GetVerificationRoleAsync(u.Guild) != null)
+            {
+                await new Modules.AutoMod.Verify().SendCaptchaAsync(u.Guild, u as SocketUser);
+            }
         }
 
         private async Task HandleCommandAsync(SocketMessage m)

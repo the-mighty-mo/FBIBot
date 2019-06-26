@@ -252,6 +252,8 @@
     <Compile Include="CommandHandler.cs" />
     <Compile Include="ManageArgs.cs" />
     <Compile Include="Modules\AutoMod\Verify.cs" />
+    <Compile Include="Modules\Config\VerifyAll.cs" />
+    <Compile Include="Modules\Config\VerifyRole.cs" />
     <Compile Include="Modules\Mod\Mute.cs" />
     <Compile Include="Modules\Help.cs" />
     <Compile Include="Program.cs" />
@@ -280,7 +282,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modules\Admin\" />
-    <Folder Include="Modules\Config\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
