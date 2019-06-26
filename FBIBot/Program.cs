@@ -83,9 +83,13 @@ namespace FBIBot
                 {
                     cmds.Add(cmd.ExecuteNonQueryAsync());
                 }
-                using (SqliteCommand cmda = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (user_id TEXT NOT NULL UNIQUE PRIMARY KEY);", cn))
+                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Verified (user_id TEXT NOT NULL UNIQUE PRIMARY KEY);", cn))
                 {
-                    cmds.Add(cmda.ExecuteNonQueryAsync());
+                    cmds.Add(cmd.ExecuteNonQueryAsync());
+                }
+                using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Attempts (user_id TEXT NOT NULL UNIQUE PRIMARY KEY, attempts INTEGER NOT NULL);", cn))
+                {
+                    cmds.Add(cmd.ExecuteNonQueryAsync());
                 }
 
                 await Task.WhenAll(cmds);
