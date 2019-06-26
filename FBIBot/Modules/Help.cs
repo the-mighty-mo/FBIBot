@@ -15,23 +15,25 @@ namespace FBIBot.Modules
                     "  - Displays configuration commands";
         private static readonly string admin = "WIP";
         private static readonly string mod = "mute [user mention / user ID]\n" +
-            "  - Mutes the user so they can't type in chat or speak in voice chat\n\n" +
+            "  - Puts the user under house arrest so they can't type in chat or speak in voice chat\n\n" +
             "unmute [user mention / user ID]\n" +
-            "  - Unmutes the muted user\n\n" +
-            "ban [user mention / user ID]\n" +
+            "  - Frees the house-arrested user\n\n" +
+            "kick [user mention / user ID] [reason (optional)]\n" +
+            "  - Deports the communist to probably Europe\n\n" +
+            "ban [user mention / user ID] [prune days (optional)] [reason (optional)]\n" +
             "  - Gives the user the ~~ban~~ freedom hammer";
         private static readonly string config = "config\n" +
             "  - Displays the current bot configuration\n\n" +
             "setprefix\n" +
             $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
             "setverify [role mention / role ID]\n" +
-            "  - Sets the role for verified members\n\n" +
+            "  - Sets the role for democracy-loving citizens\n\n" +
             "verifyall\n" +
-            "  - Verifies all current members\n\n" +
+            "  - Grants citizenship all current freedom-loving Americans\n\n" +
             "setmute [role mention / role ID]\n" +
-            "  - Sets the role for muted members. Unsets if no role is given.\n\n" +
+            "  - Sets the role for members under house arrest (muted). Unsets if no role is given.\n\n" +
             "modifymutedroles [true/enable / **false/disable** (default)]\n" +
-            "  - When enabled, allows the bot to remove and save the roles of the muted member; we recommend you enable thus unless you have manually configured the server's muted role";
+            "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)
