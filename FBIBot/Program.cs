@@ -20,6 +20,7 @@ namespace FBIBot
 
         public static readonly Random rng = new Random();
         public static readonly SqliteConnection cnVerify = new SqliteConnection("Filename=Verification.db");
+        public static readonly SqliteConnection cnPrefix = new SqliteConnection("Filename=Prefix.db");
 
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
 
@@ -62,7 +63,8 @@ namespace FBIBot
             _handler = new CommandHandler(_client, _services);
             Task initCmd = _handler.InitCommandsAsync();
 
-            await InitVerificationSqlite();
+            await InitVerifySqlite();
+            await InitPrefixSqlite();
 
             if (isConsole)
             {
@@ -73,7 +75,7 @@ namespace FBIBot
             await Task.Delay(-1);
         }
 
-        async Task InitVerificationSqlite()
+        async Task InitVerifySqlite()
         {
             cnVerify.Open();
 
@@ -91,6 +93,19 @@ namespace FBIBot
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Roles (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, role_id TEXT NOT NULL);", cnVerify))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+
+            await Task.WhenAll(cmds);
+        }
+
+        async Task InitPrefixSqlite()
+        {
+            cnPrefix.Open();
+
+            List<Task> cmds = new List<Task>();
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Prefixes (guild_id TEXT NOT NULL UNIQUE PRIMARY KEY, prefix TEXT NOT NULL);", cnPrefix))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }

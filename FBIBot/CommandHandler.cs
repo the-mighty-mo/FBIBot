@@ -9,7 +9,7 @@ namespace FBIBot
 {
     class CommandHandler
     {
-        public const char prefix = '\\';
+        public const string prefix = "\\";
         public static int argPos = 0;
 
         private readonly DiscordSocketClient _client;
@@ -74,17 +74,17 @@ namespace FBIBot
             int index = Program.rng.Next(messages.Count);
             await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
 
-            if (await new Modules.AutoMod.Verify().IsVerifiedAsync(u))
+            if (await Modules.AutoMod.Verify.IsVerifiedAsync(u))
             {
-                SocketRole role = await new Modules.AutoMod.Verify().GetVerificationRoleAsync(u.Guild);
+                SocketRole role = await Modules.AutoMod.Verify.GetVerificationRoleAsync(u.Guild);
                 if (role != null && u.Guild.CurrentUser.GetPermissions(u.Guild.DefaultChannel).ManageRoles)
                 {
                     await u.AddRoleAsync(role);
                 }
             }
-            else if (!u.IsBot && await new Modules.AutoMod.Verify().GetVerificationRoleAsync(u.Guild) != null)
+            else if (!u.IsBot && await Modules.AutoMod.Verify.GetVerificationRoleAsync(u.Guild) != null)
             {
-                await new Modules.AutoMod.Verify().SendCaptchaAsync(u.Guild, u as SocketUser);
+                await Modules.AutoMod.Verify.SendCaptchaAsync(u.Guild, u as SocketUser);
             }
         }
 
@@ -95,9 +95,10 @@ namespace FBIBot
                 return;
             }
 
-            if (msg.HasCharPrefix(prefix, ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            SocketCommandContext context = new SocketCommandContext(_client, msg);
+            string _prefix = context.Guild != null ? await Modules.Config.Prefix.GetPrefixAsync(context.Guild) : prefix;
+            if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos))
             {
-                SocketCommandContext context = new SocketCommandContext(_client, msg);
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
 
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)

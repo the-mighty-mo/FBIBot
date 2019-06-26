@@ -10,7 +10,6 @@ namespace FBIBot.Modules
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
-        private static readonly string _prefix = CommandHandler.prefix.ToString() == @"\" ? @"\\" : CommandHandler.prefix.ToString();
         private static readonly string help = "admin\n" +
                     "  - Displays administrator commands\n\n" +
                     "mod\n" +
@@ -19,7 +18,9 @@ namespace FBIBot.Modules
                     "  - Displays configuration commands";
         private static readonly string admin = "WIP";
         private static readonly string mod = "WIP";
-        private static readonly string config = "setverify [role mention / role ID]\n" +
+        private static readonly string config = "setprefix\n" +
+            $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
+            "setverify [role mention / role ID]\n" +
             "  - Sets the role for verified members\n\n" +
             "verifyall\n" +
             "  - Verifies all current members";
@@ -36,7 +37,7 @@ namespace FBIBot.Modules
                 new EmbedFieldBuilder()
                 .WithIsInline(false)
                 .WithName("Prefix")
-                .WithValue(CommandHandler.prefix.ToString() +
+                .WithValue(await Config.Prefix.GetPrefixAsync(Context.Guild) +
                 "\n**or**\n" +
                 Context.Client.CurrentUser.Mention + "\n\u200b")
             };
@@ -46,7 +47,6 @@ namespace FBIBot.Modules
             Help:
             if (args.Length == 0 || jumpToHelp)
             {
-                string _prefix = CommandHandler.prefix.ToString() == @"\" ? @"\\" : CommandHandler.prefix.ToString();
                 fields.Add(new EmbedFieldBuilder()
                     .WithIsInline(true)
                     .WithName("`help` Parameters")

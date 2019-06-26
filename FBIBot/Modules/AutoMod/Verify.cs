@@ -59,7 +59,7 @@ namespace FBIBot.Modules.AutoMod
 
         async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.Guild, Context.User);
 
-        public async Task SendCaptchaAsync(SocketGuild g, SocketUser u)
+        public static async Task SendCaptchaAsync(SocketGuild g, SocketUser u)
         {
             string captchaCode = "";
             List<string> badCaptcha = new List<string>() { "I", "l", "0", "O" };
@@ -97,7 +97,7 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        async Task SaveToSQLAsync(string captcha, SocketUser u)
+        static async Task SaveToSQLAsync(string captcha, SocketUser u)
         {
             string createView = "CREATE VIEW IF NOT EXISTS captchainsert AS SELECT user_id, captcha FROM Captcha;";
             string createTrigger = "CREATE TRIGGER IF NOT EXISTS insertcaptcha INSTEAD OF INSERT ON captchainsert\n" +
@@ -189,7 +189,7 @@ namespace FBIBot.Modules.AutoMod
 
         async Task<bool> IsVerifiedAsync() => await IsVerifiedAsync(Context.User);
 
-        public async Task<bool> IsVerifiedAsync(SocketUser u)
+        public static async Task<bool> IsVerifiedAsync(SocketUser u)
         {
             bool isVerified = false;
 
@@ -218,7 +218,7 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        public async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
+        public static async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
         {
             SocketRole role = null;
 

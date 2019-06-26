@@ -251,6 +251,7 @@
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Modules\AutoMod\Verify.cs" />
+    <Compile Include="Modules\Config\Prefix.cs" />
     <Compile Include="Modules\Config\VerifyAll.cs" />
     <Compile Include="Modules\Config\VerifyRole.cs" />
     <Compile Include="Modules\Mod\Mute.cs" />
