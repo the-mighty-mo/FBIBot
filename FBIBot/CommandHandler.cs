@@ -97,6 +97,7 @@ namespace FBIBot
 
             SocketCommandContext context = new SocketCommandContext(_client, msg);
             string _prefix = context.Guild != null ? await Modules.Config.Prefix.GetPrefixAsync(context.Guild) : prefix;
+
             if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos))
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
