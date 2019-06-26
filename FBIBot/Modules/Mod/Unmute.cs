@@ -24,7 +24,8 @@ namespace FBIBot.Modules.Mod
 
             if (roles.Count > 0)
             {
-               await user.AddRolesAsync(roles);
+                await user.AddRolesAsync(roles);
+                await RemoveUserRolesAsync(user);
             }
             if (role != null)
             {

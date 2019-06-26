@@ -14,14 +14,18 @@ namespace FBIBot.Modules
                     "config\n" +
                     "  - Displays configuration commands";
         private static readonly string admin = "WIP";
-        private static readonly string mod = "mute [user mention / user ID] [minutes (optional)]\n" +
+        private static readonly string mod = "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type in chat or speak in voice chat\n\n" +
             "unmute [user mention / user ID]\n" +
             "  - Frees the house-arrested user\n\n" +
+            "arrest [user mention / user ID] [minutes (optional)]\n" +
+            "  - Sends the user to Guantanamo Bay for a bit\n\n" +
+            "free [user mention / user ID]\n" +
+            "  - Frees the user from Guantanamo Bay because the Constitution exists; **this command ignores modifymutedroles and creates its own role**\n\n" +
             "kick [user mention / user ID] [reason (optional)]\n" +
             "  - Deports the communist to probably Europe\n\n" +
             "tempban [user mention / user ID] [days] [reason (optional)]\n" +
-            "  - Temporarily sends the user to Guatemala Bay\n\n" +
+            "  - Temporarily exiles the user to Mexico\n\n" +
             "ban [user mention / user ID] [prune days (optional)] [reason (optional)]\n" +
             "  - Gives the user the ~~ban~~ freedom hammer";
         private static readonly string config = "config\n" +

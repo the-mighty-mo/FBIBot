@@ -1,10 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -22,7 +18,7 @@ namespace FBIBot.Modules.Mod
             }
 
             await user.BanAsync(0, reason);
-            await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been deported to Guatemala Bay for {length} days.");
+            await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been exiled to Mexico for {length} days.");
 
             await Task.Delay((int)(days * 24 * 60 * 60 * 1000));
             await Context.Guild.RemoveBanAsync(user);
