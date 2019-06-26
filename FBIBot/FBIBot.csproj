@@ -250,7 +250,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
-    <Compile Include="ManageArgs.cs" />
     <Compile Include="Modules\AutoMod\Verify.cs" />
     <Compile Include="Modules\Config\VerifyAll.cs" />
     <Compile Include="Modules\Config\VerifyRole.cs" />

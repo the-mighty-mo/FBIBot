@@ -11,9 +11,7 @@ namespace FBIBot.Modules
     public class Help : ModuleBase<SocketCommandContext>
     {
         private static readonly string _prefix = CommandHandler.prefix.ToString() == @"\" ? @"\\" : CommandHandler.prefix.ToString();
-        private static readonly string help = $"{SecurityInfo.botID}\n" +
-                    $"  - Required parameter **only** if using the prefix \"{_prefix}\" for **all** commands\n\n" +
-                    "admin\n" +
+        private static readonly string help = "admin\n" +
                     "  - Displays administrator commands\n\n" +
                     "mod\n" +
                     "  - Displays moderator commands\n\n" +
@@ -29,12 +27,6 @@ namespace FBIBot.Modules
         [Command("help")]
         public async Task HelpAsync(params string[] args)
         {
-            if (!ManageArgs.HasBotID(args, Context))
-            {
-                return;
-            }
-            ManageArgs.RemoveBotID(ref args);
-
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("The FBI")
