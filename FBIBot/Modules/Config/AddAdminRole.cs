@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -10,9 +11,15 @@ namespace FBIBot.Modules.Config
     public class AddAdminRole : ModuleBase<SocketCommandContext>
     {
         [Command("add-adminrole")]
-        [RequireOwner()]
         public async Task AddAdminRoleAsync(SocketRole role)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsAdmin(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             if ((await GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Members with the {role.Name} role are already local directors of the FBI.");
@@ -32,7 +39,6 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("add-adminrole")]
-        [RequireOwner()]
         public async Task AddAdminRoleAsync(string role)
         {
             SocketRole r;

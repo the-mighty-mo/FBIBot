@@ -16,6 +16,13 @@ namespace FBIBot.Modules.Mod
         [RequireOwner()]
         public async Task ArrestAsync(SocketGuildUser user, string timeout = null)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             SocketRole role = await GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
             {

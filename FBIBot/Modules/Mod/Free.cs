@@ -12,9 +12,15 @@ namespace FBIBot.Modules.Mod
     {
         [Command("free")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireOwner()]
         public async Task FreeAsync(SocketGuildUser user)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             SocketRole role = await Arrest.GetPrisonerRoleAsync(Context.Guild);
             List<SocketRole> roles = await Unmute.GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)
@@ -47,7 +53,6 @@ namespace FBIBot.Modules.Mod
 
         [Command("free")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireOwner()]
         public async Task FreeAsync(string user)
         {
             SocketGuildUser u;

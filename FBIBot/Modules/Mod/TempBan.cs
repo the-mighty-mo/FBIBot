@@ -9,9 +9,15 @@ namespace FBIBot.Modules.Mod
     {
         [Command("tempban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        [RequireOwner()]
         public async Task TempBanAsync(SocketGuildUser user, string length, [Remainder] string reason = null)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             if (!double.TryParse(length, out double days))
             {
                 await Context.Channel.SendMessageAsync($"Unfortunately, {length} is not a valid prison sentence length.");
@@ -26,7 +32,6 @@ namespace FBIBot.Modules.Mod
 
         [Command("tempban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        [RequireOwner()]
         public async Task TempBanAsync(string user, string length, [Remainder] string reason = null)
         {
             SocketGuildUser u;

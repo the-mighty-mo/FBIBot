@@ -14,6 +14,13 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task UnmuteAsync(SocketGuildUser user)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             SocketRole role = await Config.SetMute.GetMuteRole(Context.Guild);
             List<SocketRole> roles = await GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)

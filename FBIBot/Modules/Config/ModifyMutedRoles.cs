@@ -8,9 +8,15 @@ namespace FBIBot.Modules.Config
     public class ModifyMutedRoles : ModuleBase<SocketCommandContext>
     {
         [Command("modify-muted-roles")]
-        [RequireOwner()]
         public async Task ModifyMutedRolesAsync(string modify)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsAdmin(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             bool isModify = modify == "true" || modify == "enable";
             string state = isModify ? "permitted to modify" : "prohibited from modifying";
 
@@ -25,6 +31,7 @@ namespace FBIBot.Modules.Config
             else
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that we are already {state} muted member's roles.");
+                return;
             }
 
             await Context.Channel.SendMessageAsync($"We are now {state} muted member's roles.");

@@ -9,9 +9,15 @@ namespace FBIBot.Modules.Mod
     {
         [Command("unban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        [RequireOwner()]
         public async Task BanAsync(SocketGuildUser user)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             await Context.Guild.RemoveBanAsync(user);
             await Context.Channel.SendMessageAsync($"{user.Mention}, the now-ex-KGB spy, may reenter the nation.\n" +
                 $"They not let their guard down.");
@@ -19,7 +25,6 @@ namespace FBIBot.Modules.Mod
 
         [Command("unban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        [RequireOwner()]
         public async Task BanAsync(string user)
         {
             SocketGuildUser u;

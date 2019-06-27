@@ -8,9 +8,15 @@ namespace FBIBot.Modules.Config
     public class Prefix : ModuleBase<SocketCommandContext>
     {
         [Command("setprefix")]
-        [RequireOwner()]
         public async Task PrefixAsync(string prefix = CommandHandler.prefix)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsAdmin(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             if (await GetPrefixAsync(Context.Guild) == prefix)
             {
                 await Context.Channel.SendMessageAsync($"The FBI's prefix is already {(prefix == @"\" ? @"\\" : prefix)}.");

@@ -9,9 +9,15 @@ namespace FBIBot.Modules.Config
     public class AddModRole : ModuleBase<SocketCommandContext>
     {
         [Command("add-modrole")]
-        [RequireOwner()]
         public async Task AddModRoleAsync(SocketRole role)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsAdmin(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             if ((await GetModRolesAsync(Context.Guild)).Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Members with the {role.Name} role are already assisting the FBI.");
@@ -31,7 +37,6 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("add-modrole")]
-        [RequireOwner()]
         public async Task AddModRoleAsync(string role)
         {
             SocketRole r;

@@ -10,9 +10,15 @@ namespace FBIBot.Modules.Config
     {
         [Command("setverify")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireOwner()]
         public async Task SetVerifyAsync(SocketRole role)
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsAdmin(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             if (await GetVerificationRoleAsync(Context.Guild) == role)
             {
                 await Context.Channel.SendMessageAsync($"All proud Americans already receive the {role.Name} role.");
@@ -25,7 +31,6 @@ namespace FBIBot.Modules.Config
 
         [Command("setverify")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireOwner()]
         public async Task SetVerifyAsync(string role)
         {
             SocketRole r;

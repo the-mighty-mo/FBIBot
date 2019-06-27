@@ -14,6 +14,13 @@ namespace FBIBot.Modules.Config
         [Command("config")]
         public async Task ConfigAsync()
         {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsAdmin(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
             string prefix = await Prefix.GetPrefixAsync(Context.Guild);
             SocketRole verify = await SetVerify.GetVerificationRoleAsync(Context.Guild);
             SocketRole mute = await SetMute.GetMuteRole(Context.Guild);
