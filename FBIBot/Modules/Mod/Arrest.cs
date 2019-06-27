@@ -14,7 +14,7 @@ namespace FBIBot.Modules.Mod
         [Command("arrest")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireOwner()]
-        public async Task ArrestAsync(SocketGuildUser user, string timeout = "")
+        public async Task ArrestAsync(SocketGuildUser user, string timeout = null)
         {
             SocketRole role = await GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
@@ -61,7 +61,7 @@ namespace FBIBot.Modules.Mod
 
         [Command("arrest")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(string user, string timeout = "")
+        public async Task MuteAsync(string user, string timeout = null)
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
