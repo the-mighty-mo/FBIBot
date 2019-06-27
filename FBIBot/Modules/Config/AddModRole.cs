@@ -18,9 +18,10 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await AddModAsync(role, Context.Guild);
+            await AddModAsync(role);
             if ((await AddAdminRole.GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
+                await RemoveAdminRole.RemoveAdminAsync(role);
                 await Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been demoted to assistants of the agency.");
             }
             else
@@ -67,14 +68,14 @@ namespace FBIBot.Modules.Config
             return await Task.Run(() => roles);
         }
 
-        public static async Task AddModAsync(SocketRole role, SocketGuild g)
+        public static async Task AddModAsync(SocketRole role)
         {
             string insert = "INSERT INTO Mods (guild_id, role_id) SELECT @guild_id, @role_id\n" +
-                "WHERE NOT EXISTS (SELECT 1 FROM Mods WHERE guild_id = @guild_id AND role_id = @role_id));";
+                "WHERE NOT EXISTS (SELECT 1 FROM Mods WHERE guild_id = @guild_id AND role_id = @role_id);";
 
             using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnModRoles))
             {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                cmd.Parameters.AddWithValue("@guild_id", role.Guild.Id.ToString());
                 cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
