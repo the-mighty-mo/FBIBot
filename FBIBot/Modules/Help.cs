@@ -8,14 +8,18 @@ namespace FBIBot.Modules
     public class Help : ModuleBase<SocketCommandContext>
     {
         private static readonly string help = "mod\n" +
-            "  - Displays moderator commands\n\n" +
+            "  - Displays page 1 of moderation commands\n\n" +
+            "mod2\n" +
+            "  - Displays page 2 of moderation commands\n\n" +
             "config\n" +
             "  - Displays page 1 of bot configuration commands\n\n" +
             "config2\n" +
             "  - Displays page 2 of bot configuration commands\n\n" +
             "automod\n" +
             "  - Displays automod configuration commands";
-        private static readonly string mod = "warn [user mention / user ID] [reason (optional)]\n" +
+        private static readonly string mod = "modifyreason [mod log ID] [reason (optional)]\n" +
+            "  - Modifies the reason for the given mod log\n\n" +
+            "warn [user mention / user ID] [length (optional)] [reason (optional)]\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
             "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
@@ -24,8 +28,8 @@ namespace FBIBot.Modules
             "arrest [user mention / user ID] [minutes (optional)]\n" +
             "  - Sends the user to Guantanamo Bay for a bit\n\n" +
             "free [user mention / user ID]\n" +
-            "  - Frees the user from Guantanamo Bay because the Constitution exists; **Ignores modifymutedroles and creates its own role and channel**\n\n" +
-            "kick [user mention / user ID] [reason (optional)]\n" +
+            "  - Frees the user from Guantanamo Bay because the Constitution exists; **This command ignores modifymutedroles and creates its own role and channel**";
+        private static readonly string mod2 = "kick [user mention / user ID] [reason (optional)]\n" +
             "  - Deports the terrorist to probably Europe\n\n" +
             "tempban [user mention / user ID] [days] [prune days (optional)] [reason (optional)]\n" +
             "  - Temporarily exiles the user to Mexico\n\n" +
@@ -92,8 +96,12 @@ namespace FBIBot.Modules
                 switch (args[0])
                 {
                 case "mod":
-                    field.WithName("Moderator Commands")
+                    field.WithName("Moderator Commands - Page 1")
                         .WithValue(mod);
+                    break;
+                case "mod2":
+                    field.WithName("Moderator Commands - Page 2")
+                        .WithValue(mod2);
                     break;
                 case "config":
                     field.WithName("Configuration Commands - Page 1")

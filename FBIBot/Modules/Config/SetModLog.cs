@@ -64,14 +64,14 @@ namespace FBIBot.Modules.Config
             SocketTextChannel channel = null;
 
             string getChannel = "SELECT channel_id FROM ModLogChannel WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getChannel, Program.cnModRoles))
+            using (SqliteCommand cmd = new SqliteCommand(getChannel, Program.cnModLogs))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
                 SqliteDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    ulong channelID = ulong.Parse(reader["channel_id"].ToString());
+                    ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                     channel = g.GetTextChannel(channelID);
                 }
                 reader.Close();
@@ -85,7 +85,7 @@ namespace FBIBot.Modules.Config
             string update = "UPDATE ModLogChannel SET channel_id = @channel_id WHERE guild_id = @guild_id;";
             string insert = "INSERT INTO ModLogChannel (guild_id, channel_id) SELECT @guild_id, @channel_id WHERE (Select Changes() = 0);";
 
-            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnModRoles))
+            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnModLogs))
             {
                 cmd.Parameters.AddWithValue("@guild_id", channel.Guild.Id.ToString());
                 cmd.Parameters.AddWithValue("@channel_id", channel.Id.ToString());
@@ -96,7 +96,7 @@ namespace FBIBot.Modules.Config
         public static async Task RemoveModLogChannelAsync(SocketGuild g)
         {
             string delete = "DELETE FROM ModLogChannel WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModLogs))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();

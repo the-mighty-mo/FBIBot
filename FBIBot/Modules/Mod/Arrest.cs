@@ -147,7 +147,7 @@ namespace FBIBot.Modules.Mod
                 SqliteDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    ulong roleID = ulong.Parse(reader["role_id"].ToString());
+                    ulong.TryParse(reader["role_id"].ToString(), out ulong roleID);
                     role = g.GetRole(roleID);
                 }
                 reader.Close();

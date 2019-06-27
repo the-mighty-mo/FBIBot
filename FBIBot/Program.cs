@@ -21,6 +21,7 @@ namespace FBIBot
         public static readonly Random rng = new Random();
         public static readonly SqliteConnection cnVerify = new SqliteConnection("Filename=Verification.db");
         public static readonly SqliteConnection cnModRoles = new SqliteConnection("Filename=ModRoles.db");
+        public static readonly SqliteConnection cnModLogs = new SqliteConnection("Filename=ModLogs.db");
         public static readonly SqliteConnection cnConfig = new SqliteConnection("Filename=Config.db");
 
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
@@ -66,6 +67,7 @@ namespace FBIBot
 
             await InitVerifySqlite();
             await InitModRolesSqlite();
+            await InitModLogsSqlite();
             await InitConfigSqlite();
 
             if (isConsole)
@@ -135,7 +137,24 @@ namespace FBIBot
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
-            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS ModLogChannel (guild_id TEXT PRIMARY KEY, channel_id TEXT NOT NULL);", cnModRoles))
+
+            await Task.WhenAll(cmds);
+        }
+
+        async Task InitModLogsSqlite()
+        {
+            cnModLogs.Open();
+
+            List<Task> cmds = new List<Task>();
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS ModLogChannel (guild_id TEXT PRIMARY KEY, channel_id TEXT NOT NULL);", cnModLogs))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS ModLogs (guild_id TEXT NOT NULL, id TEXT NOT NULL, channel_id TEXT NOT NULL, message_id TEXT NOT NULL, UNIQUE (guild_id, id));", cnModLogs))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Warnings (guild_id TEXT NOT NULL, id TEXT NOT NULL, channel_id TEXT NOT NULL, message_id TEXT NOT NULL, UNIQUE (guild_id, id));", cnModLogs))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }

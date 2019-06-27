@@ -1,6 +1,9 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using FBIBot.Modules.Config;
+using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -14,6 +17,7 @@ namespace FBIBot.Modules.Mod
             Arrest,
             Kick,
             Ban,
+            RemoveWarn,
             Unmute,
             Free,
             Unban
@@ -24,6 +28,8 @@ namespace FBIBot.Modules.Mod
             Color color;
             bool reasonAllowed = true;
             bool isTime = double.TryParse(length, out double time);
+            string cmd = t.ToString();
+            ulong id = await GetNextModLogID(u.Guild);
 
             switch (t)
             {
@@ -55,6 +61,9 @@ namespace FBIBot.Modules.Mod
                 }
                 color = new Color(130, 0, 0);
                 break;
+            case LogType.RemoveWarn:
+                cmd = "Remove Warning";
+                goto default;
             case LogType.Unmute:
             case LogType.Free:
             case LogType.Unban:
@@ -66,12 +75,12 @@ namespace FBIBot.Modules.Mod
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(color)
-                .WithTitle("Federal Bureau of Investigation - Log")
+                .WithTitle($"Federal Bureau of Investigation - Log {id}")
                 .WithCurrentTimestamp();
 
             EmbedFieldBuilder affected = new EmbedFieldBuilder()
                 .WithIsInline(false)
-                .WithName($"{t.ToString()} User{(isTime ? $" for {length}" : "")}")
+                .WithName($"{cmd} User{(isTime ? $" for {length}" : "")}")
                 .WithValue(u.Mention);
             embed.AddField(affected);
 
@@ -90,7 +99,102 @@ namespace FBIBot.Modules.Mod
                 embed.AddField(field);
             }
 
-            await (await SetModLog.GetModLogChannelAsync(u.Guild))?.SendMessageAsync("", false, embed.Build());
+            var msg = await (await SetModLog.GetModLogChannelAsync(u.Guild))?.SendMessageAsync("", false, embed.Build());
+            if (msg != null)
+            {
+                await SaveModLogAsync(msg, u.Guild, id);
+            }
+        }
+
+        public static async Task<bool> SetReasonAsync(SocketGuild g, ulong id, string reason = null)
+        {
+            IUserMessage msg = await GetModLogAsync(g, id);
+            if (msg.Embeds.Count == 0)
+            {
+                return false;
+            }
+            EmbedBuilder e = msg.Embeds.ToList()[0].ToEmbedBuilder();
+            List<EmbedFieldBuilder> fields = e.Fields.ToList();
+
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(e.Color ?? SecurityInfo.botColor)
+                .WithTitle($"Federal Bureau of Investigation - Log {id}")
+                .WithCurrentTimestamp();
+
+            EmbedFieldBuilder field = e.Fields.FirstOrDefault(x => x.Name == "Reason");
+            EmbedFieldBuilder f = e.Fields.FirstOrDefault(x => x.Name.Contains("Arrest User"));
+            if (field == null || f != null)
+            {
+                return false;
+            }
+            fields.Remove(field);
+
+            field.WithValue(reason ?? "(none given)");
+            fields.Add(field);
+            embed.WithFields(fields);
+
+            await msg.ModifyAsync(x => x.Embed = embed.Build());
+
+            return await Task.Run(() => true);
+        }
+
+        public static async Task<ulong> GetNextModLogID(SocketGuild g)
+        {
+            ulong id = 0;
+
+            string getID = "SELECT MAX(id) AS id FROM ModLogs WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getID, Program.cnModLogs))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    ulong.TryParse(reader["id"].ToString(), out id);
+                }
+                reader.Close();
+            }
+
+            return await Task.Run(() => ++id);
+        }
+
+        public static async Task<IUserMessage> GetModLogAsync(SocketGuild g, ulong id)
+        {
+            IUserMessage msg = null;
+
+            string getMessage = "SELECT channel_id, message_id FROM ModLogs WHERE guild_id = @guild_id AND id = @id;";
+            using (SqliteCommand cmd = new SqliteCommand(getMessage, Program.cnModLogs))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                cmd.Parameters.AddWithValue("@id", id.ToString());
+
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
+                    ulong.TryParse(reader["message_id"].ToString(), out ulong messageID);
+
+                    msg = (await g.GetTextChannel(channelID)?.GetMessageAsync(messageID)) as IUserMessage;
+                }
+                reader.Close();
+            }
+
+            return await Task.Run(() => msg);
+        }
+
+        public static async Task SaveModLogAsync(IUserMessage msg, SocketGuild g, ulong id)
+        {
+            string insert = "INSERT INTO ModLogs (guild_id, id, channel_id, message_id) SELECT @guild_id, @id, @channel_id, @message_id\n" +
+                "WHERE NOT EXISTS (SELECT 1 FROM ModLogs WHERE guild_id = @guild_id AND id = @id);";
+            using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnModLogs))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                cmd.Parameters.AddWithValue("@id", id.ToString());
+                cmd.Parameters.AddWithValue("@channel_id", msg.Channel.Id.ToString());
+                cmd.Parameters.AddWithValue("@message_id", msg.Id.ToString());
+
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
     }
 }

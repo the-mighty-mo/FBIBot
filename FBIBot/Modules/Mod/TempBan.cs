@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Rest;
 using Discord.WebSocket;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -21,6 +23,7 @@ namespace FBIBot.Modules.Mod
             if (!double.TryParse(length, out double days))
             {
                 await Context.Channel.SendMessageAsync($"Unfortunately, {length} is not a valid prison sentence length.");
+                return;
             }
 
             if (int.TryParse(prune, out int pruneDays))
