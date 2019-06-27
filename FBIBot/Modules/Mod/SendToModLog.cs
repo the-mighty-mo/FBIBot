@@ -23,7 +23,7 @@ namespace FBIBot.Modules.Mod
             Unban
         }
 
-        public static async Task SendToModLogAsync(LogType t, SocketUser invoker, SocketGuildUser u, string length = null, string reason = null)
+        public static async Task<ulong> SendToModLogAsync(LogType t, SocketUser invoker, SocketGuildUser u, string length = null, string reason = null)
         {
             Color color;
             bool reasonAllowed = true;
@@ -104,6 +104,8 @@ namespace FBIBot.Modules.Mod
             {
                 await SaveModLogAsync(msg, u.Guild, id);
             }
+
+            return id;
         }
 
         public static async Task<bool> SetReasonAsync(SocketGuild g, ulong id, string reason = null)

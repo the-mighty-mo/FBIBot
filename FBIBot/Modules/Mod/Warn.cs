@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,24 @@ namespace FBIBot.Modules.Mod
         [Command("warn")]
         public async Task WarnAsync(SocketGuildUser user, string length = null, [Remainder] string reason = null)
         {
-            await Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User, user, null, reason);
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
+            await Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism." +
+                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+            ulong id = await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User, user, null, reason);
+            await AddWarningAsync(user, id);
+
+            if (double.TryParse(length, out double hours))
+            {
+                await Task.Delay((int)(hours * 60 * 60 * 1000));
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Client.CurrentUser, user);
+                await RemoveWarning.RemoveWarningAsync(user, id);
+            }
         }
 
         [Command("warn")]
@@ -28,6 +45,20 @@ namespace FBIBot.Modules.Mod
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
+        }
+
+        public static async Task AddWarningAsync(SocketGuildUser u, ulong id)
+        {
+            string addWarning = "INSERT INTO Warnings (guild_id, id, user_id) SELECT @guild_id, @id, @user_id\n" +
+                "WHERE NOT EXISTS (SELECT 1 FROM Warnings WHERE guild_id = @guild_id AND id = @id AND user_id = @user_id);";
+            using (SqliteCommand cmd = new SqliteCommand(addWarning, Program.cnModLogs))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@id", id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
     }
 }

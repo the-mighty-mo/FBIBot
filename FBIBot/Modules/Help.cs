@@ -19,17 +19,23 @@ namespace FBIBot.Modules
             "  - Displays automod configuration commands";
         private static readonly string mod = "modifyreason [mod log ID] [reason (optional)]\n" +
             "  - Modifies the reason for the given mod log\n\n" +
-            "warn [user mention / user ID] [length (optional)] [reason (optional)]\n" +
+            "warn [user mention / user ID] [hours (optional)] [reason (optional)]\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
+            "getwarnings [user mention / user ID]\n" +
+            "  - Gets the number of warnings and mod logs for the warnings for the given user\n\n" +
+            "removewarning [user mention / user ID] [mod log ID]\n" +
+            "  - Removes the given warning from the user\n\n" +
+            "removewarnings [user mention / user ID] [count (optional)]\n" +
+            "  - Removes a number of warnings from the user\n\n" +
             "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention / user ID]\n" +
-            "  - Frees the house-arrested user\n\n" +
-            "arrest [user mention / user ID] [minutes (optional)]\n" +
+            "  - Frees the house-arrested user";
+        private static readonly string mod2 = "arrest [user mention / user ID] [minutes (optional)]\n" +
             "  - Sends the user to Guantanamo Bay for a bit\n\n" +
             "free [user mention / user ID]\n" +
-            "  - Frees the user from Guantanamo Bay because the Constitution exists; **This command ignores modifymutedroles and creates its own role and channel**";
-        private static readonly string mod2 = "kick [user mention / user ID] [reason (optional)]\n" +
+            "  - Frees the user from Guantanamo Bay because the Constitution exists; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
+            "kick [user mention / user ID] [reason (optional)]\n" +
             "  - Deports the terrorist to probably Europe\n\n" +
             "tempban [user mention / user ID] [days] [prune days (optional)] [reason (optional)]\n" +
             "  - Temporarily exiles the user to Mexico\n\n" +

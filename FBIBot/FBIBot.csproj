@@ -262,6 +262,7 @@
     <Compile Include="Modules\Config\SetMute.cs" />
     <Compile Include="Modules\Config\VerifyAll.cs" />
     <Compile Include="Modules\Config\SetVerify.cs" />
+    <Compile Include="Modules\Mod\GetWarnings.cs" />
     <Compile Include="Modules\Mod\ModifyReason.cs" />
     <Compile Include="Modules\Mod\Ban.cs" />
     <Compile Include="Modules\Mod\Free.cs" />
@@ -269,6 +270,8 @@
     <Compile Include="Modules\Mod\Mute.cs" />
     <Compile Include="Modules\Help.cs" />
     <Compile Include="Modules\Mod\Arrest.cs" />
+    <Compile Include="Modules\Mod\RemoveWarning.cs" />
+    <Compile Include="Modules\Mod\RemoveWarnings.cs" />
     <Compile Include="Modules\Mod\SendToModLog.cs" />
     <Compile Include="Modules\Mod\TempBan.cs" />
     <Compile Include="Modules\Mod\Unban.cs" />
