@@ -25,7 +25,7 @@ namespace FBIBot.Modules.Mod
 
             if (user.Roles.Contains(role))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already muted.");
+                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
             }
 
             List<SocketRole> roles = user.Roles.ToList();
@@ -35,7 +35,17 @@ namespace FBIBot.Modules.Mod
             if (modifyRoles)
             {
                 await SaveUserRolesAsync(roles, user);
-                await user.RemoveRolesAsync(roles);
+                try
+                {
+                    await user.RemoveRolesAsync(roles);
+                }
+                catch
+                {
+                    await Context.Channel.SendMessageAsync("We cannot mute members with higher authority than ourselves.");
+                    await user.AddRolesAsync(roles);
+                    await Unmute.RemoveUserRolesAsync(user);
+                    return;
+                }
             }
             await user.AddRoleAsync(role);
 

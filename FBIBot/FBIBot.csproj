@@ -258,6 +258,7 @@
     <Compile Include="Modules\Config\Prefix.cs" />
     <Compile Include="Modules\Config\RemoveAdminRole.cs" />
     <Compile Include="Modules\Config\RemoveModRole.cs" />
+    <Compile Include="Modules\Config\SetModLog.cs" />
     <Compile Include="Modules\Config\SetMute.cs" />
     <Compile Include="Modules\Config\VerifyAll.cs" />
     <Compile Include="Modules\Config\SetVerify.cs" />

@@ -33,12 +33,34 @@ namespace FBIBot.Modules.Mod
             List<SocketRole> roles = user.Roles.ToList();
             roles.Remove(Context.Guild.EveryoneRole);
             await Mute.SaveUserRolesAsync(roles, user);
-            await user.RemoveRolesAsync(roles);
+            try
+            {
+                await user.RemoveRolesAsync(roles);
+            }
+            catch
+            {
+                try
+                {
+                    await user.AddRolesAsync(roles);
+                }
+                catch { };
+                await Context.Channel.SendMessageAsync("We cannot arrest members with higher authority than ourselves.");
+                await Unmute.RemoveUserRolesAsync(user);
+
+                if (!await Free.HasPrisoners(Context.Guild))
+                {
+                    await channel?.DeleteAsync();
+                    await role?.DeleteAsync();
+                    await Free.RemovePrisonerChannelAsync(Context.Guild);
+                    await Free.RemovePrisonerRoleAsync(Context.Guild);
+                }
+                return;
+            }
             await user.AddRoleAsync(role);
 
             await RecordPrisonerAsync(user);
 
-            await Context.Channel.SendMessageAsync($"{user.Mention} has been sent to Guantanamo Bay{(timeout.Length > 0 ? $" for {timeout} minutes" : "")}.");
+            await Context.Channel.SendMessageAsync($"{user.Mention} has been sent to Guantanamo Bay{(timeout != null ? $" for {timeout} minutes" : "")}.");
 
             if (timeout != null && double.TryParse(timeout, out double minutes))
             {
@@ -56,8 +78,8 @@ namespace FBIBot.Modules.Mod
 
                 if (!await Free.HasPrisoners(Context.Guild))
                 {
-                    await channel.DeleteAsync();
-                    await role.DeleteAsync();
+                    await channel?.DeleteAsync();
+                    await role?.DeleteAsync();
                     await Free.RemovePrisonerChannelAsync(Context.Guild);
                     await Free.RemovePrisonerRoleAsync(Context.Guild);
                 }
