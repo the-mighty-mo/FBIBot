@@ -38,16 +38,18 @@ namespace FBIBot.Modules.Mod
             {
                 await user.RemoveRoleAsync(role);
             }
-            await Arrest.RemovePrisonerAsync(user);
+            await RemovePrisonerAsync(user);
 
             await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
 
             if (!await HasPrisoners(Context.Guild))
             {
-                SocketTextChannel channel = Context.Guild.TextChannels.FirstOrDefault(x => x.Name == "guantanamo");
+                SocketTextChannel channel = await Arrest.GetPrisonerChannelAsync(Context.Guild);
+
                 await channel?.DeleteAsync();
                 await role?.DeleteAsync();
-                await Arrest.RemovePrisonerRoleAsync(Context.Guild);
+                await RemovePrisonerChannelAsync(Context.Guild);
+                await RemovePrisonerRoleAsync(Context.Guild);
             }
         }
 
@@ -64,6 +66,26 @@ namespace FBIBot.Modules.Mod
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
 
+        public static async Task RemovePrisonerRoleAsync(SocketGuild g)
+        {
+            string delete = "DELETE FROM PrisonerRole WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemovePrisonerChannelAsync(SocketGuild g)
+        {
+            string delete = "DELETE FROM PrisonerChannel WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
         public static async Task<bool> HasPrisoners(SocketGuild g)
         {
             bool hasPrisoners = false;
@@ -78,6 +100,17 @@ namespace FBIBot.Modules.Mod
             }
 
             return await Task.Run(() => hasPrisoners);
+        }
+
+        public static async Task RemovePrisonerAsync(SocketGuildUser user)
+        {
+            string delete = "DELETE FROM Prisoners WHERE guild_id = @guild_id AND user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
     }
 }
