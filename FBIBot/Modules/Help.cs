@@ -39,7 +39,7 @@ namespace FBIBot.Modules
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
             "setmute [role mention / role ID]\n" +
             "  - Sets the role for members under house arrest (muted). Unsets if no role is given.\n\n" +
-            "modifymutedroles [true/enable / **false/disable** (default)]\n" +
+            "modify-muted-roles [true/enable / **false/disable** (default)]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
         private static readonly string automod = "WIP";
 

@@ -7,7 +7,7 @@ namespace FBIBot.Modules.Config
 {
     public class ModifyMutedRoles : ModuleBase<SocketCommandContext>
     {
-        [Command("modifymutedroles")]
+        [Command("modify-muted-roles")]
         [RequireOwner()]
         public async Task ModifyMutedRolesAsync(string modify)
         {
