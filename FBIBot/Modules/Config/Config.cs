@@ -21,7 +21,9 @@ namespace FBIBot.Modules.Config
             string config = $"Prefix: **{(prefix == @"\" ? @"\\" : prefix)}**\n" +
                 $"Verification Role: **{(verify == null ? "(none)" : verify.Name)}**\n" +
                 $"Mute Role: **{(mute == null ? "(none)" : mute.Name)}**\n" +
-                $"Modify Muted Member's Roles: **{(await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild) ? "Enabled" : "Disabled")}**";
+                $"Modify Muted Member's Roles: **{(await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild) ? "Enabled" : "Disabled")}**\n" +
+                $"Mod Roles: **{string.Join(", ", await AddModRole.GetModRolesAsync(Context.Guild))}**\n" +
+                $"Admin Roles: **{string.Join(", ", await AddAdminRole.GetAdminRolesAsync(Context.Guild))}**";
 
             string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
                 $"Mute Role: **(created on mute command)**\n" +
