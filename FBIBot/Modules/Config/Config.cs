@@ -24,13 +24,15 @@ namespace FBIBot.Modules.Config
             string prefix = await Prefix.GetPrefixAsync(Context.Guild);
             SocketRole verify = await SetVerify.GetVerificationRoleAsync(Context.Guild);
             SocketRole mute = await SetMute.GetMuteRole(Context.Guild);
+            SocketTextChannel modlog = await SetModLog.GetModLogChannelAsync(Context.Guild);
 
             string config = $"Prefix: **{(prefix == @"\" ? @"\\" : prefix)}**\n" +
-                $"Verification Role: **{(verify == null ? "(none)" : verify.Name)}**\n" +
-                $"Mute Role: **{(mute == null ? "(none)" : mute.Name)}**\n" +
+                $"Verification Role: **{(verify != null ? verify.Name : "(none)")}**\n" +
+                $"Mute Role: **{(mute != null ? mute.Name : "(none)")}**\n" +
                 $"Modify Muted Member's Roles: **{(await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild) ? "Enabled" : "Disabled")}**\n" +
                 $"Mod Roles: **{string.Join(", ", await AddModRole.GetModRolesAsync(Context.Guild))}**\n" +
-                $"Admin Roles: **{string.Join(", ", await AddAdminRole.GetAdminRolesAsync(Context.Guild))}**";
+                $"Admin Roles: **{string.Join(", ", await AddAdminRole.GetAdminRolesAsync(Context.Guild))}**\n" +
+                $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**";
 
             string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
                 $"Mute Role: **(created on mute command)**\n" +

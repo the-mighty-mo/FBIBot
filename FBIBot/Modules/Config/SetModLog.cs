@@ -64,7 +64,7 @@ namespace FBIBot.Modules.Config
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given text channel does not exist.");
         }
 
-        public async Task<SocketTextChannel> GetModLogChannelAsync(SocketGuild g)
+        public static async Task<SocketTextChannel> GetModLogChannelAsync(SocketGuild g)
         {
             SocketTextChannel channel = null;
 
@@ -85,7 +85,7 @@ namespace FBIBot.Modules.Config
             return await Task.Run(() => channel);
         }
 
-        public async Task SetModLogChannelAsync(SocketTextChannel channel)
+        public static async Task SetModLogChannelAsync(SocketTextChannel channel)
         {
             string update = "UPDATE ModLogChannel SET channel_id = @channel_id WHERE guild_id = @guild_id;";
             string insert = "INSERT INTO ModLogChannel (guild_id, channel_id) SELECT @guild_id, @channel_id WHERE (Select Changes() = 0);";
@@ -98,7 +98,7 @@ namespace FBIBot.Modules.Config
             }
         }
 
-        public async Task RemoveModLogChannelAsync(SocketGuild g)
+        public static async Task RemoveModLogChannelAsync(SocketGuild g)
         {
             string delete = "DELETE FROM ModLogChannel WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
