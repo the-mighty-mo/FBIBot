@@ -10,7 +10,9 @@ namespace FBIBot.Modules
         private static readonly string help = "mod\n" +
             "  - Displays moderator commands\n\n" +
             "config\n" +
-            "  - Displays bot configuration commands\n\n" +
+            "  - Displays page 1 of bot configuration commands\n\n" +
+            "config2\n" +
+            "  - Displays page 2 of bot configuration commands\n\n" +
             "automod\n" +
             "  - Displays automod configuration commands";
         private static readonly string mod = "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
@@ -40,8 +42,8 @@ namespace FBIBot.Modules
             "setmute [role mention / role ID]\n" +
             "  - Sets the role for members under house arrest (muted). Unsets if no role is given.\n\n" +
             "modify-muted-roles [true/enable / **false/disable** (default)]\n" +
-            "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role\n\n" +
-            "add-modrole [role mention / role ID]\n" +
+            "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
+        private static readonly string config2 = "add-modrole [role mention / role ID]\n" +
             "  - Adds the role to a list of assistants of the agency\n\n" +
             "remove-modrole [role mention / role ID]\n" +
             "  - Removes the role from the list of assistants of the agency out of suspicion\n\n" +
@@ -90,8 +92,12 @@ namespace FBIBot.Modules
                         .WithValue(mod);
                     break;
                 case "config":
-                    field.WithName("Configuration Commands")
+                    field.WithName("Configuration Commands - Page 1")
                         .WithValue(config);
+                    break;
+                case "config2":
+                    field.WithName("Configuration Commands - Page 2")
+                        .WithValue(config2);
                     break;
                 case "automod":
                     field.WithName("Automod Commands")
