@@ -33,16 +33,16 @@ namespace FBIBot.Modules.Mod
                 await user.RemoveRoleAsync(role);
             }
             await Arrest.RemovePrisonerAsync(user);
-            await Arrest.RemovePrisonerRoleAsync(Context.Guild);
+
+            await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
 
             if (!await HasPrisoners(Context.Guild))
             {
                 SocketTextChannel channel = Context.Guild.TextChannels.FirstOrDefault(x => x.Name == "guantanamo");
                 await channel?.DeleteAsync();
                 await role?.DeleteAsync();
+                await Arrest.RemovePrisonerRoleAsync(Context.Guild);
             }
-
-            await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
         }
 
         [Command("free")]

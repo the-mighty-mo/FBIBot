@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,17 +86,19 @@ namespace FBIBot.Modules.Mod
 
         async Task<SocketTextChannel> CreateGuantanamoAsync(SocketRole role)
         {
-            SocketTextChannel channel;
-            ulong channelID = (await Context.Guild.CreateTextChannelAsync("guantanamo")).Id;
-            channel = Context.Guild.GetTextChannel(channelID);
+            SocketTextChannel textChannel = null;
+            RestTextChannel channel = await Context.Guild.CreateTextChannelAsync("guantanamo");
 
             OverwritePermissions perms = new OverwritePermissions(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);
             await channel.AddPermissionOverwriteAsync(role, perms);
 
             await channel.AddPermissionOverwriteAsync(Context.Client.CurrentUser, OverwritePermissions.AllowAll(channel));
             await channel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
+            await channel.UpdateAsync();
 
-            return await Task.Run(() => channel);
+            textChannel = Context.Guild.GetTextChannel(channel.Id);
+
+            return await Task.Run(() => textChannel);
         }
 
         public static async Task<SocketRole> GetPrisonerRoleAsync(SocketGuild g)
@@ -134,7 +136,7 @@ namespace FBIBot.Modules.Mod
 
         public static async Task RemovePrisonerRoleAsync(SocketGuild g)
         {
-            string delete = "REMOVE FROM Prisoner WHERE guild_id = @guild_id;";
+            string delete = "DELETE FROM Prisoner WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
