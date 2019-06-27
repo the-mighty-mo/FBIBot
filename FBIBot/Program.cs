@@ -123,6 +123,14 @@ namespace FBIBot
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Mods (guild_id TEXT TEXT NOT NULL, role_id TEXT NOT NULL);", cnModRoles))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Admins (guild_id TEXT NOT NULL, role_id TEXT NOT NULL);", cnModRoles))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
 
             await Task.WhenAll(cmds);
         }

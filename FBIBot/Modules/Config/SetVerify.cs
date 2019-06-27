@@ -11,8 +11,14 @@ namespace FBIBot.Modules.Config
         [Command("setverify")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireOwner()]
-        public async Task VerifyRoleAsync(SocketRole role)
+        public async Task SetVerifyAsync(SocketRole role)
         {
+            if (await GetVerificationRoleAsync(Context.Guild) == role)
+            {
+                await Context.Channel.SendMessageAsync($"All proud Americans already receive the {role.Name} role.");
+                return;
+            }
+
             await SetVerificationRoleAsync(role.Id);
             await Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.");
         }
@@ -20,12 +26,12 @@ namespace FBIBot.Modules.Config
         [Command("setverify")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireOwner()]
-        public async Task VerifyRoleAsync(string role)
+        public async Task SetVerifyAsync(string role)
         {
             SocketRole r;
             if (ulong.TryParse(role, out ulong roleID) && (r = Context.Guild.GetRole(roleID)) != null)
             {
-                await VerifyRoleAsync(r);
+                await SetVerifyAsync(r);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");

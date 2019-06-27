@@ -40,7 +40,11 @@ namespace FBIBot.Modules
             "setmute [role mention / role ID]\n" +
             "  - Sets the role for members under house arrest (muted). Unsets if no role is given.\n\n" +
             "modify-muted-roles [true/enable / **false/disable** (default)]\n" +
-            "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
+            "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role\n\n" +
+            "add-modrole [role mention / role ID]\n" +
+            "  - Adds the role to a list of assistances of the agency\n\n" +
+            "add-adminrole [role mention / role ID]\n" +
+            "  - Adds the role to a list of directors of the agency";
         private static readonly string automod = "WIP";
 
         [Command("help")]

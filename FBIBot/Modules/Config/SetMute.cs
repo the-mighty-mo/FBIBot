@@ -8,14 +8,18 @@ namespace FBIBot.Modules.Config
 {
     public class SetMute : ModuleBase<SocketCommandContext>
     {
+        [Command("setmute")]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireOwner()]
         public async Task SetMuteAsync()
         {
             if (GetMuteRole(Context.Guild) == null)
             {
-                await Context.Channel.SendMessageAsync("Our intelligence team has informed us that you already don't have a muted role.");
+                await Context.Channel.SendMessageAsync("Our intelligence team has informed us that you already lack a muted role.");
             }
             await RemoveMuteRoleAsync(Context.Guild);
-            await Context.Channel.SendMessageAsync($"You no longer have a muted role. What a shame.");
+            await Context.Channel.SendMessageAsync("You no longer have a muted role.\n" +
+                "~~Guess we'll take things into our own hands~~");
         }
 
         [Command("setmute")]
@@ -23,6 +27,12 @@ namespace FBIBot.Modules.Config
         [RequireOwner()]
         public async Task SetMuteAsync(SocketRole role)
         {
+            if (await GetMuteRole(Context.Guild) == role)
+            {
+                await Context.Channel.SendMessageAsync($"All who commit treason already receive the {role.Name} role.");
+                return;
+            }
+
             await SetMuteRoleAsync(role, Context.Guild);
             await Context.Channel.SendMessageAsync($"All who commit treason will now receive the {role.Name} role.");
         }
