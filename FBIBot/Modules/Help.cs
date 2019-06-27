@@ -7,13 +7,10 @@ namespace FBIBot.Modules
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
-        private static readonly string help = "admin\n" +
-                    "  - Displays administrator commands\n\n" +
-                    "mod\n" +
+        private static readonly string help = "mod\n" +
                     "  - Displays moderator commands\n\n" +
                     "config\n" +
-                    "  - Displays configuration commands";
-        private static readonly string admin = "WIP";
+                    "  - Displays bot configuration commands";
         private static readonly string mod = "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type in chat or speak in voice chat\n\n" +
             "unmute [user mention / user ID]\n" +
@@ -77,10 +74,6 @@ namespace FBIBot.Modules
 
                 switch (args[0])
                 {
-                case "admin":
-                    field.WithName("Administrator Commands")
-                        .WithValue(admin);
-                    break;
                 case "mod":
                     field.WithName("Moderator Commands")
                         .WithValue(mod);
