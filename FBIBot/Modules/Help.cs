@@ -27,7 +27,9 @@ namespace FBIBot.Modules
             "tempban [user mention / user ID] [days] [reason (optional)]\n" +
             "  - Temporarily exiles the user to Mexico\n\n" +
             "ban [user mention / user ID] [prune days (optional)] [reason (optional)]\n" +
-            "  - Gives the user the ~~ban~~ freedom hammer";
+            "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
+            "unban [user mention / user ID]\n" +
+            "  - Permits the now-ex-KGB spy to reenter the server";
         private static readonly string config = "config\n" +
             "  - Displays the current bot configuration\n\n" +
             "setprefix\n" +
