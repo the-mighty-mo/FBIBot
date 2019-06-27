@@ -36,11 +36,11 @@ namespace FBIBot.Modules
             "setprefix\n" +
             $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
             "setverify [role mention / role ID]\n" +
-            "  - Sets the role for democracy-loving citizens\n\n" +
+            "  - Sets the role for democracy-loving citizens; *Unsets if no role is given*\n\n" +
             "verifyall\n" +
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
             "setmute [role mention / role ID]\n" +
-            "  - Sets the role for members under house arrest (muted). Unsets if no role is given.\n\n" +
+            "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
             "modify-muted-roles [true/enable / **false/disable** (default)]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
         private static readonly string config2 = "add-modrole [role mention / role ID]\n" +
@@ -50,7 +50,9 @@ namespace FBIBot.Modules
             "add-adminrole [role mention / role ID]\n" +
             "  - Adds the role to a list of local directors of the agency\n\n" +
             "remove-adminrole [role mention / role ID]\n" +
-            "  - Removes the role from the list of local directors of the agency due to presidential disapproval";
+            "  - Removes the role from the list of local directors of the agency due to presidential disapproval\n\n" +
+            "setmodlog [channel mention / channel ID]\n" +
+            "  - Sets the channel for the mod log; *Unsets if no channel is given*";
         private static readonly string automod = "WIP";
 
         [Command("help")]

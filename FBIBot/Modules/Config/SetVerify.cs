@@ -9,6 +9,26 @@ namespace FBIBot.Modules.Config
     public class SetVerify : ModuleBase<SocketCommandContext>
     {
         [Command("setverify")]
+        public async Task SetVerifyAsync()
+        {
+            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsAdmin(u))
+            {
+                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                return;
+            }
+
+            if (await GetVerificationRoleAsync(Context.Guild) == null)
+            {
+                await Context.Channel.SendMessageAsync("Our customs team has informed us that you already don't have a citizenship check.");
+                return;
+            }
+
+            await RemoveVerificationRoleAsync(Context.Guild);
+            await Context.Channel.SendMessageAsync("Citizenship will now go unchecked. This could go very poorly.");
+        }
+
+        [Command("setverify")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task SetVerifyAsync(SocketRole role)
         {
@@ -21,11 +41,11 @@ namespace FBIBot.Modules.Config
 
             if (await GetVerificationRoleAsync(Context.Guild) == role)
             {
-                await Context.Channel.SendMessageAsync($"All proud Americans already receive the {role.Name} role.");
+                await Context.Channel.SendMessageAsync($"Our customs team has informed us that all patriotic citizens already receive the {role.Name} role.");
                 return;
             }
 
-            await SetVerificationRoleAsync(role.Id);
+            await SetVerificationRoleAsync(role);
             await Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.");
         }
 
@@ -63,15 +83,25 @@ namespace FBIBot.Modules.Config
             return await Task.Run(() => role);
         }
 
-        async Task SetVerificationRoleAsync(ulong role)
+        public static async Task SetVerificationRoleAsync(SocketRole role)
         {
             string update = "UPDATE Roles SET role_id = @role_id WHERE guild_id = @guild_id;";
             string insert = "INSERT INTO Roles (guild_id, role_id) SELECT @guild_id, @role_id WHERE (Select Changes() = 0);";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnVerify))
             {
-                cmd.Parameters.AddWithValue("@guild_id", Context.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@role_id", role.ToString());
+                cmd.Parameters.AddWithValue("@guild_id", role.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemoveVerificationRoleAsync(SocketGuild g)
+        {
+            string delete = "DELETE FROM Roles WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnVerify))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }

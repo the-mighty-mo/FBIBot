@@ -97,6 +97,7 @@ namespace FBIBot.Modules.Mod
 
                 SqliteDataReader reader = cmd.ExecuteReader();
                 hasPrisoners = reader.Read();
+                reader.Close();
             }
 
             return await Task.Run(() => hasPrisoners);

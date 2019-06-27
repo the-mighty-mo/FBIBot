@@ -157,6 +157,7 @@ namespace FBIBot.Modules.Mod
         {
             string update = "UPDATE PrisonerRole SET role_id = @role_id WHERE guild_id = @guild_id;";
             string insert = "INSERT INTO PrisonerRole (guild_id, role_id) SELECT @guild_id, @role_id WHERE (Select Changes() = 0);";
+
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnModRoles))
             {
                 cmd.Parameters.AddWithValue("@guild_id", role.Guild.Id.ToString());
