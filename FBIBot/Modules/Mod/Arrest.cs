@@ -43,7 +43,7 @@ namespace FBIBot.Modules.Mod
                 {
                     await user.AddRolesAsync(roles);
                 }
-                catch { };
+                catch { }
                 await Context.Channel.SendMessageAsync("We cannot arrest members with higher authority than ourselves.");
                 await Unmute.RemoveUserRolesAsync(user);
 

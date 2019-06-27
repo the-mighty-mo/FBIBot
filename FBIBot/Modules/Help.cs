@@ -15,7 +15,9 @@ namespace FBIBot.Modules
             "  - Displays page 2 of bot configuration commands\n\n" +
             "automod\n" +
             "  - Displays automod configuration commands";
-        private static readonly string mod = "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
+        private static readonly string mod = "warn [user mention / user ID] [reason (optional)]\n" +
+            "  - Gives the user a warning to stop protesting capitalism\n\n" +
+            "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type in chat or speak in voice chat\n\n" +
             "unmute [user mention / user ID]\n" +
             "  - Frees the house-arrested user\n\n" +
