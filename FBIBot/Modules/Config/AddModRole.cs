@@ -61,6 +61,7 @@ namespace FBIBot.Modules.Config
                         roles.Add(role);
                     }
                 }
+                reader.Close();
             }
 
             return await Task.Run(() => roles);
