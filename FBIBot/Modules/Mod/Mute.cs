@@ -77,12 +77,12 @@ namespace FBIBot.Modules.Mod
 
         [Command("mute")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(string user, string timeout = "")
+        public async Task MuteAsync(string user, string timeout = null, [Remainder] string reason = null)
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
             {
-                await MuteAsync(u, timeout);
+                await MuteAsync(u, timeout, reason);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
