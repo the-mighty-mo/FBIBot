@@ -9,7 +9,7 @@ namespace FBIBot.Modules.Mod
     {
         [Command("tempban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task TempBanAsync(SocketGuildUser user, string length, [Remainder] string reason = null)
+        public async Task TempBanAsync(SocketGuildUser user, string length, string prune = null, [Remainder] string reason = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
             if (!await VerifyUser.IsMod(u))
@@ -23,7 +23,15 @@ namespace FBIBot.Modules.Mod
                 await Context.Channel.SendMessageAsync($"Unfortunately, {length} is not a valid prison sentence length.");
             }
 
-            await user.BanAsync(0, reason);
+            if (int.TryParse(prune, out int pruneDays))
+            {
+                await user.BanAsync(pruneDays, reason);
+            }
+            else
+            {
+                await user.BanAsync(0, reason);
+            }
+
             await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been exiled to Mexico for {length} {(days == 1 ? "day" : "days")}." +
                 $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
             await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User, user, length, reason);
@@ -35,12 +43,12 @@ namespace FBIBot.Modules.Mod
 
         [Command("tempban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task TempBanAsync(string user, string length, [Remainder] string reason = null)
+        public async Task TempBanAsync(string user, string length, string prune = null, [Remainder] string reason = null)
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
             {
-                await TempBanAsync(u, length, reason);
+                await TempBanAsync(u, length, prune, reason);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

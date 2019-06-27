@@ -9,7 +9,7 @@ namespace FBIBot.Modules.Mod
     {
         [Command("ban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task BanAsync(SocketGuildUser user, string prune = "0", [Remainder] string reason = null)
+        public async Task BanAsync(SocketGuildUser user, string prune = null, [Remainder] string reason = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
             if (!await VerifyUser.IsMod(u))
@@ -34,7 +34,7 @@ namespace FBIBot.Modules.Mod
 
         [Command("ban")]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task BanAsync(string user, string prune = "0", [Remainder] string reason = null)
+        public async Task BanAsync(string user, string prune = null, [Remainder] string reason = null)
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)

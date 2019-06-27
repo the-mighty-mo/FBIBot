@@ -18,16 +18,16 @@ namespace FBIBot.Modules
         private static readonly string mod = "warn [user mention / user ID] [reason (optional)]\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
             "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
-            "  - Puts the user under house arrest so they can't type in chat or speak in voice chat\n\n" +
+            "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention / user ID]\n" +
             "  - Frees the house-arrested user\n\n" +
             "arrest [user mention / user ID] [minutes (optional)]\n" +
             "  - Sends the user to Guantanamo Bay for a bit\n\n" +
             "free [user mention / user ID]\n" +
-            "  - Frees the user from Guantanamo Bay because the Constitution exists; **This command ignores modifymutedroles and creates its own role**\n\n" +
+            "  - Frees the user from Guantanamo Bay because the Constitution exists; **Ignores modifymutedroles and creates its own role and channel**\n\n" +
             "kick [user mention / user ID] [reason (optional)]\n" +
             "  - Deports the terrorist to probably Europe\n\n" +
-            "tempban [user mention / user ID] [days] [reason (optional)]\n" +
+            "tempban [user mention / user ID] [days] [prune days (optional)] [reason (optional)]\n" +
             "  - Temporarily exiles the user to Mexico\n\n" +
             "ban [user mention / user ID] [prune days (optional)] [reason (optional)]\n" +
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
