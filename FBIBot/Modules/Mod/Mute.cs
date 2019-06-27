@@ -53,7 +53,7 @@ namespace FBIBot.Modules.Mod
 
             await Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}." +
                 $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User, user, isTimeout ? timeout : null, reason);
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User, user, timeout, reason);
 
             if (timeout != null && isTimeout)
             {

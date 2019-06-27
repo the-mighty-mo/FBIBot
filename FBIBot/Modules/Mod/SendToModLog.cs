@@ -75,7 +75,7 @@ namespace FBIBot.Modules.Mod
 
             EmbedFieldBuilder affected = new EmbedFieldBuilder()
                 .WithIsInline(false)
-                .WithName($"{t.ToString()} User{(length != null ? $" for {length}" : "")}")
+                .WithName($"{t.ToString()} User{(isTime ? $" for {length}" : "")}")
                 .WithValue(u.Mention);
             embed.AddField(affected);
 
