@@ -41,6 +41,7 @@ namespace FBIBot.Modules.Mod
             await RemovePrisonerAsync(user);
 
             await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.User, user);
 
             if (!await HasPrisoners(Context.Guild))
             {

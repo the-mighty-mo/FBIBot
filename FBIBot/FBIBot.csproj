@@ -268,6 +268,7 @@
     <Compile Include="Modules\Mod\Mute.cs" />
     <Compile Include="Modules\Help.cs" />
     <Compile Include="Modules\Mod\Arrest.cs" />
+    <Compile Include="Modules\Mod\SendToModLog.cs" />
     <Compile Include="Modules\Mod\TempBan.cs" />
     <Compile Include="Modules\Mod\Unban.cs" />
     <Compile Include="Modules\Mod\Unmute.cs" />

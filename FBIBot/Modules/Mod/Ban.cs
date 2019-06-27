@@ -27,7 +27,9 @@ namespace FBIBot.Modules.Mod
                 await user.BanAsync(0, reason);
             }
 
-            await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been given the ~~ban~~ freedom hammer.");
+            await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been given the ~~ban~~ freedom hammer." +
+                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User, user, null, reason);
         }
 
         [Command("ban")]

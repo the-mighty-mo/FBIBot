@@ -24,10 +24,13 @@ namespace FBIBot.Modules.Mod
             }
 
             await user.BanAsync(0, reason);
-            await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been exiled to Mexico for {length} days.");
+            await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been exiled to Mexico for {length} {(days == 1 ? "day" : "days")}." +
+                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User, user, length, reason);
 
             await Task.Delay((int)(days * 24 * 60 * 60 * 1000));
             await Context.Guild.RemoveBanAsync(user);
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.Client.CurrentUser, user);
         }
 
         [Command("tempban")]

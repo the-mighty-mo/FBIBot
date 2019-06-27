@@ -49,10 +49,13 @@ namespace FBIBot.Modules.Mod
             }
             await user.AddRoleAsync(role);
 
-            await Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout.Length > 0 ? $" for {timeout} minutes" : "")}." +
-                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+            bool isTimeout = double.TryParse(timeout, out double minutes);
 
-            if (timeout != null && double.TryParse(timeout, out double minutes))
+            await Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}." +
+                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User, user, isTimeout ? timeout : null, reason);
+
+            if (timeout != null && isTimeout)
             {
                 await Task.Delay((int)(minutes * 60 * 1000));
 
@@ -68,7 +71,7 @@ namespace FBIBot.Modules.Mod
                 await user.RemoveRoleAsync(role);
                 await Unmute.RemoveUserRolesAsync(user);
 
-                await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection.");
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.Client.CurrentUser, user);
             }
         }
 

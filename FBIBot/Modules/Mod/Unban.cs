@@ -21,6 +21,7 @@ namespace FBIBot.Modules.Mod
             await Context.Guild.RemoveBanAsync(user);
             await Context.Channel.SendMessageAsync($"{user.Mention}, the now-ex-KGB spy, may reenter the nation.\n" +
                 $"They not let their guard down.");
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User, user);
         }
 
         [Command("unban")]
