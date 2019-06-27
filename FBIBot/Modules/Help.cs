@@ -8,9 +8,11 @@ namespace FBIBot.Modules
     public class Help : ModuleBase<SocketCommandContext>
     {
         private static readonly string help = "mod\n" +
-                    "  - Displays moderator commands\n\n" +
-                    "config\n" +
-                    "  - Displays bot configuration commands";
+            "  - Displays moderator commands\n\n" +
+            "config\n" +
+            "  - Displays bot configuration commands\n\n" +
+            "automod\n" +
+            "  - Displays automod configuration commands";
         private static readonly string mod = "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type in chat or speak in voice chat\n\n" +
             "unmute [user mention / user ID]\n" +
@@ -39,6 +41,7 @@ namespace FBIBot.Modules
             "  - Sets the role for members under house arrest (muted). Unsets if no role is given.\n\n" +
             "modifymutedroles [true/enable / **false/disable** (default)]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
+        private static readonly string automod = "WIP";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)
@@ -81,6 +84,10 @@ namespace FBIBot.Modules
                 case "config":
                     field.WithName("Configuration Commands")
                         .WithValue(config);
+                    break;
+                case "automod":
+                    field.WithName("Automod Commands")
+                        .WithValue(automod);
                     break;
                 default:
                     jumpToHelp = true;
