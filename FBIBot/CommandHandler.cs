@@ -61,6 +61,13 @@ namespace FBIBot
 
         private async Task SendWelcomeMessage(SocketGuildUser u)
         {
+            if (RaidMode.GetVerificationLevelAsync(u.Guild) != null)
+            {
+                await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync($"The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time.");
+                await u.KickAsync("FBI RAID MODE");
+                return;
+            }
+
             SocketTextChannel channel = u.Guild.DefaultChannel;
             List<string> messages = new List<string>()
             {

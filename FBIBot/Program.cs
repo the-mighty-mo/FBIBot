@@ -23,7 +23,7 @@ namespace FBIBot
         public static readonly SqliteConnection cnModRoles = new SqliteConnection("Filename=ModRoles.db");
         public static readonly SqliteConnection cnModLogs = new SqliteConnection("Filename=ModLogs.db");
         public static readonly SqliteConnection cnConfig = new SqliteConnection("Filename=Config.db");
-        public static readonly SqliteConnection cnAntiRaid = new SqliteConnection("Filename=Anti-Raid.db");
+        public static readonly SqliteConnection cnRaidMode = new SqliteConnection("Filename=Raid-Mode.db");
 
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
 
@@ -183,14 +183,14 @@ namespace FBIBot
 
         static async Task InitAntiRaidSqlite()
         {
-            cnAntiRaid.Open();
+            cnRaidMode.Open();
 
             List<Task> cmds = new List<Task>();
-            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS VerifyLevel (guild_id TEXT PRIMARY KEY, level TEXT NOT NULL);", cnConfig))
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS RaidMode (guild_id TEXT PRIMARY KEY, level TEXT NOT NULL);", cnRaidMode))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
-            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS UsersBlocked (guild_id TEXT NOT NULL, user_name TEXT NOT NULL, user_id TEXT NOT NULL);", cnConfig))
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS UsersBlocked (guild_id TEXT NOT NULL, user_name TEXT NOT NULL, user_id TEXT NOT NULL);", cnRaidMode))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }

@@ -24,18 +24,21 @@ namespace FBIBot.Modules.Config
             string prefix = await Prefix.GetPrefixAsync(Context.Guild);
             SocketRole verify = await SetVerify.GetVerificationRoleAsync(Context.Guild);
             SocketRole mute = await SetMute.GetMuteRole(Context.Guild);
+            bool modifyMuted = await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);
             SocketTextChannel modlog = await SetModLog.GetModLogChannelAsync(Context.Guild);
+            bool raidMode = await RaidMode.GetVerificationLevelAsync(Context.Guild) != null;
 
             string config = $"Prefix: **{(prefix == @"\" ? @"\\" : prefix)}**\n" +
                 $"Verification Role: **{(verify != null ? verify.Name : "(none)")}**\n" +
                 $"Mute Role: **{(mute != null ? mute.Name : "(none)")}**\n" +
-                $"Modify Muted Member's Roles: **{(await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild) ? "Enabled" : "Disabled")}**\n" +
+                $"Modify Muted Member's Roles: **{(modifyMuted ? "Enabled" : "Disabled")}**\n" +
                 $"Mod Roles: **{string.Join(", ", await AddModRole.GetModRolesAsync(Context.Guild))}**\n" +
                 $"Admin Roles: **{string.Join(", ", await AddAdminRole.GetAdminRolesAsync(Context.Guild))}**\n" +
-                $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**";
+                $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**\n" +
+                $"FBI RAID MODE: **{(raidMode ? "ENABLED" : "Disabled")}**";
 
             string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
-                $"Mute Role: **(created on mute command)**\n" +
+                $"Mute Role: Muted **(created on mute command)**\n" +
                 $"Modify Muted Member's Roles: **Disabled**";
 
             EmbedBuilder embed = new EmbedBuilder()
