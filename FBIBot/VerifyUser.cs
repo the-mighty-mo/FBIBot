@@ -12,7 +12,7 @@ namespace FBIBot
     {
         public static async Task<bool> IsAdmin(SocketGuildUser user)
         {
-            bool isValidAdmin = user == user.Guild.Owner;
+            bool isValidAdmin = user == user.Guild.Owner || user == user.Guild.CurrentUser;
             foreach (SocketRole r in await AddAdminRole.GetAdminRolesAsync(user.Guild))
             {
                 if (isValidAdmin)

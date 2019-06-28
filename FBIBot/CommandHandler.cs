@@ -101,7 +101,7 @@ namespace FBIBot
 
         private async Task HandleCommandAsync(SocketMessage m)
         {
-            if (!(m is SocketUserMessage msg) || msg.Author.IsBot)
+            if (!(m is SocketUserMessage msg) || (msg.Author.IsBot && msg.Author.Id != _client.CurrentUser.Id))
             {
                 return;
             }
@@ -117,7 +117,54 @@ namespace FBIBot
                 {
                     await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
                 }
+
+                if (msg.Author.IsBot)
+                {
+                    await msg.DeleteAsync();
+                }
             }
+
+            if (await IsPedophile(msg))
+            {
+                await new Pedophile().AntiPedophileAsync(msg.Author);
+                await msg.DeleteAsync();
+                await context.Channel.SendMessageAsync($"\\arrest {msg.Author.Mention}");
+            }
+        }
+
+        private async Task<bool> IsPedophile(SocketUserMessage msg)
+        {
+            bool isPedophile = false;
+
+            List<string> bad = new List<string>()
+            {
+                "i like",
+                "i love"
+            };
+            List<string> stillBad = new List<string>()
+            {
+                "kids",
+                "children",
+                "little kids",
+                "little children"
+            };
+            foreach (string b in bad)
+            {
+                foreach (string s in stillBad)
+                {
+                    if (msg.Content.ToLower().Contains($"{b} {s}"))
+                    {
+                        isPedophile = true;
+                        break;
+                    }
+                }
+                if (isPedophile)
+                {
+                    break;
+                }
+            }
+
+            return await Task.Run(() => isPedophile);
         }
     }
 }
