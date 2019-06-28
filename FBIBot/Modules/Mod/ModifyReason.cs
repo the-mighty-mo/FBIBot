@@ -16,15 +16,15 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
-            if (!ulong.TryParse(id, out ulong ID))
+            if (!ulong.TryParse(id, out ulong ID) || ID >= await SendToModLog.GetNextModLogID(Context.Guild))
             {
-                await Context.Channel.SendMessageAsync($"Unfortunately, {id} is not a valid Mod Log ID.");
+                await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
                 return;
             }
 
             if (!await SendToModLog.SetReasonAsync(Context.Guild, ID, reason))
             {
-                await Context.Channel.SendMessageAsync("Unfortunately, that mod log is not permitted to have a valid reason. Don't ask.");
+                await Context.Channel.SendMessageAsync("Our security team has informed us that the given Mod Log is not permitted to have a valid reason. Don't ask.");
                 return;
             }
 

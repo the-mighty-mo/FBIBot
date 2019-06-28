@@ -117,7 +117,7 @@ namespace FBIBot.Modules.Mod
         public static async Task<bool> SetReasonAsync(SocketGuild g, ulong id, string reason = null)
         {
             IUserMessage msg = await GetModLogAsync(g, id);
-            if (msg.Embeds.Count == 0)
+            if (msg == null || msg.Embeds.Count == 0)
             {
                 return false;
             }
