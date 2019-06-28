@@ -251,6 +251,7 @@
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Modules\AutoMod\Pedophile.cs" />
+    <Compile Include="Modules\AutoMod\Spam.cs" />
     <Compile Include="Modules\AutoMod\Verify.cs" />
     <Compile Include="Modules\Config\AddAdminRole.cs" />
     <Compile Include="Modules\Config\AddModRole.cs" />

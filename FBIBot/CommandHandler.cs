@@ -124,52 +124,24 @@ namespace FBIBot
                 }
             }
 
-            await AutoModAsync(msg, context);
-        }
-
-        private async Task AutoModAsync(SocketUserMessage msg, SocketCommandContext context)
-        {
-            if (await IsPedophile(msg))
+            if (msg.Author.IsBot)
             {
-                await new Pedophile().AntiPedophileAsync(msg.Author);
-                await msg.DeleteAsync();
-                await context.Channel.SendMessageAsync($"\\arrest {msg.Author.Mention}");
-            }
-        }
-
-        private async Task<bool> IsPedophile(SocketUserMessage msg)
-        {
-            bool isPedophile = false;
-
-            List<string> bad = new List<string>()
-            {
-                "i like",
-                "i love"
-            };
-            List<string> stillBad = new List<string>()
-            {
-                "kids",
-                "children",
-                "little kids",
-                "little children"
-            };
-            foreach (string b in bad)
-            {
-                foreach (string s in stillBad)
-                {
-                    if (msg.Content.ToLower().Contains($"{b} {s}"))
-                    {
-                        isPedophile = true;
-                        break;
-                    }
-                }
-                if (isPedophile)
-                {
-                    break;
-                }
+                return;
             }
 
-            return await Task.Run(() => isPedophile);
+            await AutoModAsync(context);
+        }
+
+        private async Task AutoModAsync(SocketCommandContext context)
+        {
+            if (await Pedophile.IsPedophileAsync(context.Message))
+            {
+                await new Pedophile(context).AntiPedophileAsync();
+            }
+            else if (await Spam.IsSpamAsync(context))
+            {
+                await new Spam(context).WarnAsync();
+            }
         }
     }
 }
