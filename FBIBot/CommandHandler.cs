@@ -108,8 +108,8 @@ namespace FBIBot
 
             SocketCommandContext context = new SocketCommandContext(_client, msg);
             string _prefix = context.Guild != null ? await Prefix.GetPrefixAsync(context.Guild) : prefix;
-
-            if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos))
+            bool isCommand = msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos);
+            if (isCommand)
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
 
@@ -129,16 +129,16 @@ namespace FBIBot
                 return;
             }
 
-            await AutoModAsync(context);
+            await AutoModAsync(context, isCommand);
         }
 
-        private async Task AutoModAsync(SocketCommandContext context)
+        private async Task AutoModAsync(SocketCommandContext context, bool isCommand)
         {
             if (await Pedophile.IsPedophileAsync(context.Message))
             {
-                await new Pedophile(context).AntiPedophileAsync();
+                await new Pedophile(context).ArrestAsync();
             }
-            else if (await Spam.IsSpamAsync(context))
+            else if (await Spam.IsSpamAsync(context) && !isCommand)
             {
                 await new Spam(context).WarnAsync();
             }

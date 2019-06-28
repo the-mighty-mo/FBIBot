@@ -12,7 +12,7 @@ namespace FBIBot.Modules.AutoMod
 
         public Pedophile(SocketCommandContext context) => _context = context;
 
-        public async Task AntiPedophileAsync()
+        public async Task ArrestAsync()
         {
             await _context.Message.DeleteAsync();
             await _context.User.SendMessageAsync("You want to explain yourself?");
