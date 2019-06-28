@@ -19,7 +19,7 @@ namespace FBIBot.Modules.Mod
 
             if (!ulong.TryParse(id, out ulong ID))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid mod log ID.");
+                await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
                 return;
             }
 
@@ -31,7 +31,7 @@ namespace FBIBot.Modules.Mod
 
             await RemoveWarningAsync(user, ID);
             await Context.Channel.SendMessageAsync("Warning removed.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Client.CurrentUser, user);
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Client.CurrentUser, user, id.ToString());
         }
 
         [Command("removewarning")]

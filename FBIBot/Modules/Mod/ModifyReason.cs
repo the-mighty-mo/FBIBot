@@ -18,7 +18,7 @@ namespace FBIBot.Modules.Mod
 
             if (!ulong.TryParse(id, out ulong ID))
             {
-                await Context.Channel.SendMessageAsync($"Unfortunately, {id} is not a valid ID.");
+                await Context.Channel.SendMessageAsync($"Unfortunately, {id} is not a valid Mod Log ID.");
                 return;
             }
 

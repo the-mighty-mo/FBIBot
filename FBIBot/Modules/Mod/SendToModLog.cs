@@ -18,6 +18,7 @@ namespace FBIBot.Modules.Mod
             Kick,
             Ban,
             RemoveWarn,
+            RemoveWarns,
             Unmute,
             Free,
             Unban
@@ -62,13 +63,17 @@ namespace FBIBot.Modules.Mod
                 color = new Color(130, 0, 0);
                 break;
             case LogType.RemoveWarn:
-                cmd = "Remove Warning";
+                cmd = $"Remove Warning {length} from";
+                goto default;
+            case LogType.RemoveWarns:
+                cmd = $"Remove {length ?? "All"} Warnings from";
                 goto default;
             case LogType.Unmute:
             case LogType.Free:
             case LogType.Unban:
             default:
                 reasonAllowed = false;
+                isTime = false;
                 color = new Color(12, 156, 24);
                 break;
             }
