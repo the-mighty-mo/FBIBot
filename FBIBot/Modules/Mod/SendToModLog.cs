@@ -24,6 +24,7 @@ namespace FBIBot.Modules.Mod
             Unban
         }
 
+        // Note: length for LogType.RemoveWarn is the Mod Log ID, and length for LogType.RemoveWarns is the number of removed warnings
         public static async Task<ulong> SendToModLogAsync(LogType t, SocketUser invoker, SocketGuildUser u, string length = null, string reason = null)
         {
             Color color;

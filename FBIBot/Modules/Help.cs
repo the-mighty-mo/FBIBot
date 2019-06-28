@@ -26,7 +26,7 @@ namespace FBIBot.Modules
             "removewarning [user mention / user ID] [mod log ID]\n" +
             "  - Removes the given warning from the user\n\n" +
             "removewarnings [user mention / user ID] [count (optional)]\n" +
-            "  - Removes a number of warnings from the user\n\n" +
+            "  - Removes a number of warnings from the user; removes the oldest first\n\n" +
             "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention / user ID]\n" +
