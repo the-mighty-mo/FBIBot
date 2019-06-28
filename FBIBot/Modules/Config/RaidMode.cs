@@ -79,7 +79,7 @@ namespace FBIBot.Modules.Config
                     {
                         EmbedFieldBuilder field = new EmbedFieldBuilder()
                             .WithIsInline(false)
-                            .WithName($"Blocked Users {3 * (messages - 1) + j}")
+                            .WithName($"Blocked Users ({3 * (messages - 1) + j})")
                             .WithValue(blocked);
                         fields.Add(field);
                         i = 1;
@@ -91,7 +91,7 @@ namespace FBIBot.Modules.Config
                 {
                     EmbedFieldBuilder field = new EmbedFieldBuilder()
                         .WithIsInline(false)
-                        .WithName($"Blocked Users {j}")
+                        .WithName($"Blocked Users{(j > 1 || messages > 1 ? $" ({3 * (messages - 1) + j})" : "")}")
                         .WithValue(blocked);
                     fields.Add(field);
                 }

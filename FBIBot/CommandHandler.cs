@@ -61,9 +61,9 @@ namespace FBIBot
 
         private async Task SendWelcomeMessage(SocketGuildUser u)
         {
-            if (RaidMode.GetVerificationLevelAsync(u.Guild) != null && !u.IsBot)
+            if (await RaidMode.GetVerificationLevelAsync(u.Guild) != null && !u.IsBot)
             {
-                await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync($"The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time.");
+                await (await u.GetOrCreateDMChannelAsync()).SendMessageAsync($":rotating_light: :rotating_light: The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time.:rotating_light: :rotating_light:");
                 await RaidMode.AddBlockedUserAsync(u);
                 await u.KickAsync("FBI RAID MODE");
                 return;
