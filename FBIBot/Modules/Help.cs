@@ -18,7 +18,7 @@ namespace FBIBot.Modules
             "automod\n" +
             "  - Displays automod configuration commands";
         private static readonly string mod = "slowmode [seconds]\n" +
-            "  - Enables slowmode in the chat; *Disables slowmode if no time is given*\n\n" +
+            "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*\n\n" +
             "modifyreason [mod log ID] [reason (optional)]\n" +
             "  - Modifies the reason for the given mod log\n\n" +
             "warn [user mention / user ID] [hours (optional)] [reason (optional)]\n" +
@@ -44,7 +44,11 @@ namespace FBIBot.Modules
             "ban [user mention / user ID] [prune days (optional)] [reason (optional)]\n" +
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
             "unban [user mention / user ID]\n" +
-            "  - Permits the now-ex-KGB spy to reenter the server";
+            "  - Permits the now-ex-KGB spy to reenter the server\n\n" +
+            "purge [count (default: 100)]\n" +
+            "  - Shreds, burns, and disposes of a number of messages from the channel\n\n" +
+            "purge [user mention] [count (default: 10)]\n" +
+            "  - Shreds, burns, and disposes of a number of messages from a user in the channel";
         private static readonly string config = "config\n" +
             "  - Displays the current bot configuration\n\n" +
             "setprefix\n" +
