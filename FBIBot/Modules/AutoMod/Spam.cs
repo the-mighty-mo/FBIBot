@@ -34,7 +34,7 @@ namespace FBIBot.Modules.AutoMod
                 {
                     userMsgs.Add(msg.Content);
                 }
-                if (userMsgs.Count >= 9)
+                if (userMsgs.Count >= 6)
                 {
                     break;
                 }
