@@ -95,7 +95,7 @@ namespace FBIBot
             }
             else if (!u.IsBot && await SetVerify.GetVerificationRoleAsync(u.Guild) != null)
             {
-                await Verify.SendCaptchaAsync(u.Guild, u as SocketUser);
+                await Verify.SendCaptchaAsync(u);
             }
         }
 

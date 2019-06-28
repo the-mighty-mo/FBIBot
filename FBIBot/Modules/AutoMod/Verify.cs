@@ -55,9 +55,9 @@ namespace FBIBot.Modules.AutoMod
             await Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.");
         }
 
-        async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.Guild, Context.User);
+        async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.Guild.GetUser(Context.User.Id));
 
-        public static async Task SendCaptchaAsync(SocketGuild g, SocketUser u)
+        public static async Task SendCaptchaAsync(SocketGuildUser u)
         {
             string captchaCode = "";
             List<string> badCaptcha = new List<string>() { "I", "l", "0", "O" };
@@ -77,7 +77,7 @@ namespace FBIBot.Modules.AutoMod
             image.Save($"{u.Id}.png", ImageFormat.Png);
 
             await save;
-            await u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{(g != null ? $" to {g.Name}" : "")}.\n");
+            await u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{(u.Guild != null ? $" to {u.Guild.Name}" : "")}.\n");
 
             image.Dispose();
             File.Delete($"{u.Id}.png");
