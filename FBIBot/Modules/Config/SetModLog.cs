@@ -83,7 +83,7 @@ namespace FBIBot.Modules.Config
         public static async Task SetModLogChannelAsync(SocketTextChannel channel)
         {
             string update = "UPDATE ModLogChannel SET channel_id = @channel_id WHERE guild_id = @guild_id;";
-            string insert = "INSERT INTO ModLogChannel (guild_id, channel_id) SELECT @guild_id, @channel_id WHERE (Select Changes() = 0);";
+            string insert = "INSERT INTO ModLogChannel (guild_id, channel_id) SELECT @guild_id, @channel_id WHERE (SELECT Changes() = 0);";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnModLogs))
             {

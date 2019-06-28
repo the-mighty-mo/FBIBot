@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -10,7 +11,7 @@ namespace FBIBot.Modules.Config
     {
         [Command("raidmode")]
         [RequireBotPermission(GuildPermission.ManageGuild)]
-        public async Task RaidModeAsync(string enabled = "false")
+        public async Task RaidModeAsync()
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
             if (!await VerifyUser.IsAdmin(u))
@@ -19,16 +20,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            bool isEnabled = enabled.ToLower() == "true" || enabled.ToLower() == "enable";
             VerificationLevel? level = await GetVerificationLevelAsync(Context.Guild);
+            bool isDisabled = level == null;
 
-            if (isEnabled)
+            if (isDisabled)
             {
-                if (level != null)
-                {
-                    await Context.Channel.SendMessageAsync("THE FBI IS ALREADY IN RAID MODE");
-                    return;
-                }
                 await SaveVerificationLevelAsync(Context.Guild);
                 await Context.Guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High);
 
@@ -36,15 +32,78 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            if (level == null)
-            {
-                await Context.Channel.SendMessageAsync("The FBI is already out of raid mode.");
-                return;
-            }
-
             await Context.Guild.ModifyAsync(x => x.VerificationLevel = (VerificationLevel)level);
             await Context.Channel.SendMessageAsync("The FBI is now out of raid mode. Surveillance results will be posted in the Mod Logs.");
             await RemoveVerificationLevelAsync(Context.Guild);
+            await SendModLogAsync();
+        }
+
+        async Task SendModLogAsync()
+        {
+            Dictionary<string, string> blockedUsers = await GetBlockedUsersAsync(Context.Guild);
+            SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
+            List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>();
+            int messages = 1;
+
+            if (blockedUsers.Count == 0)
+            {
+                EmbedFieldBuilder field = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName("No users blocked")
+                    .WithValue("No users attempted to join the server during Raid Mode.");
+                fields.Add(field);
+            }
+            else
+            {
+                int i = 1;
+                int j = 1;
+                string blocked = "";
+                foreach (string user_id in blockedUsers.Keys)
+                {
+                    if (j > 3)
+                    {
+                        EmbedBuilder _embed = new EmbedBuilder()
+                            .WithColor(new Color(255, 213, 31))
+                            .WithTitle($"FBI Raid Mode Surveillance Results ({messages})")
+                            .WithCurrentTimestamp()
+                            .WithFields(fields);
+                        await channel.SendMessageAsync("", false, _embed.Build());
+                        j = 1;
+                        messages++;
+                        fields.Clear();
+                    }
+
+                    blocked += $"{(i > 1 ? "\n" : "")}{blockedUsers[user_id]} (ID: {user_id})";
+
+                    if (++i > 20)
+                    {
+                        EmbedFieldBuilder field = new EmbedFieldBuilder()
+                            .WithIsInline(false)
+                            .WithName($"Blocked Users {3 * (messages - 1) + j}")
+                            .WithValue(blocked);
+                        fields.Add(field);
+                        i = 1;
+                        j++;
+                        blocked = "";
+                    }
+                }
+                if (i <= 20 && i > 1)
+                {
+                    EmbedFieldBuilder field = new EmbedFieldBuilder()
+                        .WithIsInline(false)
+                        .WithName($"Blocked Users {j}")
+                        .WithValue(blocked);
+                    fields.Add(field);
+                }
+            }
+
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(255, 213, 31))
+                .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
+                .WithCurrentTimestamp()
+                .WithFields(fields);
+            await channel.SendMessageAsync("", false, embed.Build());
+            await RemoveBlockedUsersAsync(Context.Guild);
         }
 
         public static async Task<VerificationLevel?> GetVerificationLevelAsync(SocketGuild g)
@@ -64,6 +123,7 @@ namespace FBIBot.Modules.Config
                         level = (VerificationLevel)levelInt;
                     }
                 }
+                reader.Close();
             }
 
             return await Task.Run(() => level);
@@ -72,7 +132,7 @@ namespace FBIBot.Modules.Config
         public static async Task SaveVerificationLevelAsync(SocketGuild g)
         {
             string update = "UPDATE RaidMode SET level = @level WHERE guild_id = @guild_id;";
-            string insert = "INSERT INTO RaidMode (guild_id, level) SELECT @guild_id, @level WHERE (Select Changes() = 0);";
+            string insert = "INSERT INTO RaidMode (guild_id, level) SELECT @guild_id, @level WHERE (SELECT Changes() = 0);";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnRaidMode))
             {
@@ -86,6 +146,58 @@ namespace FBIBot.Modules.Config
         public static async Task RemoveVerificationLevelAsync(SocketGuild g)
         {
             string delete = "DELETE FROM RaidMode WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnRaidMode))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task AddBlockedUserAsync(SocketGuildUser u)
+        {
+            string update = "UPDATE UsersBlocked SET user_name = @user_name WHERE guild_id = @guild_id AND user_id = @user_id;";
+            string insert = "INSERT INTO UsersBlocked (guild_id, user_name, user_id) SELECT @guild_id, @user_name, @user_id WHERE (SELECT Changes() = 0);";
+
+            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnRaidMode))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_name", $"{u.Username}#{u.Discriminator}");
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task<Dictionary<string, string>> GetBlockedUsersAsync(SocketGuild g)
+        {
+            Dictionary<string, string> blockedUsers = new Dictionary<string, string>();
+
+            string getBlocked = "SELECT user_name, user_id FROM UsersBlocked WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getBlocked, Program.cnRaidMode))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+                SqliteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (blockedUsers.ContainsKey((string)reader["user_id"]))
+                    {
+                        blockedUsers[(string)reader["user_id"]] = (string)reader["user_name"];
+                    }
+                    else
+                    {
+                        blockedUsers.Add((string)reader["user_id"], (string)reader["user_name"]);
+                    }
+                }
+                reader.Close();
+            }
+
+            return await Task.Run(() => blockedUsers);
+        }
+
+        public static async Task RemoveBlockedUsersAsync(SocketGuild g)
+        {
+            string delete = "DELETE FROM UsersBlocked WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnRaidMode))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());

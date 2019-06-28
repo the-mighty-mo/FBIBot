@@ -98,7 +98,7 @@ namespace FBIBot.Modules.AutoMod
         static async Task SaveToSQLAsync(string captcha, SocketUser u)
         {
             string update = "UPDATE Captcha SET captcha = @captcha WHERE user_id = @user_id;";
-            string insert = "INSERT INTO Captcha (user_id, captcha) SELECT @user_id, @captcha WHERE (Select Changes() = 0);";
+            string insert = "INSERT INTO Captcha (user_id, captcha) SELECT @user_id, @captcha WHERE (SELECT Changes() = 0);";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnVerify))
             {
@@ -151,7 +151,7 @@ namespace FBIBot.Modules.AutoMod
         async Task UpdateAttemptsAsync(int attempts)
         {
             string update = "UPDATE Attempts SET attempts = @attempts WHERE user_id = @user_id;";
-            string insert = "INSERT INTO Attempts (user_id, attempts) SELECT @user_id, @attempts WHERE (Select Changes() = 0);\n";
+            string insert = "INSERT INTO Attempts (user_id, attempts) SELECT @user_id, @attempts WHERE (SELECT Changes() = 0);\n";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnVerify))
             {

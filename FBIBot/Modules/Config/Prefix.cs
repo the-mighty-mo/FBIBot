@@ -50,7 +50,7 @@ namespace FBIBot.Modules.Config
         async Task SetPrefixAsync(string prefix)
         {
             string update = "UPDATE Prefixes SET prefix = @prefix WHERE guild_id = @guild_id;";
-            string insert = "INSERT INTO Prefixes (guild_id, prefix) SELECT @guild_id, @prefix WHERE (Select Changes() = 0);";
+            string insert = "INSERT INTO Prefixes (guild_id, prefix) SELECT @guild_id, @prefix WHERE (SELECT Changes() = 0);";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnConfig))
             {

@@ -73,8 +73,8 @@ namespace FBIBot.Modules
             "  - Sets the channel for the Mod Log; *Unsets if no channel is given*\n\n" +
             "clearmodlog [clear messages (true / **false** [default])]\n" +
             "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**\n\n" +
-            "raidmode [true/enable / **false/diable** (default)]\n" +
-            "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members.";
+            "raidmode\n" +
+            "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
         private static readonly string automod = "WIP";
 
         [Command("help")]

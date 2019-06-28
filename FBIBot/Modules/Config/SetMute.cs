@@ -79,7 +79,7 @@ namespace FBIBot.Modules.Config
         public static async Task SetMuteRoleAsync(SocketRole role, SocketGuild g)
         {
             string update = "UPDATE Muted SET role_id = @role_id WHERE guild_id = @guild_id;";
-            string insert = "INSERT INTO Muted (guild_id, role_id) SELECT @guild_id, @role_id WHERE (Select Changes() = 0);";
+            string insert = "INSERT INTO Muted (guild_id, role_id) SELECT @guild_id, @role_id WHERE (SELECT Changes() = 0);";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnModRoles))
             {
