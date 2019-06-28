@@ -124,6 +124,11 @@ namespace FBIBot
                 }
             }
 
+            await AutoModAsync(msg, context);
+        }
+
+        private async Task AutoModAsync(SocketUserMessage msg, SocketCommandContext context)
+        {
             if (await IsPedophile(msg))
             {
                 await new Pedophile().AntiPedophileAsync(msg.Author);
