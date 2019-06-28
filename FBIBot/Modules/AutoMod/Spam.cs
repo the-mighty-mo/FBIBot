@@ -45,16 +45,20 @@ namespace FBIBot.Modules.AutoMod
             string message = context.Message.Content;
             foreach (string msg in userMsgs)
             {
-                if (i >= 5 || (i >= 3 && j > 0))
+                if (i >= 5 || (i >= 3 && j == 1) || (i >= 2 && j >= 3)) // Five duplicates OR two groups of three duplicates OR 3+ groups of two duplicates
                 {
                     isSpam = true;
                     break;
                 }
                 if (msg != message)
                 {
-                    if (i < 3)
+                    if (i < 2)
                     {
                         break;
+                    }
+                    if (i == 2)
+                    {
+                        j++; // Checking for three groups of two duplicates, else two groups of three duplicates
                     }
                     message = msg;
                     j++;
