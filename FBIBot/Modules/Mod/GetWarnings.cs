@@ -18,7 +18,7 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
-            List<ulong> ids = await GetWarningsAsync(Context.Guild);
+            List<ulong> ids = await GetWarningsAsync(user);
             if (ids.Count == 0)
             {
                 await Context.Channel.SendMessageAsync("Our security team has informed us that the given user does not have any warnings.");
@@ -41,14 +41,15 @@ namespace FBIBot.Modules.Mod
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
 
-        public static async Task<List<ulong>> GetWarningsAsync(SocketGuild g)
+        public static async Task<List<ulong>> GetWarningsAsync(SocketGuildUser u)
         {
             List<ulong> ids = new List<ulong>();
 
-            string getWarns = "SELECT id FROM Warnings WHERE guild_id = @guild_id;";
+            string getWarns = "SELECT id FROM Warnings WHERE guild_id = @guild_id AND user_id = @user_id;";
             using (SqliteCommand cmd = new SqliteCommand(getWarns, Program.cnModLogs))
             {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
                 SqliteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())

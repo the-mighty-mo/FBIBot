@@ -149,7 +149,7 @@ namespace FBIBot.Modules.Mod
         {
             ulong id = 0;
 
-            string getID = "SELECT MAX(id) AS id FROM ModLogs WHERE guild_id = @guild_id;";
+            string getID = "SELECT MAX(CAST(id AS INTEGER)) AS id FROM ModLogs WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(getID, Program.cnModLogs))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());

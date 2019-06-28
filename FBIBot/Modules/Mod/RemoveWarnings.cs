@@ -23,12 +23,17 @@ namespace FBIBot.Modules.Mod
 
             if (count != null && !int.TryParse(count, out int _))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {count} is not a valid number of warnings.");
+                await Context.Channel.SendMessageAsync($"Our intelligence team has informed us that {count} is not a valid number of warnings.");
                 return;
             }
-            else if (count == "0")
+            if (count == "0")
             {
                 await Context.Channel.SendMessageAsync("Why are you trying to remove ***0*** warnings? I have more important things to do.");
+                return;
+            }
+            if ((await GetWarnings.GetWarningsAsync(user)).Count == 0)
+            {
+                await Context.Channel.SendMessageAsync("Our security team has informed us that the given user does not have any warnings.");
                 return;
             }
 
@@ -54,7 +59,7 @@ namespace FBIBot.Modules.Mod
             string delete = "DELETE FROM Warnings WHERE guild_id = @guild_id AND user_id = @user_id";
             if (count != null)
             {
-                delete += " AND id IN (SELECT id FROM Warnings WHERE guild_id = @guild_id AND user_id = @user_id ORDER BY id ASC LIMIT @count)";
+                delete += " AND id IN (SELECT id FROM Warnings WHERE guild_id = @guild_id AND user_id = @user_id ORDER BY CAST(id AS INTEGER) ASC LIMIT @count)";
             }
             delete += ";";
 
