@@ -13,13 +13,13 @@ namespace FBIBot.Modules.Mod
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
             if (!await VerifyUser.IsMod(u))
             {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
                 return;
             }
 
             await Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism." +
                 $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-            ulong id = await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User, user, null, reason);
+            ulong id = await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User, user, length, reason);
             await AddWarningAsync(user, id);
 
             if (double.TryParse(length, out double hours))

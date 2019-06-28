@@ -14,7 +14,7 @@ namespace FBIBot.Modules.Mod
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
             if (!await VerifyUser.IsMod(u))
             {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
                 return;
             }
 

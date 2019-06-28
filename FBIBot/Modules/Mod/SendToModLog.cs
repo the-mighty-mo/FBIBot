@@ -37,6 +37,10 @@ namespace FBIBot.Modules.Mod
             {
             case LogType.Warn:
                 color = new Color(228, 226, 24);
+                if (isTime)
+                {
+                    length += $" {(time == 1 ? "hour" : "hours")}";
+                }
                 break;
             case LogType.Mute:
                 color = new Color(255, 110, 24);
@@ -201,6 +205,16 @@ namespace FBIBot.Modules.Mod
                 cmd.Parameters.AddWithValue("@channel_id", msg.Channel.Id.ToString());
                 cmd.Parameters.AddWithValue("@message_id", msg.Id.ToString());
 
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemoveModLogsAsync(SocketGuild g)
+        {
+            string delete = "DELETE FROM ModLogs WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModLogs))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }

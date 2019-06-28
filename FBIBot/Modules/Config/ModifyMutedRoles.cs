@@ -17,7 +17,7 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            bool isModify = modify == "true" || modify == "enable";
+            bool isModify = modify.ToLower() == "true" || modify.ToLower() == "enable";
             string state = isModify ? "permitted to modify" : "prohibited from modifying";
 
             if (isModify && !await GetModifyMutedAsync(Context.Guild))

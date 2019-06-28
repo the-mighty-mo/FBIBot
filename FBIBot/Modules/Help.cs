@@ -64,7 +64,9 @@ namespace FBIBot.Modules
             "remove-adminrole [role mention / role ID]\n" +
             "  - Removes the role from the list of local directors of the agency due to presidential disapproval\n\n" +
             "setmodlog [channel mention / channel ID]\n" +
-            "  - Sets the channel for the Mod Log; *Unsets if no channel is given*";
+            "  - Sets the channel for the Mod Log; *Unsets if no channel is given*\n\n" +
+            "clearmodlog [clear messages (true / **false** [default])]\n" +
+            "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**";
         private static readonly string automod = "WIP";
 
         [Command("help")]

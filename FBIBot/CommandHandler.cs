@@ -1,5 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.AutoMod;
+using FBIBot.Modules.Config;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -74,17 +76,17 @@ namespace FBIBot
             int index = Program.rng.Next(messages.Count);
             await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
 
-            if (await Modules.AutoMod.Verify.IsVerifiedAsync(u))
+            if (await Verify.IsVerifiedAsync(u))
             {
-                SocketRole role = await Modules.Config.SetVerify.GetVerificationRoleAsync(u.Guild);
+                SocketRole role = await SetVerify.GetVerificationRoleAsync(u.Guild);
                 if (role != null && u.Guild.CurrentUser.GetPermissions(u.Guild.DefaultChannel).ManageRoles)
                 {
                     await u.AddRoleAsync(role);
                 }
             }
-            else if (!u.IsBot && await Modules.Config.SetVerify.GetVerificationRoleAsync(u.Guild) != null)
+            else if (!u.IsBot && await SetVerify.GetVerificationRoleAsync(u.Guild) != null)
             {
-                await Modules.AutoMod.Verify.SendCaptchaAsync(u.Guild, u as SocketUser);
+                await Verify.SendCaptchaAsync(u.Guild, u as SocketUser);
             }
         }
 
@@ -96,7 +98,7 @@ namespace FBIBot
             }
 
             SocketCommandContext context = new SocketCommandContext(_client, msg);
-            string _prefix = context.Guild != null ? await Modules.Config.Prefix.GetPrefixAsync(context.Guild) : prefix;
+            string _prefix = context.Guild != null ? await Prefix.GetPrefixAsync(context.Guild) : prefix;
 
             if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos))
             {

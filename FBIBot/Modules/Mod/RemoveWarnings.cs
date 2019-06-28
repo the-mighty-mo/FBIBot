@@ -17,7 +17,7 @@ namespace FBIBot.Modules.Mod
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
             if (!await VerifyUser.IsMod(u))
             {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
+                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
                 return;
             }
 
@@ -69,6 +69,16 @@ namespace FBIBot.Modules.Mod
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
                 cmd.Parameters.AddWithValue("@count", count);
 
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemoveAllWarningsAsync(SocketGuild g)
+        {
+            string delete = "DELETE FROM Warnings WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModLogs))
+            {
+                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }
