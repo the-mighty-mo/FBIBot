@@ -253,6 +253,7 @@
     <Compile Include="Modules\AutoMod\Verify.cs" />
     <Compile Include="Modules\Config\AddAdminRole.cs" />
     <Compile Include="Modules\Config\AddModRole.cs" />
+    <Compile Include="Modules\Config\AntiRaid.cs" />
     <Compile Include="Modules\Config\Config.cs" />
     <Compile Include="Modules\Config\ModifyMutedRoles.cs" />
     <Compile Include="Modules\Config\Prefix.cs" />

@@ -1,9 +1,6 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -11,6 +8,7 @@ namespace FBIBot.Modules.Mod
     public class Slowmode : ModuleBase<SocketCommandContext>
     {
         [Command("slowmode")]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task SlowModeAsync(string length = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);

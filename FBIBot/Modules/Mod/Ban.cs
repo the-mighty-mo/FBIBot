@@ -36,10 +36,32 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanAsync(string user, string prune = null, [Remainder] string reason = null)
         {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
+            SocketGuildUser cu = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(cu))
             {
-                await BanAsync(u, prune, reason);
+                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
+                return;
+            }
+
+            if (ulong.TryParse(user, out ulong userID))
+            {
+                SocketGuildUser u;
+                if ((u = Context.Guild.GetUser(userID)) != null)
+                {
+                    await BanAsync(u, prune, reason);
+                    return;
+                }
+
+                if (int.TryParse(prune, out int pruneDays))
+                {
+                    await Context.Guild.AddBanAsync(userID, pruneDays, reason);
+                }
+                else
+                {
+                    await Context.Guild.AddBanAsync(userID, 0, reason);
+                }
+                await Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders." +
+                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

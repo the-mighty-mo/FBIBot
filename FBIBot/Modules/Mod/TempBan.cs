@@ -1,8 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Discord.WebSocket;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -48,10 +46,35 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task TempBanAsync(string user, string length, string prune = null, [Remainder] string reason = null)
         {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
+            SocketGuildUser cu = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(cu))
             {
-                await TempBanAsync(u, length, prune, reason);
+                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
+                return;
+            }
+
+            if (ulong.TryParse(user, out ulong userID))
+            {
+                SocketGuildUser u;
+                if ((u = Context.Guild.GetUser(userID)) != null || !double.TryParse(length, out double days))
+                {
+                    await TempBanAsync(u, length, prune, reason);
+                    return;
+                }
+
+                if (int.TryParse(prune, out int pruneDays))
+                {
+                    await Context.Guild.AddBanAsync(userID, pruneDays, reason);
+                }
+                else
+                {
+                    await Context.Guild.AddBanAsync(userID, 0, reason);
+                }
+                await Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}." +
+                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+
+                await Task.Delay((int)(days * 24 * 60 * 60 * 1000));
+                await Context.Guild.RemoveBanAsync(userID);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

@@ -38,7 +38,7 @@ namespace FBIBot.Modules
             "free [user mention / user ID]\n" +
             "  - Frees the user from Guantanamo Bay because the Constitution exists; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
             "kick [user mention / user ID] [reason (optional)]\n" +
-            "  - Deports the terrorist to probably Europe\n\n" +
+            "  - Deports the criminal to probably Europe\n\n" +
             "tempban [user mention / user ID] [days] [prune days (optional)] [reason (optional)]\n" +
             "  - Temporarily exiles the user to Mexico\n\n" +
             "ban [user mention / user ID] [prune days (optional)] [reason (optional)]\n" +

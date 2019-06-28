@@ -19,7 +19,7 @@ namespace FBIBot.Modules.Mod
             }
 
             await user.KickAsync(reason);
-            await Context.Channel.SendMessageAsync($"The terrorist {user.Mention} has been deported to probably Europe." +
+            await Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe." +
                 $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
             await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Kick, Context.User, user, null, reason);
         }

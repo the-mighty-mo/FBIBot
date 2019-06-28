@@ -20,7 +20,7 @@ namespace FBIBot.Modules.Mod
 
             await Context.Guild.RemoveBanAsync(user);
             await Context.Channel.SendMessageAsync($"{user.Mention}, the now-ex-KGB spy, may reenter the nation.\n" +
-                $"They not let their guard down.");
+                $"They better not let their guard down.");
             await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User, user);
         }
 
@@ -28,10 +28,24 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanAsync(string user)
         {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
+            SocketGuildUser cu = Context.Guild.GetUser(Context.User.Id);
+            if (!await VerifyUser.IsMod(cu))
             {
-                await BanAsync(u);
+                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
+                return;
+            }
+
+            if (ulong.TryParse(user, out ulong userID))
+            {
+                SocketGuildUser u;
+                if ((u = Context.Guild.GetUser(userID)) != null)
+                {
+                    await BanAsync(u);
+                    return;
+                }
+                await Context.Guild.RemoveBanAsync(userID);
+                await Context.Channel.SendMessageAsync($"<@{user}>, the now-ex-KGB spy, may enter the nation.\n" +
+                    $"They better not let their guard down.");
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

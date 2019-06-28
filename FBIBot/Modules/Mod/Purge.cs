@@ -1,10 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -12,6 +9,7 @@ namespace FBIBot.Modules.Mod
     public class Purge : ModuleBase<SocketCommandContext>
     {
         [Command("purge")]
+        [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task PurgeAsync(string count = "100")
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
@@ -38,6 +36,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("purge")]
+        [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task PurgeAsync(SocketGuildUser user, string count = "10")
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
