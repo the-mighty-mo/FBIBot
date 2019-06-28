@@ -26,11 +26,13 @@ namespace FBIBot.Modules.Mod
             {
                 await Task.Delay((int)(hours * 60 * 60 * 1000));
 
-                if (await RemoveWarning.GetWarningAsync(user, id))
+                if (!await RemoveWarning.GetWarningAsync(user, id))
                 {
-                    await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Client.CurrentUser, user, id.ToString());
-                    await RemoveWarning.RemoveWarningAsync(user, id);
+                    return;
                 }
+
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Client.CurrentUser, user, id.ToString());
+                await RemoveWarning.RemoveWarningAsync(user, id);
             }
         }
 
