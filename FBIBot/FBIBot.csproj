@@ -274,6 +274,7 @@
     <Compile Include="Modules\Mod\RemoveWarning.cs" />
     <Compile Include="Modules\Mod\RemoveWarnings.cs" />
     <Compile Include="Modules\Mod\SendToModLog.cs" />
+    <Compile Include="Modules\Mod\Slowmode.cs" />
     <Compile Include="Modules\Mod\TempBan.cs" />
     <Compile Include="Modules\Mod\Unban.cs" />
     <Compile Include="Modules\Mod\Unmute.cs" />

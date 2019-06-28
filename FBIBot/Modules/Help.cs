@@ -17,7 +17,9 @@ namespace FBIBot.Modules
             "  - Displays page 2 of bot configuration commands\n\n" +
             "automod\n" +
             "  - Displays automod configuration commands";
-        private static readonly string mod = "modifyreason [mod log ID] [reason (optional)]\n" +
+        private static readonly string mod = "slowmode [seconds]\n" +
+            "  - Enables slowmode in the chat; *Disables slowmode if no time is given*\n\n" +
+            "modifyreason [mod log ID] [reason (optional)]\n" +
             "  - Modifies the reason for the given mod log\n\n" +
             "warn [user mention / user ID] [hours (optional)] [reason (optional)]\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +

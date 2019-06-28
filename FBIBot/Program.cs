@@ -79,7 +79,7 @@ namespace FBIBot
             await Task.Delay(-1);
         }
 
-        async Task InitVerifySqlite()
+        static async Task InitVerifySqlite()
         {
             cnVerify.Open();
 
@@ -104,7 +104,7 @@ namespace FBIBot
             await Task.WhenAll(cmds);
         }
 
-        async Task InitModRolesSqlite()
+        static async Task InitModRolesSqlite()
         {
             cnModRoles.Open();
 
@@ -141,7 +141,7 @@ namespace FBIBot
             await Task.WhenAll(cmds);
         }
 
-        async Task InitModLogsSqlite()
+        static async Task InitModLogsSqlite()
         {
             cnModLogs.Open();
 
@@ -162,7 +162,7 @@ namespace FBIBot
             await Task.WhenAll(cmds);
         }
 
-        async Task InitConfigSqlite()
+        static async Task InitConfigSqlite()
         {
             cnConfig.Open();
 
