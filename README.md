@@ -9,6 +9,8 @@ Discord Admin bot, created for Hack Week.
 
 *Email all bug reports to hallb1016@gmail.com*
 
+This bot requires permissions: 289533110
+
 ## Build instructions
 
 1. Download/clone the repository.
