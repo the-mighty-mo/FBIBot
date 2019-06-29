@@ -7,6 +7,8 @@ Discord Admin bot, created for Hack Week.
 
 **Someone has to keep the server in check, and who better than the FBI?**
 
+*Email all bug reports to hallb1016@gmail.com*
+
 ## Build instructions
 
 1. Download/clone the repository.
