@@ -17,6 +17,7 @@ namespace FBIBot.Modules
             "  - Displays page 2 of bot configuration commands\n\n" +
             "automod\n" +
             "  - Displays automod configuration commands";
+
         private static readonly string mod = "slowmode [seconds]\n" +
             "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*\n\n" +
             "modifyreason [mod log ID] [reason (optional)]\n" +
@@ -33,6 +34,7 @@ namespace FBIBot.Modules
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention / user ID]\n" +
             "  - Frees the house-arrested user";
+
         private static readonly string mod2 = "arrest [user mention / user ID] [minutes (optional)]\n" +
             "  - Sends the user to Guantanamo Bay for a bit\n\n" +
             "free [user mention / user ID]\n" +
@@ -49,6 +51,7 @@ namespace FBIBot.Modules
             "  - Shreds, burns, and disposes of a number of messages from the channel\n\n" +
             "purge [user mention] [count (default: 10)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from a user in the channel";
+
         private static readonly string config = "config\n" +
             "  - Displays the current bot configuration\n\n" +
             "setprefix\n" +
@@ -61,6 +64,7 @@ namespace FBIBot.Modules
             "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
             "modify-muted-roles [true/enable / false/disable]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
+
         private static readonly string config2 = "add-modrole [role mention / role ID]\n" +
             "  - Adds the role to a list of assistants of the agency\n\n" +
             "remove-modrole [role mention / role ID]\n" +
@@ -75,8 +79,9 @@ namespace FBIBot.Modules
             "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**\n\n" +
             "raidmode\n" +
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
+
         private static readonly string automod = "auto-surveillance [true/enable / false/disable]\n" +
-            "  - Permits the FBI to perform surveillance operations on server members; we recommend you enable this" +
+            "  - Permits the FBI to perform surveillance operations on server members; we recommend you enable this\n\n" +
             "anti-spam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
             "anti-singlespam [true/enable / false/disable]\n" +
