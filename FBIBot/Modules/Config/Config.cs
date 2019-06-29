@@ -24,6 +24,7 @@ namespace FBIBot.Modules.Config
             SocketTextChannel modlog = await SetModLog.GetModLogChannelAsync(Context.Guild);
             bool raidMode = await RaidMode.GetVerificationLevelAsync(Context.Guild) != null;
             bool antiSpam = await AntiSpam.GetAntiSpamAsync(Context.Guild);
+            bool antiInvite = await AntiInvite.GetAntiInviteAsync(Context.Guild);
 
             string config = $"Prefix: **{(prefix == @"\" ? @"\\" : prefix)}**\n" +
                 $"Verification Role: **{(verify != null ? verify.Name : "(none)")}**\n" +
@@ -33,12 +34,14 @@ namespace FBIBot.Modules.Config
                 $"Admin Roles: **{string.Join(", ", await AddAdminRole.GetAdminRolesAsync(Context.Guild))}**\n" +
                 $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**\n" +
                 $"FBI RAID MODE: **{(raidMode ? "ENABLED" : "Disabled")}**\n" +
-                $"Anti Spam: **{(antiSpam ? "Enabled" : "Disabled")}**";
+                $"Anti Spam: **{(antiSpam ? "Enabled" : "Disabled")}**\n" +
+                $"Anti Invite: **{(antiInvite ? "Enabled" : "Disabled")}**";
 
             string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
                 $"Mute Role: Muted **(created on mute command)**\n" +
                 $"Modify Muted Member's Roles: **Disabled**\n" +
-                $"Anti Spam: **Disabled**";
+                $"Anti Spam: **Disabled**\n" +
+                $"Anti Invite: **Disabled**";
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)

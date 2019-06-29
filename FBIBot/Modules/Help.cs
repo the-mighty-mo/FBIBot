@@ -76,7 +76,9 @@ namespace FBIBot.Modules
             "raidmode\n" +
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
         private static readonly string automod = "antispam [true/enable / false/disable]\n" +
-            "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning";
+            "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
+            "antiinvite [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will detect invites to the socialist party and *kindly* remove them";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)

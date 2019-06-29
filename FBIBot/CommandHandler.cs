@@ -142,6 +142,10 @@ namespace FBIBot
             {
                 await new Spam(context).WarnAsync();
             }
+            else if (await Invite.HasInviteAsync(context) && await AntiInvite.GetAntiInviteAsync(context.Guild))
+            {
+                await new Invite(context).RemoveAsync();
+            }
         }
     }
 }
