@@ -15,8 +15,15 @@ namespace FBIBot.Modules.AutoMod
 
         public async Task ArrestAsync()
         {
+            List<string> messages = new List<string>()
+            {
+                "You want to explain yourself?",
+                "Why don't you take a seat over there?",
+                "FBI OPEN UP!"
+            };
+            
             await Context.Message.DeleteAsync();
-            await Context.User.SendMessageAsync("You want to explain yourself?");
+            await Context.User.SendMessageAsync(messages[Program.rng.Next(messages.Count)]);
             await Context.Channel.SendMessageAsync($"\\arrest {Context.User.Mention} 5");
         }
 
