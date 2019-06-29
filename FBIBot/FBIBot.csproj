@@ -250,6 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
+    <Compile Include="Modules\AutoMod\CAPS.cs" />
     <Compile Include="Modules\AutoMod\Invite.cs" />
     <Compile Include="Modules\AutoMod\Link.cs" />
     <Compile Include="Modules\AutoMod\MassMention.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Modules\AutoMod\Verify.cs" />
     <Compile Include="Modules\Config\AddAdminRole.cs" />
     <Compile Include="Modules\Config\AddModRole.cs" />
+    <Compile Include="Modules\Config\AntiCaps.cs" />
     <Compile Include="Modules\Config\AntiInvite.cs" />
     <Compile Include="Modules\Config\AntiLink.cs" />
     <Compile Include="Modules\Config\AntiMassMention.cs" />

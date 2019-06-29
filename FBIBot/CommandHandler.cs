@@ -146,6 +146,10 @@ namespace FBIBot
             {
                 await new MassMention(context).WarnAsync();
             }
+            else if (await CAPS.ISCAPSASYNC(context) && await AntiCaps.GetAntiCapsAsync(context.Guild))
+            {
+                await new CAPS(context).WARNASYNC();
+            }
             else if (await Invite.HasInviteAsync(context) && await AntiInvite.GetAntiInviteAsync(context.Guild))
             {
                 await new Invite(context).RemoveAsync();

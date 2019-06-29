@@ -24,9 +24,10 @@ namespace FBIBot.Modules.Config
             SocketTextChannel modlog = await SetModLog.GetModLogChannelAsync(Context.Guild);
             bool raidMode = await RaidMode.GetVerificationLevelAsync(Context.Guild) != null;
             bool antiSpam = await AntiSpam.GetAntiSpamAsync(Context.Guild);
+            bool antiMassMention = await AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
+            bool antiCaps = await AntiCaps.GetAntiCapsAsync(Context.Guild);
             bool antiInvite = await AntiInvite.GetAntiInviteAsync(Context.Guild);
             bool antiLink = await AntiLink.GetAntiLinkAsync(Context.Guild);
-            bool antiMassMention = await AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
 
             string config = $"Prefix: **{(prefix == @"\" ? @"\\" : prefix)}**\n" +
                 $"Verification Role: **{(verify != null ? verify.Name : "(none)")}**\n" +
@@ -37,17 +38,19 @@ namespace FBIBot.Modules.Config
                 $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**\n" +
                 $"FBI RAID MODE: **{(raidMode ? "ENABLED" : "Disabled")}**\n" +
                 $"Anti-Spam: **{(antiSpam ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Mass-Mention: **{(antiMassMention ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-CAPS: **{(antiCaps ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Invite: **{(antiInvite ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Link: **{(antiLink ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Mass-Mention: **{(antiMassMention ? "Enabled" : "Disabled")}**";
+                $"Anti-Link: **{(antiLink ? "Enabled" : "Disabled")}**\n";
 
             string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
                 $"Mute Role: Muted **(created on mute command)**\n" +
                 $"Modify Muted Member's Roles: **Disabled**\n" +
                 $"Anti-Spam: **Disabled**\n" +
+                $"Anti-Mass-Mention: **Disabled**\n" +
+                $"Anti-CAPS: **Disabled**\n" +
                 $"Anti-Invite: **Disabled**\n" +
-                $"Anti-Link: **Disabled**\n" +
-                $"Anti-Mass-Mention: **Disabled**";
+                $"Anti-Link: **Disabled**";
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)

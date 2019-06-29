@@ -79,6 +79,8 @@ namespace FBIBot.Modules
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
             "anti-massmention [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down with a warning messages mentioning all the people the user hates (5+)\n\n" +
+            "anti-caps [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will take down with a warning VERY LOUD PROTESTS\n\n" +
             "anti-invite [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect invites to the socialist party and *kindly* remove them\n\n" +
             "anti-link [true/enable / false/disable]\n" +
