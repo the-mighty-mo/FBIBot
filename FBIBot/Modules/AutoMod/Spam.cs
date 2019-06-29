@@ -72,7 +72,7 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             string message = context.Message.Content;
-            Regex regex = new Regex(@"(\W|^)(.+)\s*\2");
+            Regex regex = new Regex(@"(\W|^)(.+)\s*\2", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             MatchCollection matches = regex.Matches(message);
 
             int duplicate = 0;

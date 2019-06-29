@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod
@@ -23,33 +24,10 @@ namespace FBIBot.Modules.AutoMod
         {
             bool isPedophile = false;
 
-            List<string> bad = new List<string>()
-            {
-                "i like",
-                "i love"
-            };
-            List<string> stillBad = new List<string>()
-            {
-                "kids",
-                "children",
-                "little kids",
-                "little children"
-            };
-            foreach (string b in bad)
-            {
-                foreach (string s in stillBad)
-                {
-                    if (msg.Content.ToLower().Contains($"{b} {s}"))
-                    {
-                        isPedophile = true;
-                        break;
-                    }
-                }
-                if (isPedophile)
-                {
-                    break;
-                }
-            }
+            Regex regex = new Regex(@"\bI (like|love) (?!no )(?!none of the)(\w+\s|)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Match match = regex.Match(msg.Content);
+
+            isPedophile = match.Success;
 
             return await Task.Run(() => isPedophile);
         }
