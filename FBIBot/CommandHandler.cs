@@ -142,7 +142,7 @@ namespace FBIBot
                     return;
                 }
             }
-            else if (((await Spam.IsSpamAsync(context) && await AntiSpam.GetAntiSpamAsync(context.Guild))
+            if (((await Spam.IsSpamAsync(context) && await AntiSpam.GetAntiSpamAsync(context.Guild))
                 || (await Spam.IsSingleSpamAsync(context) && await AntiSingleSpam.GetAntiSingleSpamAsync(context.Guild))) && !isCommand)
             {
                 await new Spam(context).WarnAsync();
