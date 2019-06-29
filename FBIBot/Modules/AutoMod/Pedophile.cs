@@ -8,15 +8,15 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Pedophile
     {
-        readonly SocketCommandContext _context;
+        readonly SocketCommandContext Context;
 
-        public Pedophile(SocketCommandContext context) => _context = context;
+        public Pedophile(SocketCommandContext context) => Context = context;
 
         public async Task ArrestAsync()
         {
-            await _context.Message.DeleteAsync();
-            await _context.User.SendMessageAsync("You want to explain yourself?");
-            await _context.Channel.SendMessageAsync($"\\arrest {_context.User.Mention} 5");
+            await Context.Message.DeleteAsync();
+            await Context.User.SendMessageAsync("You want to explain yourself?");
+            await Context.Channel.SendMessageAsync($"\\arrest {Context.User.Mention} 5");
         }
 
         public static async Task<bool> IsPedophileAsync(SocketUserMessage msg)

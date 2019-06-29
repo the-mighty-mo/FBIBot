@@ -78,7 +78,9 @@ namespace FBIBot.Modules
         private static readonly string automod = "antispam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
             "antiinvite [true/enable / false/disable]\n" +
-            "  - When enabled, the FBI will detect invites to the socialist party and *kindly* remove them";
+            "  - When enabled, the FBI will detect invites to the socialist party and *kindly* remove them\n\n" +
+            "antilink [true/enable / false/disable]\n" +
+            "  - When enabled, The FBI will dispose of all messages containing links to communist websites";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)

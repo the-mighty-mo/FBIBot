@@ -8,14 +8,14 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Spam
     {
-        readonly SocketCommandContext _context;
+        readonly SocketCommandContext Context;
 
-        public Spam(SocketCommandContext context) => _context = context;
+        public Spam(SocketCommandContext context) => Context = context;
 
         public async Task WarnAsync()
         {
-            await _context.Channel.SendMessageAsync($"\\warn {_context.User.Mention} 0.5 Big spam");
-            await _context.Message.DeleteAsync();
+            await Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big spam");
+            await Context.Message.DeleteAsync();
         }
 
         public static async Task<bool> IsSpamAsync(SocketCommandContext context)

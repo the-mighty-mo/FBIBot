@@ -1,9 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -11,13 +7,13 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Invite
     {
-        readonly SocketCommandContext _context;
-        public Invite(SocketCommandContext context) => _context = context;
+        readonly SocketCommandContext Context;
+        public Invite(SocketCommandContext context) => Context = context;
 
         public async Task RemoveAsync()
         {
-            await _context.Message.DeleteAsync();
-            await _context.User.SendMessageAsync($"You cannot send invite links in the server {_context.Guild.Name}.");
+            await Context.Message.DeleteAsync();
+            await Context.User.SendMessageAsync($"You cannot send invite links in the server {Context.Guild.Name}.");
         }
 
         public static async Task<bool> HasInviteAsync(SocketCommandContext context)

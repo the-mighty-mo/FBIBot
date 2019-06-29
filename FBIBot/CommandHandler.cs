@@ -146,6 +146,10 @@ namespace FBIBot
             {
                 await new Invite(context).RemoveAsync();
             }
+            else if (await Link.HasLinkAsync(context) && await AntiLink.GetAntiLinkAsync(context.Guild))
+            {
+                await new Link(context).RemoveAsync();
+            }
         }
     }
 }
