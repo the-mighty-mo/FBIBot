@@ -20,3 +20,10 @@ This bot requires permissions: 289533110
 **NOTE:** It is recommended that you set your bot's profile picture to FBIBot/FBI.png and its name to "The FBI" for maximum effect.
 4. Restore NuGet packages (if necessary before build).
 5. Build the project in Release mode (Any CPU) and run `FBIBot.exe` (in FBIBot\bin\Release).
+
+### Some notes
+
+Currently, warnings don't do anything automatically due to running out of time after setting up all the regex and automod stuff. Additionally, the regex stuff is not perfect, and messages send generic exceptions instead of good error messages in some cases. However, these will all be added as soon as possible after Discord selects the winners of Discord Hack Week.
+
+Thank you for your cooperation. ~~Because you don't have a choice but to cooperate.~~  
+\- The FBI, under the direction of Supreme Leader Josedolf Staller
