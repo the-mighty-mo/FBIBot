@@ -87,9 +87,12 @@ namespace FBIBot.Modules.AutoMod
                 firstIndex = m.Index < firstIndex ? m.Index : firstIndex;
             }
 
-            string msg = message.Substring(firstIndex, lastIndex - firstIndex);
-            isSpam = (double)duplicate / msg.Length >= 0.80
-                && (double)msg.Length / message.Replace(" ", string.Empty).Length > 0.4;
+            if (firstIndex != message.Length)
+            {
+                string msg = message.Substring(firstIndex, lastIndex - firstIndex);
+                isSpam = (double)duplicate / msg.Length >= 0.80
+                    && (double)msg.Length / message.Replace(" ", string.Empty).Length > 0.4;
+            }
 
             return await Task.Run(() => isSpam);
         }
