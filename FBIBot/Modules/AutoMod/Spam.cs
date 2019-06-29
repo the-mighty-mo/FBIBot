@@ -72,26 +72,30 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             string message = context.Message.Content;
-            Regex regex = new Regex(@"(\W|^)(.+)\s*\2", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            MatchCollection matches = regex.Matches(message);
 
-            int duplicate = 0;
-            int firstIndex = message.Length;
-            int lastIndex = 0;
-            foreach (Match m in matches)
+            if (message.Length > 40)
             {
-                duplicate += m.Length;
-                int last = m.Index + m.Length;
+                Regex regex = new Regex(@"(\W|^)(.+)\s*\2", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                MatchCollection matches = regex.Matches(message);
 
-                lastIndex = last > lastIndex ? last : lastIndex;
-                firstIndex = m.Index < firstIndex ? m.Index : firstIndex;
-            }
+                int duplicate = 0;
+                int firstIndex = message.Length;
+                int lastIndex = 0;
+                foreach (Match m in matches)
+                {
+                    duplicate += m.Length;
+                    int last = m.Index + m.Length;
 
-            if (firstIndex != message.Length)
-            {
-                string msg = message.Substring(firstIndex, lastIndex - firstIndex);
-                isSpam = (double)duplicate / msg.Length >= 0.80
-                    && (double)msg.Length / message.Replace(" ", string.Empty).Length > 0.4;
+                    lastIndex = last > lastIndex ? last : lastIndex;
+                    firstIndex = m.Index < firstIndex ? m.Index : firstIndex;
+                }
+
+                if (firstIndex != message.Length)
+                {
+                    string msg = message.Substring(firstIndex, lastIndex - firstIndex);
+                    isSpam = (double)duplicate / msg.Length >= 0.80
+                        && (double)msg.Length / message.Replace(" ", string.Empty).Length > 0.4;
+                }
             }
 
             return await Task.Run(() => isSpam);

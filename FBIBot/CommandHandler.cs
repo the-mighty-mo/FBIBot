@@ -40,6 +40,15 @@ namespace FBIBot
             _client.MessageReceived += HandleCommandAsync;
 
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            _commands.CommandExecuted += SendErrorAsync;
+        }
+
+        private async Task SendErrorAsync(Optional<CommandInfo> info, ICommandContext context, IResult result)
+        {
+            if (!result.IsSuccess && result.Error != CommandError.UnknownCommand && info.Value.RunMode == RunMode.Async)
+            {
+                await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
+            }
         }
 
         private async Task SendConnectMessage()
