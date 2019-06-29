@@ -5,7 +5,7 @@ namespace FBIBot.Modules.AutoMod
 {
     public class CAPS
     {
-        SocketCommandContext CONTEXT;
+        readonly SocketCommandContext CONTEXT;
 
         public CAPS(SocketCommandContext context) => CONTEXT = context;
 
