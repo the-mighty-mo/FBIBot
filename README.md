@@ -23,7 +23,8 @@ This bot requires permissions: 289533110
 
 ### Some notes
 
-Currently, warnings don't do anything automatically due to running out of time after setting up all the regex and automod stuff. Additionally, the regex stuff is not perfect, and messages send generic exceptions instead of good error messages in some cases. Lastly, commands with a given length of time will only work if the bot stays open since I have not figured out how to log data in such a way that the bot would be able to repeal mod actions after a restart. However, these will all be added/fixed as soon as possible after Discord selects the winners of Discord Hack Week.
+Currently, warnings don't do anything automatically due to running out of time after setting up all the regex and automod stuff. Additionally, the regex stuff is not perfect, and messages send generic exceptions instead of good error messages in some cases. Lastly, commands with a given length of time will only work if the bot stays open since I have not figured out how to log data in such a way that the bot would be able to repeal mod actions after a restart. However, these will all be added/fixed as soon as possible after Discord selects the winners of Discord Hack Week.  
+Also, we'll install more surveillance systems soon.
 
 Thank you for your cooperation. ~~Because you don't have a choice but to cooperate.~~  
 \- The FBI, under the direction of Supreme Leader Josedolf Staller
