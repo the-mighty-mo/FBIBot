@@ -19,7 +19,8 @@ namespace FBIBot.Modules.AutoMod
             {
                 "You want to explain yourself?",
                 "Why don't you take a seat over there?",
-                "FBI OPEN UP!"
+                "FBI OPEN UP!",
+                "Where do you think you're going?"
             };
             
             await Context.Message.DeleteAsync();
