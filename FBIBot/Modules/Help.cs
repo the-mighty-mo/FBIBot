@@ -59,7 +59,7 @@ namespace FBIBot.Modules
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
             "setmute [role mention / role ID]\n" +
             "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
-            "modify-muted-roles [true/enable / **false/disable** (default)]\n" +
+            "modify-muted-roles [true/enable / false/disable]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
         private static readonly string config2 = "add-modrole [role mention / role ID]\n" +
             "  - Adds the role to a list of assistants of the agency\n\n" +
@@ -75,7 +75,8 @@ namespace FBIBot.Modules
             "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**\n\n" +
             "raidmode\n" +
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
-        private static readonly string automod = "WIP";
+        private static readonly string automod = "antispam [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)

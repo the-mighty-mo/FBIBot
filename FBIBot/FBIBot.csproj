@@ -250,11 +250,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
+    <Compile Include="Modules\AutoMod\Invite.cs" />
     <Compile Include="Modules\AutoMod\Pedophile.cs" />
     <Compile Include="Modules\AutoMod\Spam.cs" />
     <Compile Include="Modules\AutoMod\Verify.cs" />
     <Compile Include="Modules\Config\AddAdminRole.cs" />
     <Compile Include="Modules\Config\AddModRole.cs" />
+    <Compile Include="Modules\Config\AntiSpam.cs" />
     <Compile Include="Modules\Config\RaidMode.cs" />
     <Compile Include="Modules\Config\Config.cs" />
     <Compile Include="Modules\Config\ModifyMutedRoles.cs" />

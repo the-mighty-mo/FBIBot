@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FBIBot
 {
-    class CommandHandler
+    public class CommandHandler
     {
         public const string prefix = "\\";
         public static int argPos = 0;
@@ -138,7 +138,7 @@ namespace FBIBot
             {
                 await new Pedophile(context).ArrestAsync();
             }
-            else if (await Spam.IsSpamAsync(context) && !isCommand)
+            else if (await Spam.IsSpamAsync(context) && !isCommand && await AntiSpam.GetAntiSpamAsync(context.Guild))
             {
                 await new Spam(context).WarnAsync();
             }
