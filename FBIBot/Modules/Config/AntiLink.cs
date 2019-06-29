@@ -8,7 +8,7 @@ namespace FBIBot.Modules.Config
 {
     public class AntiLink : ModuleBase<SocketCommandContext>
     {
-        [Command("antilink")]
+        [Command("anti-link")]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiLinkAsync(string enable)
         {

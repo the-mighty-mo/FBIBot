@@ -8,7 +8,7 @@ namespace FBIBot.Modules.Config
 {
     public class AntiSpam : ModuleBase<SocketCommandContext>
     {
-        [Command("antispam")]
+        [Command("anti-spam")]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiSpamAsync(string enable)
         {
