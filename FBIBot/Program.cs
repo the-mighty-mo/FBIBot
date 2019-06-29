@@ -189,6 +189,10 @@ namespace FBIBot
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiMassMention (guild_id TEXT PRIMARY KEY);", cnConfig))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
 
             await Task.WhenAll(cmds);
         }

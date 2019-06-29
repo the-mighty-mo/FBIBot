@@ -80,7 +80,9 @@ namespace FBIBot.Modules
             "antiinvite [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect invites to the socialist party and *kindly* remove them\n\n" +
             "antilink [true/enable / false/disable]\n" +
-            "  - When enabled, The FBI will dispose of all messages containing links to communist websites";
+            "  - When enabled, the FBI will dispose of all messages containing links to communist websites\n\n" +
+            "antimassmention [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will take down with a warning messages mentioning all the people the user hates (5+)";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)
