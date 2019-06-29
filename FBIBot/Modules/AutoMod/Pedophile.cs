@@ -31,7 +31,7 @@ namespace FBIBot.Modules.AutoMod
         {
             bool isPedophile = false;
 
-            Regex regex = new Regex(@"\bI (like|love) (?!no )(?!none of the)(\w+\s|)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex regex = new Regex(@"\bI (like|love) (?!(no|none of the) )(\w*\s+|)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             Match match = regex.Match(msg.Content);
 
             isPedophile = match.Success;
