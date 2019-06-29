@@ -138,8 +138,8 @@ namespace FBIBot
             {
                 await new Pedophile(context).ArrestAsync();
             }
-            else if ((await Spam.IsSpamAsync(context) && await AntiSpam.GetAntiSpamAsync(context.Guild)
-                || await Spam.IsSingleSpamAsync(context) && await AntiSingleSpam.GetAntiSingleSpamAsync(context.Guild)) && !isCommand)
+            else if (((await Spam.IsSpamAsync(context) && await AntiSpam.GetAntiSpamAsync(context.Guild))
+                || (await Spam.IsSingleSpamAsync(context) && await AntiSingleSpam.GetAntiSingleSpamAsync(context.Guild))) && !isCommand)
             {
                 await new Spam(context).WarnAsync();
             }
