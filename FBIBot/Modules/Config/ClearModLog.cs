@@ -33,7 +33,7 @@ namespace FBIBot.Modules.Config
                 }
             }
 
-            if (await SendToModLog.GetNextModLogID(Context.Guild) == 1)
+            if (await SendToModLog.GetNextModLogID(Context.Guild) == 1 && !isClear)
             {
                 await Context.Channel.SendMessageAsync("Our security team has informed us that there are no moderation logs.");
                 return;
