@@ -263,6 +263,7 @@
     <Compile Include="Modules\Config\AntiInvite.cs" />
     <Compile Include="Modules\Config\AntiLink.cs" />
     <Compile Include="Modules\Config\AntiMassMention.cs" />
+    <Compile Include="Modules\Config\AntiSingleSpam.cs" />
     <Compile Include="Modules\Config\AntiSpam.cs" />
     <Compile Include="Modules\Config\RaidMode.cs" />
     <Compile Include="Modules\Config\Config.cs" />

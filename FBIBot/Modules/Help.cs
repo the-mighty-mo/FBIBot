@@ -77,6 +77,8 @@ namespace FBIBot.Modules
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
         private static readonly string automod = "anti-spam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
+            "anti-singlespam [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will detect if the user sends one big, spammy message and takes it down with a warning\n\n" +
             "anti-massmention [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down with a warning messages mentioning all the people the user hates (5+)\n\n" +
             "anti-caps [true/enable / false/disable]\n" +

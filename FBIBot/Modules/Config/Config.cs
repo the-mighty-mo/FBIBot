@@ -24,6 +24,7 @@ namespace FBIBot.Modules.Config
             SocketTextChannel modlog = await SetModLog.GetModLogChannelAsync(Context.Guild);
             bool raidMode = await RaidMode.GetVerificationLevelAsync(Context.Guild) != null;
             bool antiSpam = await AntiSpam.GetAntiSpamAsync(Context.Guild);
+            bool antiSingleSpam = await AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild);
             bool antiMassMention = await AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
             bool antiCaps = await AntiCaps.GetAntiCapsAsync(Context.Guild);
             bool antiInvite = await AntiInvite.GetAntiInviteAsync(Context.Guild);
@@ -38,6 +39,7 @@ namespace FBIBot.Modules.Config
                 $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**\n" +
                 $"FBI RAID MODE: **{(raidMode ? "ENABLED" : "Disabled")}**\n" +
                 $"Anti-Spam: **{(antiSpam ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Single-Spam: **{(antiSingleSpam ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Mass-Mention: **{(antiMassMention ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-CAPS: **{(antiCaps ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Invite: **{(antiInvite ? "Enabled" : "Disabled")}**\n" +
@@ -47,6 +49,7 @@ namespace FBIBot.Modules.Config
                 $"Mute Role: Muted **(created on mute command)**\n" +
                 $"Modify Muted Member's Roles: **Disabled**\n" +
                 $"Anti-Spam: **Disabled**\n" +
+                $"Anti-Single-Spam: **Disabled**\n" +
                 $"Anti-Mass-Mention: **Disabled**\n" +
                 $"Anti-CAPS: **Disabled**\n" +
                 $"Anti-Invite: **Disabled**\n" +

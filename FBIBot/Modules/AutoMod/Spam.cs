@@ -2,6 +2,7 @@
 using Discord.Commands;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod
@@ -62,6 +63,33 @@ namespace FBIBot.Modules.AutoMod
                 }
                 i++;
             }
+
+            return await Task.Run(() => isSpam);
+        }
+
+        public static async Task<bool> IsSingleSpamAsync(SocketCommandContext context)
+        {
+            bool isSpam = false;
+
+            string message = context.Message.Content;
+            Regex regex = new Regex(@"(\W|^)(.+)\s*\2");
+            MatchCollection matches = regex.Matches(message);
+
+            int duplicate = 0;
+            int firstIndex = message.Length;
+            int lastIndex = 0;
+            foreach (Match m in matches)
+            {
+                duplicate += m.Length;
+                int last = m.Index + m.Length;
+
+                lastIndex = last > lastIndex ? last : lastIndex;
+                firstIndex = m.Index < firstIndex ? m.Index : firstIndex;
+            }
+
+            string msg = message.Substring(firstIndex, lastIndex - firstIndex);
+            isSpam = (double)duplicate / msg.Length >= 0.80
+                && (double)msg.Length / message.Replace(" ", string.Empty).Length > 0.4;
 
             return await Task.Run(() => isSpam);
         }

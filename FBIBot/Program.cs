@@ -181,11 +181,7 @@ namespace FBIBot
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
-            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiInvite (guild_id TEXT PRIMARY KEY);", cnConfig))
-            {
-                cmds.Add(cmd.ExecuteNonQueryAsync());
-            }
-            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiLink (guild_id TEXT PRIMARY KEY);", cnConfig))
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiSingleSpam (guild_id TEXT PRIMARY KEY);", cnConfig))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
@@ -194,6 +190,14 @@ namespace FBIBot
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiCaps (guild_id TEXT PRIMARY KEY);", cnConfig))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiInvite (guild_id TEXT PRIMARY KEY);", cnConfig))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiLink (guild_id TEXT PRIMARY KEY);", cnConfig))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
