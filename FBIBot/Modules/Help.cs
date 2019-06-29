@@ -75,7 +75,9 @@ namespace FBIBot.Modules
             "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**\n\n" +
             "raidmode\n" +
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
-        private static readonly string automod = "anti-spam [true/enable / false/disable]\n" +
+        private static readonly string automod = "auto-surveillance [true/enable / false/disable]\n" +
+            "  - Permits the FBI to perform surveillance operations on server members; we recommend you enable this" +
+            "anti-spam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
             "anti-singlespam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if the user sends one big, spammy message and takes it down with a warning\n\n" +

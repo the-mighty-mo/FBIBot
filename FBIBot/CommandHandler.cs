@@ -134,9 +134,13 @@ namespace FBIBot
 
         private async Task AutoModAsync(SocketCommandContext context, bool isCommand)
         {
-            if (await Pedophile.IsPedophileAsync(context.Message))
+            if (await AutoSurveillance.GetAutoSurveillanceAsync(context.Guild))
             {
-                await new Pedophile(context).ArrestAsync();
+                if (await Pedophile.IsPedophileAsync(context.Message))
+                {
+                    await new Pedophile(context).ArrestAsync();
+                    return;
+                }
             }
             else if (((await Spam.IsSpamAsync(context) && await AntiSpam.GetAntiSpamAsync(context.Guild))
                 || (await Spam.IsSingleSpamAsync(context) && await AntiSingleSpam.GetAntiSingleSpamAsync(context.Guild))) && !isCommand)

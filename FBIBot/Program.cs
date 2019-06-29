@@ -177,6 +177,10 @@ namespace FBIBot
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AutoSurveillance (guild_id TEXT PRIMARY KEY);", cnConfig))
+            {
+                cmds.Add(cmd.ExecuteNonQueryAsync());
+            }
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiSpam (guild_id TEXT PRIMARY KEY);", cnConfig))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
