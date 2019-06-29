@@ -31,7 +31,7 @@ namespace FBIBot.Modules.Mod
 
             await RemoveWarningAsync(user, ID);
             await Context.Channel.SendMessageAsync("Warning removed.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Client.CurrentUser, user, id.ToString());
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.User, user, id.ToString());
         }
 
         [Command("removewarning")]
