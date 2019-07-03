@@ -218,7 +218,7 @@ namespace FBIBot
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }
-            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS UsersBlocked (guild_id TEXT NOT NULL, user_name TEXT NOT NULL, user_id TEXT NOT NULL UNIQUE);", cnRaidMode))
+            using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS UsersBlocked (guild_id TEXT NOT NULL, user_id TEXT NOT NULL UNIQUE);", cnRaidMode))
             {
                 cmds.Add(cmd.ExecuteNonQueryAsync());
             }

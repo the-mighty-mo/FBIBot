@@ -39,7 +39,8 @@ namespace FBIBot.Modules.Config
 
         public static async Task AddModifyMutedAsync(SocketGuild g)
         {
-            string add = "INSERT INTO ModifyMuted (guild_id) SELECT @guild_id WHERE NOT EXISTS (SELECT 1 FROM ModifyMuted WHERE guild_id = @guild_id);";
+            string add = "INSERT INTO ModifyMuted (guild_id) SELECT @guild_id\n" +
+                "WHERE NOT EXISTS (SELECT 1 FROM ModifyMuted WHERE guild_id = @guild_id);";
             using (SqliteCommand cmd = new SqliteCommand(add, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());

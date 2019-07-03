@@ -40,7 +40,7 @@ namespace FBIBot.Modules.Config
 
         async Task SendModLogAsync()
         {
-            Dictionary<string, string> blockedUsers = await GetBlockedUsersAsync(Context.Guild);
+            List<string> blockedUsers = await GetBlockedUsersAsync(Context.Guild);
             SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
             List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>();
             int messages = 1;
@@ -58,7 +58,7 @@ namespace FBIBot.Modules.Config
                 int i = 1;
                 int j = 1;
                 string blocked = "";
-                foreach (string user_id in blockedUsers.Keys)
+                foreach (string userID in blockedUsers)
                 {
                     if (j > 3)
                     {
@@ -73,7 +73,7 @@ namespace FBIBot.Modules.Config
                         fields.Clear();
                     }
 
-                    blocked += $"{(i > 1 ? "\n" : "")}{blockedUsers[user_id]} (ID: {user_id})";
+                    blocked += $"{(i > 1 ? "\n" : "")}<@{userID}> (ID: {userID})";
 
                     if (++i > 20)
                     {
@@ -155,24 +155,23 @@ namespace FBIBot.Modules.Config
 
         public static async Task AddBlockedUserAsync(SocketGuildUser u)
         {
-            string update = "UPDATE UsersBlocked SET user_name = @user_name WHERE guild_id = @guild_id AND user_id = @user_id;";
-            string insert = "INSERT INTO UsersBlocked (guild_id, user_name, user_id) SELECT @guild_id, @user_name, @user_id WHERE (SELECT Changes() = 0);";
+            string insert = "INSERT INTO UsersBlocked (guild_id, user_id) SELECT @guild_id, @user_id\n" +
+                "WHERE NOT EXISTS (SELECT 1 FROM UsersBlocked WHERE guild_id = @guild_id AND user_id = @user_id);";
 
-            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnRaidMode))
+            using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnRaidMode))
             {
                 cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@user_name", $"{u.Username}#{u.Discriminator}");
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
                 await cmd.ExecuteNonQueryAsync();
             }
         }
 
-        public static async Task<Dictionary<string, string>> GetBlockedUsersAsync(SocketGuild g)
+        public static async Task<List<string>> GetBlockedUsersAsync(SocketGuild g)
         {
-            Dictionary<string, string> blockedUsers = new Dictionary<string, string>();
+            List<string> blockedUsers = new List<string>();
 
-            string getBlocked = "SELECT user_name, user_id FROM UsersBlocked WHERE guild_id = @guild_id;";
+            string getBlocked = "SELECT user_id FROM UsersBlocked WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(getBlocked, Program.cnRaidMode))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
@@ -180,14 +179,7 @@ namespace FBIBot.Modules.Config
                 SqliteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (blockedUsers.ContainsKey((string)reader["user_id"]))
-                    {
-                        blockedUsers[(string)reader["user_id"]] = (string)reader["user_name"];
-                    }
-                    else
-                    {
-                        blockedUsers.Add((string)reader["user_id"], (string)reader["user_name"]);
-                    }
+                    blockedUsers.Add((string)reader["user_id"]);
                 }
                 reader.Close();
             }
