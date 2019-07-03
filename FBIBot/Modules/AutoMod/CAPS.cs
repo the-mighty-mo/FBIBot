@@ -11,7 +11,8 @@ namespace FBIBot.Modules.AutoMod
 
         public async Task WARNASYNC()
         {
-            await CONTEXT.Channel.SendMessageAsync($"\\warn {CONTEXT.User.Mention} 0.5 BIG CAPS");
+            await CONTEXT.Channel.SendMessageAsync($"\\warn {CONTEXT.User.Mention} 0.5 BIG CAPS\n" +
+                $"Message: {CONTEXT.Message.Content}");
             await CONTEXT.Message.DeleteAsync();
         }
 

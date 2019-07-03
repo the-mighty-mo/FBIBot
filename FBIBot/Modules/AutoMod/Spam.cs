@@ -15,7 +15,8 @@ namespace FBIBot.Modules.AutoMod
 
         public async Task WarnAsync()
         {
-            await Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big spam");
+            await Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big spam\n" +
+                $"Message: {Context.Message.Content}");
             await Context.Message.DeleteAsync();
         }
 

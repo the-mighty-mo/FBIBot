@@ -13,7 +13,8 @@ namespace FBIBot.Modules.AutoMod
         public async Task RemoveAsync()
         {
             await Context.Message.DeleteAsync();
-            await Context.User.SendMessageAsync($"You cannot send invite links in the server {Context.Guild.Name}.");
+            await Context.User.SendMessageAsync($"You cannot send invite links in the server {Context.Guild.Name}.\n" +
+                $"Message removed: {Context.Message.Content}");
         }
 
         public static async Task<bool> HasInviteAsync(SocketCommandContext context)
