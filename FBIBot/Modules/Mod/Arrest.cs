@@ -21,6 +21,16 @@ namespace FBIBot.Modules.Mod
                 await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
                 return;
             }
+            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
+            {
+                await Context.Channel.SendMessageAsync("We cannot arrest members with equal or higher authority than ourselves.");
+                return;
+            }
+            if (!await VerifyUser.InvokerIsHigher(u, user))
+            {
+                await Context.Channel.SendMessageAsync("You cannot arrest members with equal or higher authority than yourself.");
+                return;
+            }
 
             SocketRole role = await GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
@@ -32,30 +42,9 @@ namespace FBIBot.Modules.Mod
 
             List<SocketRole> roles = user.Roles.ToList();
             roles.Remove(Context.Guild.EveryoneRole);
-            await Mute.SaveUserRolesAsync(roles, user);
-            try
-            {
-                await user.RemoveRolesAsync(roles);
-            }
-            catch
-            {
-                try
-                {
-                    await user.AddRolesAsync(roles);
-                }
-                catch { }
-                await Context.Channel.SendMessageAsync("We cannot arrest members with higher authority than ourselves.");
-                await Unmute.RemoveUserRolesAsync(user);
 
-                if (!await Free.HasPrisoners(Context.Guild))
-                {
-                    await channel?.DeleteAsync();
-                    await role?.DeleteAsync();
-                    await Free.RemovePrisonerChannelAsync(Context.Guild);
-                    await Free.RemovePrisonerRoleAsync(Context.Guild);
-                }
-                return;
-            }
+            await Mute.SaveUserRolesAsync(roles, user);
+            await user.RemoveRolesAsync(roles);
             await user.AddRoleAsync(role);
 
             await RecordPrisonerAsync(user);

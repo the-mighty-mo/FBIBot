@@ -37,5 +37,18 @@ namespace FBIBot
             }
             return await Task.Run(() => isValidMod);
         }
+
+        public static async Task<bool> InvokerIsHigher(SocketGuildUser invoker, SocketGuildUser target)
+        {
+            bool isHigher = target.Hierarchy < invoker.Hierarchy
+                && (invoker == invoker.Guild.Owner || invoker == invoker.Guild.CurrentUser || (!await IsMod(target) && !await IsAdmin(target)));
+            return await Task.Run(() => isHigher);
+        }
+
+        public static async Task<bool> BotIsHigher(SocketGuildUser bot, SocketGuildUser target)
+        {
+            bool isHigher = target.Hierarchy < bot.Hierarchy;
+            return await Task.Run(() => isHigher);
+        }
     }
 }

@@ -17,6 +17,16 @@ namespace FBIBot.Modules.Mod
                 await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
                 return;
             }
+            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
+            {
+                await Context.Channel.SendMessageAsync("We cannot kick members with equal or higher authority than ourselves.");
+                return;
+            }
+            if (!await VerifyUser.InvokerIsHigher(u, user))
+            {
+                await Context.Channel.SendMessageAsync("You cannot kick members with equal or higher authority than yourself.");
+                return;
+            }
 
             await user.KickAsync(reason);
             await Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe." +

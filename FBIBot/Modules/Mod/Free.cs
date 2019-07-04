@@ -20,6 +20,11 @@ namespace FBIBot.Modules.Mod
                 await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
                 return;
             }
+            if (!await VerifyUser.InvokerIsHigher(u, user))
+            {
+                await Context.Channel.SendMessageAsync("You cannot free members with equal or higher authority than yourself.");
+                return;
+            }
 
             SocketRole role = await Arrest.GetPrisonerRoleAsync(Context.Guild);
             List<SocketRole> roles = await Unmute.GetUserRolesAsync(user);

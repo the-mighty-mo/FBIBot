@@ -20,9 +20,18 @@ namespace FBIBot.Modules.Mod
                 await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
                 return;
             }
+            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
+            {
+                await Context.Channel.SendMessageAsync("We cannot mute members with equal or higher authority than ourselves.");
+                return;
+            }
+            if (!await VerifyUser.InvokerIsHigher(u, user))
+            {
+                await Context.Channel.SendMessageAsync("You cannot mute members with equal or higher authority than yourself.");
+                return;
+            }
 
             SocketRole role = await Config.SetMute.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
-
             if (user.Roles.Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
@@ -35,17 +44,7 @@ namespace FBIBot.Modules.Mod
             if (modifyRoles)
             {
                 await SaveUserRolesAsync(roles, user);
-                try
-                {
-                    await user.RemoveRolesAsync(roles);
-                }
-                catch
-                {
-                    await Context.Channel.SendMessageAsync("We cannot mute members with higher authority than ourselves.");
-                    await user.AddRolesAsync(roles);
-                    await Unmute.RemoveUserRolesAsync(user);
-                    return;
-                }
+                await user.RemoveRolesAsync(roles);
             }
             await user.AddRoleAsync(role);
 
