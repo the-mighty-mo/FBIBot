@@ -25,13 +25,6 @@ namespace FBIBot.Modules.Config
         [RequireAdmin]
         public async Task SetModLogAsync(SocketTextChannel channel)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             if (await GetModLogChannelAsync(Context.Guild) == channel)
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {channel.Mention} is already configured for mod logs.");
