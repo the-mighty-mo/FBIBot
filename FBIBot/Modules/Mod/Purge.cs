@@ -9,16 +9,10 @@ namespace FBIBot.Modules.Mod
     public class Purge : ModuleBase<SocketCommandContext>
     {
         [Command("purge")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task PurgeAsync(string count = "100")
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
-
             if (!int.TryParse(count, out int num))
             {
                 await Context.Channel.SendMessageAsync("Our intelligence team has informed us that {count} is not a valid number of messages.");
@@ -36,6 +30,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("purge")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task PurgeAsync(SocketGuildUser user, string count = "10")
         {

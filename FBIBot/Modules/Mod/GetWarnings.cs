@@ -9,15 +9,9 @@ namespace FBIBot.Modules.Mod
     public class GetWarnings : ModuleBase<SocketCommandContext>
     {
         [Command("getwarnings")]
+        [RequireMod]
         public async Task GetWarnsAsync(SocketGuildUser user)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
-
             List<ulong> ids = await GetWarningsAsync(user);
             if (ids.Count == 0)
             {
@@ -30,6 +24,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("getwarnings")]
+        [RequireMod]
         public async Task GetWarnsAsync(string user)
         {
             SocketGuildUser u;

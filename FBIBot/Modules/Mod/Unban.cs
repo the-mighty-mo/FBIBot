@@ -8,16 +8,10 @@ namespace FBIBot.Modules.Mod
     public class Unban : ModuleBase<SocketCommandContext>
     {
         [Command("unban")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanAsync(SocketGuildUser user)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
-
             await Context.Guild.RemoveBanAsync(user);
             await Context.Channel.SendMessageAsync($"{user.Mention}, the now-ex-KGB spy, may reenter the nation.\n" +
                 $"They better not let their guard down.");
@@ -25,16 +19,10 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("unban")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanAsync(string user)
         {
-            SocketGuildUser cu = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(cu))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
-
             if (ulong.TryParse(user, out ulong userID))
             {
                 SocketGuildUser u;

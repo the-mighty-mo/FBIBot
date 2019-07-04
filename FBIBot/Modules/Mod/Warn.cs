@@ -8,14 +8,10 @@ namespace FBIBot.Modules.Mod
     public class Warn : ModuleBase<SocketCommandContext>
     {
         [Command("warn")]
+        [RequireMod]
         public async Task WarnAsync(SocketGuildUser user, string length = null, [Remainder] string reason = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
             if (!await VerifyUser.InvokerIsHigher(u, user))
             {
                 await Context.Channel.SendMessageAsync("You cannot warn members with equal or higher authority than yourself.");
@@ -42,6 +38,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("warn")]
+        [RequireMod]
         public async Task WarnAsync(string user, string length = null, [Remainder] string reason = null)
         {
             SocketGuildUser u;

@@ -8,15 +8,9 @@ namespace FBIBot.Modules.Config
     public class RemoveModRole : ModuleBase<SocketCommandContext>
     {
         [Command("remove-modrole")]
+        [RequireAdmin]
         public async Task RemoveModRoleAsync(SocketRole role)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             if (!(await AddModRole.GetModRolesAsync(Context.Guild)).Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Our agents have informed us that members with the {role.Name} role aren't assistants.");
@@ -28,6 +22,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("remove-modrole")]
+        [RequireAdmin]
         public async Task RemoveModRoleAsync(string role)
         {
             SocketRole r;

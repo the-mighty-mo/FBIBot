@@ -8,15 +8,9 @@ namespace FBIBot.Modules.Config
     public class SetModLog : ModuleBase<SocketCommandContext>
     {
         [Command("setmodlog")]
+        [RequireAdmin]
         public async Task SetModLogAsync()
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             if (await GetModLogChannelAsync(Context.Guild) == null)
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that you are already lacking a mod log channel.");
@@ -28,6 +22,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setmodlog")]
+        [RequireAdmin]
         public async Task SetModLogAsync(SocketTextChannel channel)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);

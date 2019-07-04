@@ -11,15 +11,11 @@ namespace FBIBot.Modules.Mod
     public class Unmute : ModuleBase<SocketCommandContext>
     {
         [Command("unmute")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task UnmuteAsync(SocketGuildUser user)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
             if (!await VerifyUser.InvokerIsHigher(u, user))
             {
                 await Context.Channel.SendMessageAsync("You cannot unmute members with equal or higher authority than yourself.");
@@ -49,6 +45,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("unmute")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task UnmuteAsync(string user)
         {

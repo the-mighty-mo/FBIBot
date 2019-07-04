@@ -8,16 +8,10 @@ namespace FBIBot.Modules.Mod
     public class Slowmode : ModuleBase<SocketCommandContext>
     {
         [Command("slowmode")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task SlowModeAsync(string length = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
-
             if (length == null)
             {
                 await Context.Guild.GetTextChannel(Context.Channel.Id).ModifyAsync(x => x.SlowModeInterval = 0);

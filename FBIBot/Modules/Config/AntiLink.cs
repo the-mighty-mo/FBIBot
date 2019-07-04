@@ -9,16 +9,10 @@ namespace FBIBot.Modules.Config
     public class AntiLink : ModuleBase<SocketCommandContext>
     {
         [Command("anti-link")]
+        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiLinkAsync(string enable)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             bool isEnable = enable == "true" || enable == "enable";
             bool isEnabled = await GetAntiLinkAsync(Context.Guild);
 

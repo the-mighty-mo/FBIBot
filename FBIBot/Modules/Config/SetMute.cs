@@ -9,16 +9,9 @@ namespace FBIBot.Modules.Config
     public class SetMute : ModuleBase<SocketCommandContext>
     {
         [Command("setmute")]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireAdmin]
         public async Task SetMuteAsync()
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             if (GetMuteRole(Context.Guild) == null)
             {
                 await Context.Channel.SendMessageAsync("Our intelligence team has informed us that you already lack a muted role.");
@@ -29,7 +22,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setmute")]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireAdmin]
         public async Task SetMuteAsync(SocketRole role)
         {
             if (await GetMuteRole(Context.Guild) == role)
@@ -43,8 +36,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setmute")]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireOwner()]
+        [RequireAdmin]
         public async Task SetMuteAsync(string role)
         {
             SocketRole r;

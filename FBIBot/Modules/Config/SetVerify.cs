@@ -9,15 +9,9 @@ namespace FBIBot.Modules.Config
     public class SetVerify : ModuleBase<SocketCommandContext>
     {
         [Command("setverify")]
+        [RequireAdmin]
         public async Task SetVerifyAsync()
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             if (await GetVerificationRoleAsync(Context.Guild) == null)
             {
                 await Context.Channel.SendMessageAsync("Our customs team has informed us that you already don't have a citizenship check.");
@@ -29,16 +23,10 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setverify")]
+        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task SetVerifyAsync(SocketRole role)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             if (await GetVerificationRoleAsync(Context.Guild) == role)
             {
                 await Context.Channel.SendMessageAsync($"Our customs team has informed us that all patriotic citizens already receive the {role.Name} role.");
@@ -50,6 +38,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setverify")]
+        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task SetVerifyAsync(string role)
         {

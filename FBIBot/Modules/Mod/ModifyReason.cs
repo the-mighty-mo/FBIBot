@@ -7,15 +7,9 @@ namespace FBIBot.Modules.Mod
     public class ModifyReason : ModuleBase<SocketCommandContext>
     {
         [Command("modifyreason")]
+        [RequireMod]
         public async Task ModifyReasonAsync(string id, [Remainder] string reason = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
-
             if (!ulong.TryParse(id, out ulong ID) || ID >= await SendToModLog.GetNextModLogID(Context.Guild))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");

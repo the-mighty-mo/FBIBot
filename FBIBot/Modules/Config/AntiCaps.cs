@@ -9,16 +9,10 @@ namespace FBIBot.Modules.Config
     public class AntiCaps : ModuleBase<SocketCommandContext>
     {
         [Command("anti-caps")]
+        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiCapsAsync(string enable)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
-
             bool isEnable = enable == "true" || enable == "enable";
             bool isEnabled = await GetAntiCapsAsync(Context.Guild);
 

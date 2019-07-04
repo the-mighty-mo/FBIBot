@@ -8,15 +8,11 @@ namespace FBIBot.Modules.Mod
     public class Ban : ModuleBase<SocketCommandContext>
     {
         [Command("ban")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanAsync(SocketGuildUser user, string prune = null, [Remainder] string reason = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
             if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
             {
                 await Context.Channel.SendMessageAsync("We cannot ban members with equal or higher authority than ourselves.");
@@ -43,16 +39,10 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("ban")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanAsync(string user, string prune = null, [Remainder] string reason = null)
         {
-            SocketGuildUser cu = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(cu))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
-
             if (ulong.TryParse(user, out ulong userID))
             {
                 SocketGuildUser u;

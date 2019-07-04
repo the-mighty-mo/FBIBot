@@ -294,6 +294,8 @@
     <Compile Include="Modules\Mod\Unban.cs" />
     <Compile Include="Modules\Mod\Unmute.cs" />
     <Compile Include="Modules\Mod\Warn.cs" />
+    <Compile Include="Preconditions\RequireAdmin.cs" />
+    <Compile Include="Preconditions\RequireMod.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityInfo.cs" />

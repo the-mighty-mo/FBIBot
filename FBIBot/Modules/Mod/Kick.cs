@@ -8,15 +8,11 @@ namespace FBIBot.Modules.Mod
     public class Kick : ModuleBase<SocketCommandContext>
     {
         [Command("kick")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task KickAsync(SocketGuildUser user, [Remainder] string reason = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
             if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
             {
                 await Context.Channel.SendMessageAsync("We cannot kick members with equal or higher authority than ourselves.");
@@ -35,6 +31,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("kick")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task KickAsync(string user, [Remainder] string reason = null)
         {

@@ -8,15 +8,10 @@ namespace FBIBot.Modules.Config
     public class VerifyAll : ModuleBase<SocketCommandContext>
     {
         [Command("verifyall")]
+        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task VerifyAllAsync()
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsAdmin(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not a local director of the FBI and cannot use this command.");
-                return;
-            }
 
             SocketRole role = await Modules.Config.SetVerify.GetVerificationRoleAsync(Context.Guild);
             if (role == null)

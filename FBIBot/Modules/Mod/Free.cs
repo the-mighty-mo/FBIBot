@@ -11,16 +11,12 @@ namespace FBIBot.Modules.Mod
     public class Free : ModuleBase<SocketCommandContext>
     {
         [Command("free")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task FreeAsync(SocketGuildUser user)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
             if (!await VerifyUser.InvokerIsHigher(u, user))
             {
                 await Context.Channel.SendMessageAsync("You cannot free members with equal or higher authority than yourself.");
@@ -61,6 +57,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("free")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task FreeAsync(string user)

@@ -12,16 +12,12 @@ namespace FBIBot.Modules.Mod
     public class Arrest : ModuleBase<SocketCommandContext>
     {
         [Command("arrest")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task ArrestAsync(SocketGuildUser user, string timeout = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.IsMod(u))
-            {
-                await Context.Channel.SendMessageAsync("You are not an assistant of the FBI and cannot use this command.");
-                return;
-            }
             if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
             {
                 await Context.Channel.SendMessageAsync("We cannot arrest members with equal or higher authority than ourselves.");
@@ -82,6 +78,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("arrest")]
+        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task ArrestAsync(string user, string timeout = null)

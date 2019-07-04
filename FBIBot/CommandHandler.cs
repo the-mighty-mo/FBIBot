@@ -45,7 +45,7 @@ namespace FBIBot
 
         private async Task SendErrorAsync(Optional<CommandInfo> info, ICommandContext context, IResult result)
         {
-            if (!result.IsSuccess && result.Error != CommandError.UnknownCommand && info.Value.RunMode == RunMode.Async)
+            if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
             {
                 await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
             }
@@ -120,12 +120,7 @@ namespace FBIBot
             bool isCommand = msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos);
             if (isCommand)
             {
-                var result = await _commands.ExecuteAsync(context, argPos, _services);
-
-                if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
-                {
-                    await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
-                }
+                await _commands.ExecuteAsync(context, argPos, _services);
 
                 if (msg.Author.IsBot)
                 {
