@@ -10,20 +10,8 @@ namespace FBIBot.Modules.Mod
         [Command("kick")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.KickMembers)]
-        public async Task KickAsync(SocketGuildUser user, [Remainder] string reason = null)
+        public async Task KickAsync([RequireBotHierarchy("kick")] [RequireInvokerHierarchy("kick")] SocketGuildUser user, [Remainder] string reason = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
-            {
-                await Context.Channel.SendMessageAsync("We cannot kick members with equal or higher authority than ourselves.");
-                return;
-            }
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot kick members with equal or higher authority than yourself.");
-                return;
-            }
-
             await user.KickAsync(reason);
             await Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe." +
                 $"{(reason != null ? $"\nThe reason: {reason}" : "")}");

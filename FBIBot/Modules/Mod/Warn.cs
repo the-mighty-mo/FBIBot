@@ -9,15 +9,8 @@ namespace FBIBot.Modules.Mod
     {
         [Command("warn")]
         [RequireMod]
-        public async Task WarnAsync(SocketGuildUser user, string length = null, [Remainder] string reason = null)
+        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length = null, [Remainder] string reason = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot warn members with equal or higher authority than yourself.");
-                return;
-            }
-
             await Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism." +
                 $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
             ulong id = await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User, user, length, reason);

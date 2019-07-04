@@ -13,20 +13,8 @@ namespace FBIBot.Modules.Mod
         [Command("mute")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
+        public async Task MuteAsync([RequireBotHierarchy("mute")] [RequireInvokerHierarchy("mute")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
-            {
-                await Context.Channel.SendMessageAsync("We cannot mute members with equal or higher authority than ourselves.");
-                return;
-            }
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot mute members with equal or higher authority than yourself.");
-                return;
-            }
-
             SocketRole role = await Config.SetMute.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))
             {

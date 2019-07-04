@@ -10,20 +10,8 @@ namespace FBIBot.Modules.Mod
         [Command("ban")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task BanAsync(SocketGuildUser user, string prune = null, [Remainder] string reason = null)
+        public async Task BanAsync([RequireBotHierarchy("ban")] [RequireInvokerHierarchy("ban")] SocketGuildUser user, string prune = null, [Remainder] string reason = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
-            {
-                await Context.Channel.SendMessageAsync("We cannot ban members with equal or higher authority than ourselves.");
-                return;
-            }
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot ban members with equal or higher authority than yourself.");
-                return;
-            }
-
             if (int.TryParse(prune, out int pruneDays))
             {
                 await user.BanAsync(pruneDays, reason);

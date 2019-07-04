@@ -295,6 +295,8 @@
     <Compile Include="Modules\Mod\Unmute.cs" />
     <Compile Include="Modules\Mod\Warn.cs" />
     <Compile Include="Preconditions\RequireAdmin.cs" />
+    <Compile Include="Preconditions\RequireBotHierarchy.cs" />
+    <Compile Include="Preconditions\RequireInvokerHierarchy.cs" />
     <Compile Include="Preconditions\RequireMod.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

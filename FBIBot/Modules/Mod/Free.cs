@@ -14,15 +14,8 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task FreeAsync(SocketGuildUser user)
+        public async Task FreeAsync([RequireInvokerHierarchy("free")] SocketGuildUser user)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot free members with equal or higher authority than yourself.");
-                return;
-            }
-
             SocketRole role = await Arrest.GetPrisonerRoleAsync(Context.Guild);
             List<SocketRole> roles = await Unmute.GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)

@@ -9,15 +9,8 @@ namespace FBIBot.Modules.Mod
     {
         [Command("removewarning")]
         [RequireMod]
-        public async Task RemoveWarnAsync(SocketGuildUser user, string id)
+        public async Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, string id)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot remove warnings from members with equal or higher authority than yourself.");
-                return;
-            }
-
             if (!ulong.TryParse(id, out ulong ID))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");

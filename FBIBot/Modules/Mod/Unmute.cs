@@ -13,15 +13,8 @@ namespace FBIBot.Modules.Mod
         [Command("unmute")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task UnmuteAsync(SocketGuildUser user)
+        public async Task UnmuteAsync([RequireInvokerHierarchy("unmute")] SocketGuildUser user)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot unmute members with equal or higher authority than yourself.");
-                return;
-            }
-
             SocketRole role = await Config.SetMute.GetMuteRole(Context.Guild);
             List<SocketRole> roles = await GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)

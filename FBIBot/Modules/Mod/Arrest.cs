@@ -15,20 +15,8 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync(SocketGuildUser user, string timeout = null)
+        public async Task ArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, string timeout = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
-            {
-                await Context.Channel.SendMessageAsync("We cannot arrest members with equal or higher authority than ourselves.");
-                return;
-            }
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot arrest members with equal or higher authority than yourself.");
-                return;
-            }
-
             SocketRole role = await GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
             {
@@ -76,7 +64,7 @@ namespace FBIBot.Modules.Mod
                 await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.Client.CurrentUser, user);
             }
         }
-
+        
         [Command("arrest")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
@@ -91,7 +79,7 @@ namespace FBIBot.Modules.Mod
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
-
+        
         async Task<SocketRole> CreatePrisonerRoleAsync()
         {
             SocketRole role;

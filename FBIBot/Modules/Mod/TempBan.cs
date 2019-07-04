@@ -10,20 +10,8 @@ namespace FBIBot.Modules.Mod
         [Command("tempban")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task TempBanAsync(SocketGuildUser user, string length, string prune = null, [Remainder] string reason = null)
+        public async Task TempBanAsync([RequireBotHierarchy("tempban")] [RequireInvokerHierarchy("tempban")] SocketGuildUser user, string length, string prune = null, [Remainder] string reason = null)
         {
-            SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
-            if (!await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, user))
-            {
-                await Context.Channel.SendMessageAsync("We cannot ban members with equal or higher authority than ourselves.");
-                return;
-            }
-            if (!await VerifyUser.InvokerIsHigher(u, user))
-            {
-                await Context.Channel.SendMessageAsync("You cannot ban members with equal or higher authority than yourself.");
-                return;
-            }
-
             if (!double.TryParse(length, out double days))
             {
                 await Context.Channel.SendMessageAsync($"Unfortunately, {length} is not a valid prison sentence length.");
