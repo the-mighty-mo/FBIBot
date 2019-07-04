@@ -13,6 +13,7 @@ namespace FBIBot.Modules.Mod
     {
         [Command("arrest")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task ArrestAsync(SocketGuildUser user, string timeout = null)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
@@ -82,6 +83,7 @@ namespace FBIBot.Modules.Mod
 
         [Command("arrest")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task ArrestAsync(string user, string timeout = null)
         {
             SocketGuildUser u;

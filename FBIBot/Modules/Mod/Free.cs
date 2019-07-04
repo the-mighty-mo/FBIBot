@@ -12,6 +12,7 @@ namespace FBIBot.Modules.Mod
     {
         [Command("free")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task FreeAsync(SocketGuildUser user)
         {
             SocketGuildUser u = Context.Guild.GetUser(Context.User.Id);
@@ -61,6 +62,7 @@ namespace FBIBot.Modules.Mod
 
         [Command("free")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
         public async Task FreeAsync(string user)
         {
             SocketGuildUser u;
