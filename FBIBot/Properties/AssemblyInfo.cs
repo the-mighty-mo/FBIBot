@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FBIBot")]
-[assembly: AssemblyDescription("A good boi to help administer a server")]
+[assembly: AssemblyTitle("The FBI")]
+[assembly: AssemblyDescription("Someone has to keep the server in check, and who better than the FBI?")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Josedolf Staller Enterprises")]
-[assembly: AssemblyProduct("FBIBot")]
+[assembly: AssemblyProduct("The FBI")]
 [assembly: AssemblyCopyright("Copyright © The Mighty Chi 2019")]
 [assembly: AssemblyTrademark("Josedolf Staller")]
 [assembly: AssemblyCulture("")]
