@@ -21,9 +21,13 @@ namespace FBIBot.Modules.Config
                 {
                     await channel.DeleteMessagesAsync(await channel.GetMessagesAsync(int.MaxValue).FlattenAsync());
 
-                    foreach (IMessage msg in await channel.GetMessagesAsync(int.MaxValue)?.FlattenAsync())
+                    var msgs = await channel.GetMessagesAsync(int.MaxValue)?.FlattenAsync();
+                    if (msgs != null)
                     {
-                        await msg?.DeleteAsync();
+                        foreach (IMessage msg in msgs)
+                        {
+                            await msg?.DeleteAsync();
+                        }
                     }
                 }
             }
