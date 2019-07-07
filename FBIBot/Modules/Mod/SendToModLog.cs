@@ -111,7 +111,7 @@ namespace FBIBot.Modules.Mod
             switch (info.t)
             {
             case LogType.RaidMode:
-                info.color = new Color(255, 213, 31);
+                info.color = new Color(206, 15, 65);
                 info.cmd = "Raid Mode";
                 info.reasonAllowed = false;
                 info.isTime = false;
@@ -124,7 +124,7 @@ namespace FBIBot.Modules.Mod
                 info.isTime = false;
                 break;
             case LogType.Warn:
-                info.color = new Color(228, 226, 24);
+                info.color = new Color(255, 213, 31);
                 if (info.isTime)
                 {
                     info.length += $" {(info.time == 1 ? "hour" : "hours")}";
