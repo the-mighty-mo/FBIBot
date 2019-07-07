@@ -58,6 +58,10 @@ namespace FBIBot.Modules.AutoMod
             List<Task> cmds = new List<Task>();
             foreach (SocketGuild g in Context.User.MutualGuilds)
             {
+                if (await Config.SetVerify.GetVerificationRoleAsync(g) == null)
+                {
+                    continue;
+                }
                 SocketGuildUser user = g.GetUser(Context.User.Id);
                 cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, Context.Client.CurrentUser, user));
             }
