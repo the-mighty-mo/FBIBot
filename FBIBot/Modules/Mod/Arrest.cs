@@ -37,7 +37,7 @@ namespace FBIBot.Modules.Mod
             bool isTimeout = double.TryParse(timeout, out double minutes);
 
             await Context.Channel.SendMessageAsync($"{user.Mention} has been sent to Guantanamo Bay{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Arrest, Context.User, user, timeout);
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Arrest, Context.User as SocketGuildUser, user, timeout);
 
             if (timeout != null && isTimeout)
             {
@@ -61,7 +61,7 @@ namespace FBIBot.Modules.Mod
                     await Free.RemovePrisonerRoleAsync(Context.Guild);
                 }
 
-                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.Client.CurrentUser, user);
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.Guild.CurrentUser as SocketGuildUser, user);
             }
         }
         

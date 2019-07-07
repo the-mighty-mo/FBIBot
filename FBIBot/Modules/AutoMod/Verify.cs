@@ -63,7 +63,7 @@ namespace FBIBot.Modules.AutoMod
                     continue;
                 }
                 SocketGuildUser user = g.GetUser(Context.User.Id);
-                cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, Context.Client.CurrentUser, user));
+                cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, Context.Guild.CurrentUser, user));
             }
             await Task.WhenAll(cmds);
         }

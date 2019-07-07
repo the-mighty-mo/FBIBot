@@ -34,7 +34,7 @@ namespace FBIBot.Modules.Mod
             }
 
             await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.User, user);
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.User as SocketGuildUser, user);
         }
 
         [Command("unmute")]

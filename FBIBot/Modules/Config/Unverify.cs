@@ -32,7 +32,7 @@ namespace FBIBot.Modules.Config
 
             await user.RemoveRoleAsync(role);
             await Context.Channel.SendMessageAsync($"We have put the potential communist {user.Mention} under quarantine.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unverify, Context.User, user, null, reason);
+            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unverify, Context.User as SocketGuildUser, user, null, reason);
             await Verify.RemoveVerifiedAsync(user);
             await Verify.SendCaptchaAsync(user);
         }

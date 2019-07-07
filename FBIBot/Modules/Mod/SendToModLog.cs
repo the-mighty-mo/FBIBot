@@ -35,10 +35,11 @@ namespace FBIBot.Modules.Mod
             public Color color;
             public bool reasonAllowed = true;
             public bool isTime;
+            public bool hasTarget;
             public double time;
             public string cmd;
 
-            public ModLogInfo(LogType t, string length, string reason)
+            public ModLogInfo(LogType t, SocketGuildUser target, string length, string reason)
             {
                 this.t = t;
                 this.length = length;
@@ -46,14 +47,15 @@ namespace FBIBot.Modules.Mod
 
                 isTime = double.TryParse(length, out time);
                 cmd = t.ToString();
+                hasTarget = target != null;
             }
         }
 
         // Note: length for LogType.RemoveWarn is the Mod Log ID, and length for LogType.RemoveWarns is the number of removed warnings
-        public static async Task<ulong> SendToModLogAsync(LogType t, SocketUser invoker, SocketGuildUser u, string length = null, string reason = null)
+        public static async Task<ulong> SendToModLogAsync(LogType t, SocketGuildUser invoker, SocketGuildUser target, string length = null, string reason = null)
         {
-            ulong id = await GetNextModLogID(u.Guild);
-            ModLogInfo info = new ModLogInfo(t, length, reason);
+            ulong id = await GetNextModLogID(invoker.Guild);
+            ModLogInfo info = new ModLogInfo(t, target, length, reason);
             LogTypeSwitch(ref info);
 
             EmbedBuilder embed = new EmbedBuilder()
@@ -61,11 +63,22 @@ namespace FBIBot.Modules.Mod
                 .WithTitle($"Federal Bureau of Investigation - Log {id}")
                 .WithCurrentTimestamp();
 
-            EmbedFieldBuilder affected = new EmbedFieldBuilder()
-                .WithIsInline(false)
-                .WithName($"{info.cmd} User{(info.isTime ? $" for {info.length}" : "")}")
-                .WithValue(u.Mention);
-            embed.AddField(affected);
+            if (info.hasTarget)
+            {
+                EmbedFieldBuilder command = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName($"{info.cmd} User{(info.isTime ? $" for {info.length}" : "")}")
+                    .WithValue(target.Mention);
+                embed.AddField(command);
+            }
+            else
+            {
+                EmbedFieldBuilder command = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName($"{info.cmd}{(info.isTime ? $" for {info.length}" : "")}")
+                    .WithValue("(no target user)");
+                embed.AddField(command);
+            }
 
             EmbedFieldBuilder invoked = new EmbedFieldBuilder()
                 .WithIsInline(false)
@@ -82,10 +95,10 @@ namespace FBIBot.Modules.Mod
                 embed.AddField(field);
             }
 
-            var msg = await (await SetModLog.GetModLogChannelAsync(u.Guild))?.SendMessageAsync("", false, embed.Build());
+            var msg = await (await SetModLog.GetModLogChannelAsync(invoker.Guild))?.SendMessageAsync("", false, embed.Build());
             if (msg != null)
             {
-                await SaveModLogAsync(msg, u.Guild, id);
+                await SaveModLogAsync(msg, invoker.Guild, id);
             }
 
             return id;
