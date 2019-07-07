@@ -95,7 +95,7 @@ namespace FBIBot.Modules.Config
             }
 
             EmbedBuilder embed = new EmbedBuilder()
-                .WithColor(new Color(255, 213, 31))
+                .WithColor(new Color(206, 15, 65))
                 .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
                 .WithCurrentTimestamp()
                 .WithFields(fields);
