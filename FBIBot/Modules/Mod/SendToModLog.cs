@@ -12,6 +12,7 @@ namespace FBIBot.Modules.Mod
     {
         public enum LogType
         {
+            RaidMode,
             Verify,
             Warn,
             Mute,
@@ -38,6 +39,7 @@ namespace FBIBot.Modules.Mod
             public bool hasTarget;
             public double time;
             public string cmd;
+            public string state = "Executed";
 
             public ModLogInfo(LogType t, SocketGuildUser target, string length, string reason)
             {
@@ -76,7 +78,7 @@ namespace FBIBot.Modules.Mod
                 EmbedFieldBuilder command = new EmbedFieldBuilder()
                     .WithIsInline(false)
                     .WithName($"{info.cmd}{(info.isTime ? $" for {info.length}" : "")}")
-                    .WithValue("(no target user)");
+                    .WithValue(info.state);
                 embed.AddField(command);
             }
 
@@ -108,6 +110,14 @@ namespace FBIBot.Modules.Mod
         {
             switch (info.t)
             {
+            case LogType.RaidMode:
+                info.color = new Color(255, 213, 31);
+                info.cmd = "Raid Mode";
+                info.reasonAllowed = false;
+                info.isTime = false;
+                info.hasTarget = false;
+                info.state = info.length;
+                break;
             case LogType.Verify:
                 info.color = new Color(255, 255, 255);
                 info.reasonAllowed = false;

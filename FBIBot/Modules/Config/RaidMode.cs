@@ -24,11 +24,13 @@ namespace FBIBot.Modules.Config
                 await Context.Guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High);
 
                 await Context.Channel.SendMessageAsync(":rotating_light: :rotating_light: WE HERE AT THE FBI ARE IN RAID MODE! :rotating_light: :rotating_light:");
+                await Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.RaidMode, Context.User as SocketGuildUser, null, "Enabled");
                 return;
             }
 
             await Context.Guild.ModifyAsync(x => x.VerificationLevel = (VerificationLevel)level);
             await Context.Channel.SendMessageAsync("The FBI is now out of raid mode. Surveillance results will be posted in the Mod Logs.");
+            await Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.RaidMode, Context.User as SocketGuildUser, null, "Disabled");
             await RemoveVerificationLevelAsync(Context.Guild);
             await SendUsersAsync();
         }
