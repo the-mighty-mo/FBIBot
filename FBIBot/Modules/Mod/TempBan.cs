@@ -60,11 +60,15 @@ namespace FBIBot.Modules.Mod
                 {
                     await Context.Guild.AddBanAsync(userID, 0, reason);
                 }
+
                 await Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}." +
                     $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, length, reason);
 
                 await Task.Delay((int)(days * 24 * 60 * 60 * 1000));
                 await Context.Guild.RemoveBanAsync(userID);
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User as SocketGuildUser, userID);
+
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

@@ -34,6 +34,8 @@ namespace FBIBot.Modules.Mod
                 await Context.Guild.RemoveBanAsync(userID);
                 await Context.Channel.SendMessageAsync($"<@{user}>, the now-ex-KGB spy, may enter the nation.\n" +
                     $"They better not let their guard down.");
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User as SocketGuildUser, userID);
+
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

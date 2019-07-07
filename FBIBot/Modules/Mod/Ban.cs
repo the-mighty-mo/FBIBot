@@ -48,8 +48,10 @@ namespace FBIBot.Modules.Mod
                 {
                     await Context.Guild.AddBanAsync(userID, 0, reason);
                 }
+
                 await Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders." +
                     $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
+                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, null, reason);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

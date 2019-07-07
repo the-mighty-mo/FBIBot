@@ -51,14 +51,39 @@ namespace FBIBot.Modules.Mod
                 cmd = t.ToString();
                 hasTarget = target != null;
             }
+
+            public ModLogInfo(LogType t, string length, string reason)
+            {
+                this.t = t;
+                this.length = length;
+                this.reason = reason;
+
+                isTime = double.TryParse(length, out time);
+                cmd = t.ToString();
+                hasTarget = true;
+            }
         }
 
         // Note: length for LogType.RemoveWarn is the Mod Log ID, and length for LogType.RemoveWarns is the number of removed warnings
         public static async Task<ulong> SendToModLogAsync(LogType t, SocketGuildUser invoker, SocketGuildUser target, string length = null, string reason = null)
         {
-            ulong id = await GetNextModLogID(invoker.Guild);
             ModLogInfo info = new ModLogInfo(t, target, length, reason);
             LogTypeSwitch(ref info);
+
+            return await SendToModLogAsync(info, invoker, target?.Id);
+        }
+
+        public static async Task<ulong> SendToModLogAsync(LogType t, SocketGuildUser invoker, ulong targetID, string length = null, string reason = null)
+        {
+            ModLogInfo info = new ModLogInfo(t, length, reason);
+            LogTypeSwitch(ref info);
+
+            return await SendToModLogAsync(info, invoker, targetID);
+        }
+
+        private static async Task<ulong> SendToModLogAsync(ModLogInfo info, SocketGuildUser invoker, ulong? targetID)
+        {
+            ulong id = await GetNextModLogID(invoker.Guild);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(info.color)
@@ -70,7 +95,7 @@ namespace FBIBot.Modules.Mod
                 EmbedFieldBuilder command = new EmbedFieldBuilder()
                     .WithIsInline(false)
                     .WithName($"{info.cmd} User{(info.isTime ? $" for {info.length}" : "")}")
-                    .WithValue(target.Mention);
+                    .WithValue($"<@{targetID}>");
                 embed.AddField(command);
             }
             else
