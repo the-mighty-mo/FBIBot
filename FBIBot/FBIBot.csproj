@@ -274,6 +274,7 @@
     <Compile Include="Modules\Config\RemoveModRole.cs" />
     <Compile Include="Modules\Config\SetModLog.cs" />
     <Compile Include="Modules\Config\SetMute.cs" />
+    <Compile Include="Modules\Config\Unverify.cs" />
     <Compile Include="Modules\Config\VerifyAll.cs" />
     <Compile Include="Modules\Config\SetVerify.cs" />
     <Compile Include="Modules\Config\ClearModLog.cs" />

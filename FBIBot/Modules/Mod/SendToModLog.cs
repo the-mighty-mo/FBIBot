@@ -12,11 +12,13 @@ namespace FBIBot.Modules.Mod
     {
         public enum LogType
         {
+            Verify,
             Warn,
             Mute,
             Arrest,
             Kick,
             Ban,
+            Unverify,
             RemoveWarn,
             RemoveWarns,
             Unmute,
@@ -35,6 +37,11 @@ namespace FBIBot.Modules.Mod
 
             switch (t)
             {
+            case LogType.Verify:
+                color = new Color(255, 255, 255);
+                reasonAllowed = false;
+                isTime = false;
+                break;
             case LogType.Warn:
                 color = new Color(228, 226, 24);
                 if (isTime)
@@ -50,22 +57,26 @@ namespace FBIBot.Modules.Mod
                 }
                 break;
             case LogType.Arrest:
+                color = new Color(255, 61, 24);
                 reason = "*No reason necessary*";
                 if (isTime)
                 {
                     length += $" {(time == 1 ? "minute" : "minutes")}";
                 }
-                color = new Color(255, 61, 24);
                 break;
             case LogType.Kick:
                 color = new Color(255, 12, 12);
                 break;
             case LogType.Ban:
+                color = new Color(130, 0, 0);
                 if (isTime)
                 {
                     length += $" {(time == 1 ? "day" : "days")}";
                 }
-                color = new Color(130, 0, 0);
+                break;
+            case LogType.Unverify:
+                color = new Color(0, 0, 0);
+                isTime = false;
                 break;
             case LogType.RemoveWarn:
                 cmd = $"Remove Warning {length} from";
@@ -77,9 +88,9 @@ namespace FBIBot.Modules.Mod
             case LogType.Free:
             case LogType.Unban:
             default:
+                color = new Color(12, 156, 24);
                 reasonAllowed = false;
                 isTime = false;
-                color = new Color(12, 156, 24);
                 break;
             }
 

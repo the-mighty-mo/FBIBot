@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.IO;
@@ -17,14 +18,14 @@ namespace FBIBot.Modules.AutoMod
         [Command("verify")]
         public async Task VerifyAsync([Remainder] string response = "")
         {
-            if (await IsVerifiedAsync(Context.User))
+            if (await GetVerifiedAsync(Context.User))
             {
                 await GiveVerificationAsync();
                 await Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck.");
                 return;
             }
 
-            List<string> captchas = await ReadSQLAsync();
+            List<string> captchas = await GetCaptchaAsync(Context.User);
             if (response.Length == 0 || captchas.Count == 0)
             {
                 await SendCaptchaAsync();
@@ -39,20 +40,28 @@ namespace FBIBot.Modules.AutoMod
 
                 if (attempts >= maxAttempts)
                 {
-                    await RemoveCaptchaAsync();
+                    await RemoveCaptchaAsync(Context.User);
                     await Context.User.SendMessageAsync("You have run out of attempts, you communist spy.\n" +
                         "If you would like to try again, please get a new captcha by typing `\\verify`.");
                     return;
                 }
 
-                await UpdateAttemptsAsync(attempts);
+                await SetAttemptsAsync(attempts);
                 await Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.");
                 return;
             }
 
-            await SaveVerificationAsync();
             await GiveVerificationAsync();
             await Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.");
+            await SetVerifiedAsync(Context.User);
+
+            List<Task> cmds = new List<Task>();
+            foreach (SocketGuild g in Context.User.MutualGuilds)
+            {
+                SocketGuildUser user = g.GetUser(Context.User.Id);
+                cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, Context.Client.CurrentUser, user));
+            }
+            await Task.WhenAll(cmds);
         }
 
         async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.Guild.GetUser(Context.User.Id));
@@ -68,7 +77,7 @@ namespace FBIBot.Modules.AutoMod
             }
             while (captchaCode.Any(x => badCaptcha.Contains(x.ToString())));
 
-            Task save = SaveToSQLAsync(captchaCode, u);
+            Task save = SetCaptchaAsync(captchaCode, u);
 
             var imageStream = ImageFactory.GenerateImage(captchaCode);
             imageStream.Position = 0;
@@ -95,7 +104,27 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        static async Task SaveToSQLAsync(string captcha, SocketUser u)
+        public static async Task<List<string>> GetCaptchaAsync(SocketUser u)
+        {
+            List<string> captchas = new List<string>();
+
+            string read = "SELECT captcha FROM Captcha WHERE user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(read, Program.cnVerify))
+            {
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+
+                SqliteDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    captchas.Add((string)reader["captcha"]);
+                }
+                reader.Close();
+            }
+
+            return await Task.Run(() => captchas);
+        }
+
+        public static async Task SetCaptchaAsync(string captcha, SocketUser u)
         {
             string update = "UPDATE Captcha SET captcha = @captcha WHERE user_id = @user_id;";
             string insert = "INSERT INTO Captcha (user_id, captcha) SELECT @user_id, @captcha WHERE (SELECT Changes() = 0);";
@@ -108,24 +137,16 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        async Task<List<string>> ReadSQLAsync()
+        public static async Task RemoveCaptchaAsync(SocketUser u)
         {
-            List<string> captchas = new List<string>();
+            string removeCaptcha = "DELETE FROM Captcha WHERE user_id = @user_id;";
+            string removeAttempts = "DELETE FROM Attempts WHERE user_id = @user_id;";
 
-            string read = "SELECT captcha FROM Captcha WHERE user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(read, Program.cnVerify))
+            using (SqliteCommand cmd = new SqliteCommand(removeCaptcha + removeAttempts, Program.cnVerify))
             {
-                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
-
-                SqliteDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    captchas.Add((string)reader["captcha"]);
-                }
-                reader.Close();
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
             }
-
-            return await Task.Run(() => captchas);
         }
 
         async Task<int> GetAttemptsAsync()
@@ -148,7 +169,7 @@ namespace FBIBot.Modules.AutoMod
             return await Task.Run(() => attempts);
         }
 
-        async Task UpdateAttemptsAsync(int attempts)
+        async Task SetAttemptsAsync(int attempts)
         {
             string update = "UPDATE Attempts SET attempts = @attempts WHERE user_id = @user_id;";
             string insert = "INSERT INTO Attempts (user_id, attempts) SELECT @user_id, @attempts WHERE (SELECT Changes() = 0);\n";
@@ -161,23 +182,11 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        async Task RemoveCaptchaAsync()
-        {
-            string removeCaptcha = "DELETE FROM Captcha WHERE user_id = @user_id;";
-            string removeAttempts = "DELETE FROM Attempts WHERE user_id = @user_id;";
-
-            using (SqliteCommand cmd = new SqliteCommand(removeCaptcha + removeAttempts, Program.cnVerify))
-            {
-                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        public static async Task<bool> IsVerifiedAsync(SocketUser u)
+        public static async Task<bool> GetVerifiedAsync(SocketUser u)
         {
             bool isVerified = false;
 
-            string verify = "SELECT * FROM Verified WHERE user_id = @user_id;";
+            string verify = "SELECT user_id FROM Verified WHERE user_id = @user_id;";
             using (SqliteCommand cmd = new SqliteCommand(verify, Program.cnVerify))
             {
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
@@ -190,14 +199,24 @@ namespace FBIBot.Modules.AutoMod
             return await Task.Run(() => isVerified);
         }
 
-        async Task SaveVerificationAsync()
+        public static async Task SetVerifiedAsync(SocketUser u)
         {
-            await RemoveCaptchaAsync();
+            await RemoveCaptchaAsync(u);
 
             string verify = "INSERT INTO Verified (user_id) SELECT @user_id WHERE NOT EXISTS (SELECT 1 FROM Verified WHERE user_id = @user_id);";
             using (SqliteCommand cmd = new SqliteCommand(verify, Program.cnVerify))
             {
-                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemoveVerifiedAsync(SocketUser u)
+        {
+            string delete = "DELETE FROM Verified WHERE user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnVerify))
+            {
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }

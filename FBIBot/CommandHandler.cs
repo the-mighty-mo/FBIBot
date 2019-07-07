@@ -94,7 +94,7 @@ namespace FBIBot
             int index = Program.rng.Next(messages.Count);
             await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
 
-            if (await Verify.IsVerifiedAsync(u))
+            if (await Verify.GetVerifiedAsync(u))
             {
                 SocketRole role = await SetVerify.GetVerificationRoleAsync(u.Guild);
                 if (role != null && u.Guild.CurrentUser.GetPermissions(u.Guild.DefaultChannel).ManageRoles)

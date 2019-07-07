@@ -54,12 +54,14 @@ namespace FBIBot.Modules
 
         private static readonly string config = "config\n" +
             "  - Displays the current bot configuration\n\n" +
-            "setprefix\n" +
+            "setprefix [prefix]\n" +
             $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
             "setverify [role mention / role ID]\n" +
             "  - Sets the role for democracy-loving citizens; *Unsets if no role is given*\n\n" +
             "verifyall\n" +
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
+            "unverify [user mention / user ID] [reason (optional)]\n" +
+            "  - Removes the server's verification role from the user and removes the user from the list of verified users\n\n" +
             "setmute [role mention / role ID]\n" +
             "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
             "modify-muted-roles [true/enable / false/disable]\n" +

@@ -16,7 +16,7 @@ namespace FBIBot.Modules.Config
             SocketRole role = await SetVerify.GetVerificationRoleAsync(Context.Guild);
             if (role == null)
             {
-                await Context.Channel.SendMessageAsync("Our intelligence tells us that there is no role to give to verified members.");
+                await Context.Channel.SendMessageAsync("Our intelligence team has informed us that there is no role to give to verified members.");
                 return;
             }
 
