@@ -65,13 +65,13 @@ namespace FBIBot.Modules
             "modify-muted-roles [true/enable / false/disable]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
 
-        private static readonly string config2 = "add-modrole [role mention / role ID]\n" +
+        private static readonly string config2 = "add-mod [role mention / role ID]\n" +
             "  - Adds the role to a list of assistants of the agency\n\n" +
-            "remove-modrole [role mention / role ID]\n" +
+            "remove-mod [role mention / role ID]\n" +
             "  - Removes the role from the list of assistants of the agency out of suspicion\n\n" +
-            "add-adminrole [role mention / role ID]\n" +
+            "add-admin [role mention / role ID]\n" +
             "  - Adds the role to a list of local directors of the agency\n\n" +
-            "remove-adminrole [role mention / role ID]\n" +
+            "remove-admin [role mention / role ID]\n" +
             "  - Removes the role from the list of local directors of the agency due to presidential disapproval\n\n" +
             "setmodlog [channel mention / channel ID]\n" +
             "  - Sets the channel for the Mod Log; *Unsets if no channel is given*\n\n" +

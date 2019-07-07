@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Config
     public class AutoSurveillance : ModuleBase<SocketCommandContext>
     {
         [Command("auto-surveillance")]
+        [Alias("autosurveillance")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AutoSurveillanceAsync(string enable)

@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Config
     public class SetVerify : ModuleBase<SocketCommandContext>
     {
         [Command("setverify")]
+        [Alias("set-verify")]
         [RequireAdmin]
         public async Task SetVerifyAsync()
         {
@@ -23,6 +24,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setverify")]
+        [Alias("set-verify")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task SetVerifyAsync(SocketRole role)
@@ -38,6 +40,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setverify")]
+        [Alias("set-verify")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task SetVerifyAsync(string role)

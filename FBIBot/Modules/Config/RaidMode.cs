@@ -10,6 +10,7 @@ namespace FBIBot.Modules.Config
     public class RaidMode : ModuleBase<SocketCommandContext>
     {
         [Command("raidmode")]
+        [Alias("raid-mode")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageGuild)]
         public async Task RaidModeAsync()

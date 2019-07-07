@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
 {
-    public class AddAdminRole : ModuleBase<SocketCommandContext>
+    public class AddAdmin : ModuleBase<SocketCommandContext>
     {
-        [Command("add-adminrole")]
+        [Command("add-admin")]
+        [Alias("addadmin")]
         [RequireAdmin]
-        public async Task AddAdminRoleAsync(SocketRole role)
+        public async Task AddAdminAsync(SocketRole role)
         {
             if ((await GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
@@ -18,8 +19,8 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await AddAdminAsync(role);
-            if ((await AddModRole.GetModRolesAsync(Context.Guild)).Contains(role))
+            await AddAdminRoleAsync(role);
+            if ((await AddMod.GetModRolesAsync(Context.Guild)).Contains(role))
             {
                 await RemoveModRole.RemoveModAsync(role);
                 await Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been promoted to local directors of the FBI.");
@@ -30,14 +31,15 @@ namespace FBIBot.Modules.Config
             }
         }
 
-        [Command("add-adminrole")]
+        [Command("add-admin")]
+        [Alias("addadmin")]
         [RequireAdmin]
-        public async Task AddAdminRoleAsync(string role)
+        public async Task AddAdminAsync(string role)
         {
             SocketRole r;
             if (ulong.TryParse(role, out ulong roleID) && (r = Context.Guild.GetRole(roleID)) != null)
             {
-                await AddAdminRoleAsync(r);
+                await AddAdminAsync(r);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given role does not exist.");
@@ -68,7 +70,7 @@ namespace FBIBot.Modules.Config
             return await Task.Run(() => roles);
         }
 
-        public static async Task AddAdminAsync(SocketRole role)
+        public static async Task AddAdminRoleAsync(SocketRole role)
         {
             string insert = "INSERT INTO Admins (guild_id, role_id) SELECT @guild_id, @role_id\n" +
                 "WHERE NOT EXISTS (SELECT 1 FROM Admins WHERE guild_id = @guild_id AND role_id = @role_id);";

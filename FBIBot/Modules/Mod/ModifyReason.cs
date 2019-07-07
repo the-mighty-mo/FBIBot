@@ -7,6 +7,7 @@ namespace FBIBot.Modules.Mod
     public class ModifyReason : ModuleBase<SocketCommandContext>
     {
         [Command("modifyreason")]
+        [Alias("modify-reason")]
         [RequireMod]
         public async Task ModifyReasonAsync(string id, [Remainder] string reason = null)
         {

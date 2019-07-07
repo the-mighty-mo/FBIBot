@@ -8,6 +8,7 @@ namespace FBIBot.Modules.Config
     public class Prefix : ModuleBase<SocketCommandContext>
     {
         [Command("setprefix")]
+        [Alias("set-prefix")]
         [RequireAdmin]
         public async Task PrefixAsync(string prefix = CommandHandler.prefix)
         {

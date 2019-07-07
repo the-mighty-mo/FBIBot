@@ -8,6 +8,7 @@ namespace FBIBot.Modules.Mod
     public class TempBan : ModuleBase<SocketCommandContext>
     {
         [Command("tempban")]
+        [Alias("temp-ban")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task TempBanAsync([RequireBotHierarchy("tempban")] [RequireInvokerHierarchy("tempban")] SocketGuildUser user, string length, string prune = null, [Remainder] string reason = null)
@@ -37,6 +38,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("tempban")]
+        [Alias("temp-ban")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task TempBanAsync(string user, string length, string prune = null, [Remainder] string reason = null)

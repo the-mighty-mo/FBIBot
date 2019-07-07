@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Config
     public class ClearModLog : ModuleBase<SocketCommandContext>
     {
         [Command("clearmodlog")]
+        [Alias("clearmodlogs")]
         [RequireAdmin]
         public async Task ClearModLogAsync(string clear = "false")
         {

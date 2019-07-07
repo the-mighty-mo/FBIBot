@@ -29,8 +29,8 @@ namespace FBIBot.Modules.Config
                 $"Verification Role: **{(verify != null ? verify.Name : "(none)")}**\n" +
                 $"Mute Role: **{(mute != null ? mute.Name : "(none)")}**\n" +
                 $"Modify Muted Member's Roles: **{(modifyMuted ? "Enabled" : "Disabled")}**\n" +
-                $"Mod Roles: **{string.Join(", ", await AddModRole.GetModRolesAsync(Context.Guild))}**\n" +
-                $"Admin Roles: **{string.Join(", ", await AddAdminRole.GetAdminRolesAsync(Context.Guild))}**\n" +
+                $"Mod Roles: **{string.Join(", ", await AddMod.GetModRolesAsync(Context.Guild))}**\n" +
+                $"Admin Roles: **{string.Join(", ", await AddAdmin.GetAdminRolesAsync(Context.Guild))}**\n" +
                 $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**\n" +
                 $"FBI RAID MODE: **{(raidMode ? "ENABLED" : "Disabled")}**\n" +
                 $"Auto Surveillance: **{(autoSurveillance ? "Enabled" : "Disabled")}**\n" +

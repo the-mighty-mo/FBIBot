@@ -8,6 +8,7 @@ namespace FBIBot.Modules.Config
     public class SetModLog : ModuleBase<SocketCommandContext>
     {
         [Command("setmodlog")]
+        [Alias("set-modlog", "set-mod-log")]
         [RequireAdmin]
         public async Task SetModLogAsync()
         {
@@ -22,6 +23,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setmodlog")]
+        [Alias("set-modlog", "set-mod-log")]
         [RequireAdmin]
         public async Task SetModLogAsync(SocketTextChannel channel)
         {
@@ -36,6 +38,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setmodlog")]
+        [Alias("set-modlog", "set-mod-log")]
         public async Task SetModLogAsync(string channel)
         {
             SocketTextChannel c;

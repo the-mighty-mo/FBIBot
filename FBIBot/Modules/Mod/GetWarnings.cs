@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Mod
     public class GetWarnings : ModuleBase<SocketCommandContext>
     {
         [Command("getwarnings")]
+        [Alias("get-warnings")]
         [RequireMod]
         public async Task GetWarnsAsync(SocketGuildUser user)
         {
@@ -24,6 +25,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("getwarnings")]
+        [Alias("get-warnings")]
         [RequireMod]
         public async Task GetWarnsAsync(string user)
         {

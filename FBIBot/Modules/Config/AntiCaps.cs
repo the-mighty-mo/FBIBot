@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Config
     public class AntiCaps : ModuleBase<SocketCommandContext>
     {
         [Command("anti-caps")]
+        [Alias("anticaps")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiCapsAsync(string enable)

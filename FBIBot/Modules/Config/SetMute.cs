@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Config
     public class SetMute : ModuleBase<SocketCommandContext>
     {
         [Command("setmute")]
+        [Alias("set-mute")]
         [RequireAdmin]
         public async Task SetMuteAsync()
         {
@@ -22,6 +23,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setmute")]
+        [Alias("set-mute")]
         [RequireAdmin]
         public async Task SetMuteAsync(SocketRole role)
         {
@@ -36,6 +38,7 @@ namespace FBIBot.Modules.Config
         }
 
         [Command("setmute")]
+        [Alias("set-mute")]
         [RequireAdmin]
         public async Task SetMuteAsync(string role)
         {

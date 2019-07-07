@@ -8,6 +8,7 @@ namespace FBIBot.Modules.Config
     public class VerifyAll : ModuleBase<SocketCommandContext>
     {
         [Command("verifyall")]
+        [Alias("verify-all")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task VerifyAllAsync()

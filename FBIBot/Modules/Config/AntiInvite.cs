@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Config
     public class AntiInvite : ModuleBase<SocketCommandContext>
     {
         [Command("anti-invite")]
+        [Alias("antiinvite")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiInviteAsync(string enable)

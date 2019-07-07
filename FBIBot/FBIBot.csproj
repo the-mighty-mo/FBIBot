@@ -257,8 +257,8 @@
     <Compile Include="Modules\AutoMod\Pedophile.cs" />
     <Compile Include="Modules\AutoMod\Spam.cs" />
     <Compile Include="Modules\AutoMod\Verify.cs" />
-    <Compile Include="Modules\Config\AddAdminRole.cs" />
-    <Compile Include="Modules\Config\AddModRole.cs" />
+    <Compile Include="Modules\Config\AddAdmin.cs" />
+    <Compile Include="Modules\Config\AddMod.cs" />
     <Compile Include="Modules\Config\AntiCaps.cs" />
     <Compile Include="Modules\Config\AntiInvite.cs" />
     <Compile Include="Modules\Config\AntiLink.cs" />

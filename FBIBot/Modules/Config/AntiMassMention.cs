@@ -9,6 +9,7 @@ namespace FBIBot.Modules.Config
     public class AntiMassMention : ModuleBase<SocketCommandContext>
     {
         [Command("anti-massmention")]
+        [Alias("antimassmention")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiMassMentionAsync(string enable)

@@ -8,6 +8,7 @@ namespace FBIBot.Modules.Mod
     public class RemoveWarning : ModuleBase<SocketCommandContext>
     {
         [Command("removewarning")]
+        [Alias("remove-warning")]
         [RequireMod]
         public async Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, string id)
         {
@@ -29,6 +30,7 @@ namespace FBIBot.Modules.Mod
         }
 
         [Command("removewarning")]
+        [Alias("remove-warning")]
         [RequireMod]
         public async Task RemoveWarnAsync(string user, string id)
         {

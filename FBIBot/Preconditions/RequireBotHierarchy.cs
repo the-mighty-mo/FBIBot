@@ -13,17 +13,17 @@ namespace FBIBot
 
         public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext Context, ParameterInfo parameter, object value, IServiceProvider services) =>
             value is SocketGuildUser user
-                ? await CheckPermissionsAsync(Context as SocketCommandContext, parameter, user, services)
+                ? await CheckPermissionsAsync(Context as SocketCommandContext, user)
                 : value is string userId && ulong.TryParse(userId, out ulong userID)
-                    ? await CheckPermissionsAsync(Context as SocketCommandContext, parameter, userID, services)
+                    ? await CheckPermissionsAsync(Context as SocketCommandContext, userID)
                     : PreconditionResult.FromError("Our intelligence team has informed us that the given user does not exist.");
 
-        private async Task<PreconditionResult> CheckPermissionsAsync(SocketCommandContext Context, ParameterInfo parameter, ulong userID, IServiceProvider services) =>
+        private async Task<PreconditionResult> CheckPermissionsAsync(SocketCommandContext Context, ulong userID) =>
             Context.Guild.GetUser(userID) != null
-                ? await CheckPermissionsAsync(Context, parameter, Context.Guild.GetUser(userID), services)
+                ? await CheckPermissionsAsync(Context, Context.Guild.GetUser(userID))
                 : PreconditionResult.FromError("Our intelligence team has informed us that the given user does not exist.");
 
-        private async Task<PreconditionResult> CheckPermissionsAsync(SocketCommandContext Context, ParameterInfo parameter, SocketGuildUser target, IServiceProvider services) =>
+        private async Task<PreconditionResult> CheckPermissionsAsync(SocketCommandContext Context, SocketGuildUser target) =>
             Context.User is SocketGuildUser
                 ? await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, target)
                     ? PreconditionResult.FromSuccess()
