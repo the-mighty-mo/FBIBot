@@ -16,7 +16,7 @@ namespace FBIBot.Modules.AutoMod
     public class Verify : ModuleBase<SocketCommandContext>
     {
         [Command("verify")]
-        public async Task VerifyAsync([Remainder] string response = "")
+        public async Task VerifyAsync([Remainder] string response = null)
         {
             if (await GetVerifiedAsync(Context.User))
             {
@@ -25,14 +25,14 @@ namespace FBIBot.Modules.AutoMod
                 return;
             }
 
-            List<string> captchas = await GetCaptchaAsync(Context.User);
-            if (response.Length == 0 || captchas.Count == 0)
+            string captcha = await GetCaptchaAsync(Context.User);
+            if (response == null || captcha == null)
             {
                 await SendCaptchaAsync();
                 return;
             }
 
-            if (response.ToLower() != captchas[0].ToLower())
+            if (response.ToLower() != captcha.ToLower())
             {
                 int maxAttempts = 5;
                 int attempts = await GetAttemptsAsync();
@@ -63,7 +63,7 @@ namespace FBIBot.Modules.AutoMod
                     continue;
                 }
                 SocketGuildUser user = g.GetUser(Context.User.Id);
-                cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, Context.Guild.CurrentUser, user));
+                cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, g.CurrentUser, user));
             }
             await Task.WhenAll(cmds);
         }
@@ -108,9 +108,9 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        public static async Task<List<string>> GetCaptchaAsync(SocketUser u)
+        public static async Task<string> GetCaptchaAsync(SocketUser u)
         {
-            List<string> captchas = new List<string>();
+            string captcha = null;
 
             string read = "SELECT captcha FROM Captcha WHERE user_id = @user_id;";
             using (SqliteCommand cmd = new SqliteCommand(read, Program.cnVerify))
@@ -120,12 +120,12 @@ namespace FBIBot.Modules.AutoMod
                 SqliteDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    captchas.Add((string)reader["captcha"]);
+                    captcha = (string)reader["captcha"];
                 }
                 reader.Close();
             }
 
-            return await Task.Run(() => captchas);
+            return await Task.Run(() => captcha);
         }
 
         public static async Task SetCaptchaAsync(string captcha, SocketUser u)
