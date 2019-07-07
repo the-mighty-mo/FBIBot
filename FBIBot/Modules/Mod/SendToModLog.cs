@@ -26,82 +26,44 @@ namespace FBIBot.Modules.Mod
             Unban
         }
 
+        class ModLogInfo
+        {
+            public LogType t;
+            public string length;
+            public string reason;
+
+            public Color color;
+            public bool reasonAllowed = true;
+            public bool isTime;
+            public double time;
+            public string cmd;
+
+            public ModLogInfo(LogType t, string length, string reason)
+            {
+                this.t = t;
+                this.length = length;
+                this.reason = reason;
+
+                isTime = double.TryParse(length, out time);
+                cmd = t.ToString();
+            }
+        }
+
         // Note: length for LogType.RemoveWarn is the Mod Log ID, and length for LogType.RemoveWarns is the number of removed warnings
         public static async Task<ulong> SendToModLogAsync(LogType t, SocketUser invoker, SocketGuildUser u, string length = null, string reason = null)
         {
-            Color color;
-            bool reasonAllowed = true;
-            bool isTime = double.TryParse(length, out double time);
-            string cmd = t.ToString();
             ulong id = await GetNextModLogID(u.Guild);
-
-            switch (t)
-            {
-            case LogType.Verify:
-                color = new Color(255, 255, 255);
-                reasonAllowed = false;
-                isTime = false;
-                break;
-            case LogType.Warn:
-                color = new Color(228, 226, 24);
-                if (isTime)
-                {
-                    length += $" {(time == 1 ? "hour" : "hours")}";
-                }
-                break;
-            case LogType.Mute:
-                color = new Color(255, 110, 24);
-                if (isTime)
-                {
-                    length += $" {(time == 1 ? "minute" : "minutes")}";
-                }
-                break;
-            case LogType.Arrest:
-                color = new Color(255, 61, 24);
-                reason = "*No reason necessary*";
-                if (isTime)
-                {
-                    length += $" {(time == 1 ? "minute" : "minutes")}";
-                }
-                break;
-            case LogType.Kick:
-                color = new Color(255, 12, 12);
-                break;
-            case LogType.Ban:
-                color = new Color(130, 0, 0);
-                if (isTime)
-                {
-                    length += $" {(time == 1 ? "day" : "days")}";
-                }
-                break;
-            case LogType.Unverify:
-                color = new Color(0, 0, 0);
-                isTime = false;
-                break;
-            case LogType.RemoveWarn:
-                cmd = $"Remove Warning {length} from";
-                goto default;
-            case LogType.RemoveWarns:
-                cmd = $"Remove {length ?? "All"} Warnings from";
-                goto default;
-            case LogType.Unmute:
-            case LogType.Free:
-            case LogType.Unban:
-            default:
-                color = new Color(12, 156, 24);
-                reasonAllowed = false;
-                isTime = false;
-                break;
-            }
+            ModLogInfo info = new ModLogInfo(t, length, reason);
+            LogTypeSwitch(ref info);
 
             EmbedBuilder embed = new EmbedBuilder()
-                .WithColor(color)
+                .WithColor(info.color)
                 .WithTitle($"Federal Bureau of Investigation - Log {id}")
                 .WithCurrentTimestamp();
 
             EmbedFieldBuilder affected = new EmbedFieldBuilder()
                 .WithIsInline(false)
-                .WithName($"{cmd} User{(isTime ? $" for {length}" : "")}")
+                .WithName($"{info.cmd} User{(info.isTime ? $" for {info.length}" : "")}")
                 .WithValue(u.Mention);
             embed.AddField(affected);
 
@@ -111,12 +73,12 @@ namespace FBIBot.Modules.Mod
                 .WithValue(invoker.Mention);
             embed.AddField(invoked);
 
-            if (reasonAllowed)
+            if (info.reasonAllowed)
             {
                 EmbedFieldBuilder field = new EmbedFieldBuilder()
                     .WithIsInline(false)
                     .WithName("Reason")
-                    .WithValue(reason ?? "(none given)");
+                    .WithValue(info.reason ?? "(none given)");
                 embed.AddField(field);
             }
 
@@ -127,6 +89,68 @@ namespace FBIBot.Modules.Mod
             }
 
             return id;
+        }
+
+        private static void LogTypeSwitch(ref ModLogInfo info)
+        {
+            switch (info.t)
+            {
+            case LogType.Verify:
+                info.color = new Color(255, 255, 255);
+                info.reasonAllowed = false;
+                info.isTime = false;
+                break;
+            case LogType.Warn:
+                info.color = new Color(228, 226, 24);
+                if (info.isTime)
+                {
+                    info.length += $" {(info.time == 1 ? "hour" : "hours")}";
+                }
+                break;
+            case LogType.Mute:
+                info.color = new Color(255, 110, 24);
+                if (info.isTime)
+                {
+                    info.length += $" {(info.time == 1 ? "minute" : "minutes")}";
+                }
+                break;
+            case LogType.Arrest:
+                info.color = new Color(255, 61, 24);
+                info.reason = "*No reason necessary*";
+                if (info.isTime)
+                {
+                    info.length += $" {(info.time == 1 ? "minute" : "minutes")}";
+                }
+                break;
+            case LogType.Kick:
+                info.color = new Color(255, 12, 12);
+                break;
+            case LogType.Ban:
+                info.color = new Color(130, 0, 0);
+                if (info.isTime)
+                {
+                    info.length += $" {(info.time == 1 ? "day" : "days")}";
+                }
+                break;
+            case LogType.Unverify:
+                info.color = new Color(0, 0, 0);
+                info.isTime = false;
+                break;
+            case LogType.RemoveWarn:
+                info.cmd = $"Remove Warning {info.length} from";
+                goto default;
+            case LogType.RemoveWarns:
+                info.cmd = $"Remove {info.length ?? "All"} Warnings from";
+                goto default;
+            case LogType.Unmute:
+            case LogType.Free:
+            case LogType.Unban:
+            default:
+                info.color = new Color(12, 156, 24);
+                info.reasonAllowed = false;
+                info.isTime = false;
+                break;
+            }
         }
 
         public static async Task<bool> SetReasonAsync(SocketGuild g, ulong id, string reason = null)

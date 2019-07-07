@@ -30,10 +30,10 @@ namespace FBIBot.Modules.Config
             await Context.Guild.ModifyAsync(x => x.VerificationLevel = (VerificationLevel)level);
             await Context.Channel.SendMessageAsync("The FBI is now out of raid mode. Surveillance results will be posted in the Mod Logs.");
             await RemoveVerificationLevelAsync(Context.Guild);
-            await SendModLogAsync();
+            await SendUsersAsync();
         }
 
-        async Task SendModLogAsync()
+        async Task SendUsersAsync()
         {
             List<string> blockedUsers = await GetBlockedUsersAsync(Context.Guild);
             SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
