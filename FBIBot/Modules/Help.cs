@@ -47,9 +47,9 @@ namespace FBIBot.Modules
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
             "unban [user mention / user ID]\n" +
             "  - Permits the now-ex-KGB spy to reenter the server\n\n" +
-            "purge [count (default: 100)]\n" +
+            "purge [count (default: 100, max: 1000)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from the channel\n\n" +
-            "purge [user mention] [count (default: 10)]\n" +
+            "purge [user mention] [count (default: 10, max: 100)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from a user in the channel";
 
         private static readonly string config = "config\n" +
