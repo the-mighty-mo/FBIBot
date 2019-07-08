@@ -154,7 +154,7 @@ namespace FBIBot.Modules
                         .WithValue(config2);
                     break;
                 case "automod":
-                    field.WithName("Automod Commands")
+                    field.WithName("AutoMod Commands")
                         .WithValue(automod);
                     break;
                 default:
