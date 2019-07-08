@@ -41,7 +41,7 @@ namespace FBIBot.Modules.AutoMod
                 if (attempts >= maxAttempts)
                 {
                     await RemoveCaptchaAsync(Context.User);
-                    await Context.User.SendMessageAsync("You have run out of attempts, you communist spy.\n" +
+                    await Context.User.SendMessageAsync("You have run out of attempts, communist spy.\n" +
                         "If you would like to try again, please get a new captcha by typing `\\verify`.");
                     return;
                 }
