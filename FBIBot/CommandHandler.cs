@@ -121,7 +121,7 @@ namespace FBIBot
             if (isCommand)
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
-                if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+                if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
                 {
                     await context.Channel.SendMessageAsync(result.ErrorReason);
                 }
