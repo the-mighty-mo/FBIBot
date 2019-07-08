@@ -33,7 +33,7 @@ namespace FBIBot.Modules.Mod
             }
 
             await RemoveWarningsAsync(user, count);
-            await Context.Channel.SendMessageAsync($"We have removed {count ?? "all"} warnings for {user.Mention}.");
+            await Context.Channel.SendMessageAsync($"We have pardoned {count ?? "all"} warnings for {user.Mention}.");
             await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarns, Context.User as SocketGuildUser, user, count);
         }
 
