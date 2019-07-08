@@ -28,6 +28,6 @@ namespace FBIBot
                 ? await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, target)
                     ? PreconditionResult.FromSuccess()
                     : PreconditionResult.FromError($"We cannot {command} members with equal or higher authority than ourselves.")
-                : PreconditionResult.FromError("You must be in a guild to run this command.");
+                : PreconditionResult.FromError("You must be in a server to run this command.");
     }
 }
