@@ -27,9 +27,9 @@ namespace FBIBot
 
         public static readonly bool isConsole = Console.OpenStandardInput(1) != Stream.Null;
 
-        static void Main(string[] args) => new Program().StartAsync(args).GetAwaiter().GetResult();
+        static void Main() => new Program().StartAsync().GetAwaiter().GetResult();
 
-        public async Task StartAsync(string[] args)
+        public async Task StartAsync()
         {
             if (isConsole)
             {
@@ -66,11 +66,15 @@ namespace FBIBot
             _handler = new CommandHandler(_client, _services);
             Task initCmd = _handler.InitCommandsAsync();
 
-            await InitVerifySqlite();
-            await InitModRolesSqlite();
-            await InitModLogsSqlite();
-            await InitConfigSqlite();
-            await InitAntiRaidSqlite();
+            List<Task> cmds = new List<Task>()
+            {
+                InitVerifySqlite(),
+                InitModRolesSqlite(),
+                InitModLogsSqlite(),
+                InitConfigSqlite(),
+                InitAntiRaidSqlite()
+            };
+            await Task.WhenAll(cmds);
 
             if (isConsole)
             {
