@@ -35,18 +35,19 @@ namespace FBIBot.Modules.AutoMod
             if (response.ToLower() != captcha.ToLower())
             {
                 int maxAttempts = 5;
-                int attempts = await GetAttemptsAsync();
+                int attempts = await GetAttemptsAsync(Context.User);
                 attempts++;
 
                 if (attempts >= maxAttempts)
                 {
                     await RemoveCaptchaAsync(Context.User);
+                    await RemoveAttemptsAsync(Context.User);
                     await Context.User.SendMessageAsync("You have run out of attempts, communist spy.\n" +
                         "If you would like to try again, please get a new captcha by typing `\\verify`.");
                     return;
                 }
 
-                await SetAttemptsAsync(attempts);
+                await SetAttemptsAsync(Context.User, attempts);
                 await Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.");
                 return;
             }
@@ -143,24 +144,22 @@ namespace FBIBot.Modules.AutoMod
 
         public static async Task RemoveCaptchaAsync(SocketUser u)
         {
-            string removeCaptcha = "DELETE FROM Captcha WHERE user_id = @user_id;";
-            string removeAttempts = "DELETE FROM Attempts WHERE user_id = @user_id;";
-
-            using (SqliteCommand cmd = new SqliteCommand(removeCaptcha + removeAttempts, Program.cnVerify))
+            string delete = "DELETE FROM Captcha WHERE user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnVerify))
             {
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }
 
-        async Task<int> GetAttemptsAsync()
+        public static async Task<int> GetAttemptsAsync(SocketUser u)
         {
             int attempts = 0;
 
             string read = "SELECT attempts FROM Attempts WHERE user_id = @user_id;";
             using (SqliteCommand cmd = new SqliteCommand(read, Program.cnVerify))
             {
-                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
                 SqliteDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
@@ -173,15 +172,25 @@ namespace FBIBot.Modules.AutoMod
             return await Task.Run(() => attempts);
         }
 
-        async Task SetAttemptsAsync(int attempts)
+        public static async Task SetAttemptsAsync(SocketUser u, int attempts)
         {
             string update = "UPDATE Attempts SET attempts = @attempts WHERE user_id = @user_id;";
             string insert = "INSERT INTO Attempts (user_id, attempts) SELECT @user_id, @attempts WHERE (SELECT Changes() = 0);\n";
 
             using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnVerify))
             {
-                cmd.Parameters.AddWithValue("@user_id", Context.User.Id.ToString());
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
                 cmd.Parameters.AddWithValue("@attempts", attempts);
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public static async Task RemoveAttemptsAsync(SocketUser u)
+        {
+            string delete = "DELETE FROM Attempts WHERE user_id = @user_id;";
+            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnVerify))
+            {
+                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
                 await cmd.ExecuteNonQueryAsync();
             }
         }
