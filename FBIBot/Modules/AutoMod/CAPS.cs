@@ -23,6 +23,8 @@ namespace FBIBot.Modules.AutoMod
             string message = Context.Message.Content.Replace(" ", string.Empty);
             if (message.Length >= 40)
             {
+                await Task.Yield();
+
                 int caps = 0;
                 foreach (char c in message)
                 {
@@ -35,7 +37,7 @@ namespace FBIBot.Modules.AutoMod
                 isCaps = (double)caps / message.Length >= 0.80;
             }
 
-            return await Task.Run(() => isCaps);
+            return isCaps;
         }
     }
 }

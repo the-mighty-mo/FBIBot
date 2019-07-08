@@ -151,32 +151,60 @@ namespace FBIBot
 
         private static async Task AutoModAsync(SocketCommandContext Context, bool isCommand)
         {
+            Task<bool>[] isSpam =
+            {
+                Spam.IsSpamAsync(Context),
+                AntiSpam.GetAntiSpamAsync(Context.Guild),
+                Spam.IsSingleSpamAsync(Context),
+                AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild)
+            };
+            Task<bool>[] isMassMention =
+            {
+                MassMention.IsMassMentionAsync(Context),
+                AntiMassMention.GetAntiMassMentionAsync(Context.Guild)
+            };
+            Task<bool>[] isCaps =
+            {
+                CAPS.ISCAPSASYNC(Context),
+                AntiCaps.GetAntiCapsAsync(Context.Guild)
+            };
+            Task<bool>[] isInvite =
+            {
+                Invite.HasInviteAsync(Context),
+                AntiInvite.GetAntiInviteAsync(Context.Guild)
+            };
+            Task<bool>[] isLink =
+            {
+                Link.IsLinkAsync(Context),
+                AntiLink.GetAntiLinkAsync(Context.Guild)
+            };
+
             if (await AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild))
             {
-                if (await Pedophile.IsPedophileAsync(Context))
+                Task<bool> isPedophile = Pedophile.IsPedophileAsync(Context);
+                if (await isPedophile)
                 {
                     await new Pedophile(Context).ArrestAsync();
                     return;
                 }
             }
-            if (((await Spam.IsSpamAsync(Context) && await AntiSpam.GetAntiSpamAsync(Context.Guild))
-                || (await Spam.IsSingleSpamAsync(Context) && await AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild))) && !isCommand)
+            if (((await isSpam[0] && await isSpam[1]) || (await isSpam[2] && await isSpam[3])) && !isCommand)
             {
                 await new Spam(Context).WarnAsync();
             }
-            else if (await MassMention.IsMassMentionAsync(Context) && await AntiMassMention.GetAntiMassMentionAsync(Context.Guild))
+            else if (await isMassMention[0] && await isMassMention[1])
             {
                 await new MassMention(Context).WarnAsync();
             }
-            else if (await CAPS.ISCAPSASYNC(Context) && await AntiCaps.GetAntiCapsAsync(Context.Guild))
+            else if (await isCaps[0] && await isCaps[1])
             {
                 await new CAPS(Context).WARNASYNC();
             }
-            else if (await Invite.HasInviteAsync(Context) && await AntiInvite.GetAntiInviteAsync(Context.Guild))
+            else if (await isInvite[0] && await isInvite[1])
             {
                 await new Invite(Context).RemoveAsync();
             }
-            else if (await Link.HasLinkAsync(Context) && await AntiLink.GetAntiLinkAsync(Context.Guild))
+            else if (await isLink[0] && await isLink[1])
             {
                 await new Link(Context).RemoveAsync();
             }
