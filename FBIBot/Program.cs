@@ -40,31 +40,14 @@ namespace FBIBot
             if (isRunning)
             {
                 await Task.Delay(1000);
-                isRunning = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Count() > 1;
 
+                isRunning = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Count() > 1;
                 if (isRunning)
                 {
                     MessageBox.Show("Program is already running", SecurityInfo.botName);
                     return;
                 }
             }
-
-            _config = new DiscordSocketConfig
-            {
-                AlwaysDownloadUsers = false
-            };
-
-            _client = new DiscordSocketClient(_config);
-
-            await _client.LoginAsync(TokenType.Bot, SecurityInfo.token);
-            await _client.StartAsync();
-
-            await _client.SetGameAsync("@The FBI help", null, ActivityType.Listening);
-
-            IServiceProvider _services = new ServiceCollection().BuildServiceProvider();
-
-            _handler = new CommandHandler(_client, _services);
-            Task initCmd = _handler.InitCommandsAsync();
 
             List<Task> cmds = new List<Task>()
             {
@@ -74,8 +57,22 @@ namespace FBIBot
                 InitConfigSqlite(),
                 InitAntiRaidSqlite()
             };
-            await Task.WhenAll(cmds);
 
+            _config = new DiscordSocketConfig
+            {
+                AlwaysDownloadUsers = false
+            };
+            _client = new DiscordSocketClient(_config);
+
+            await _client.LoginAsync(TokenType.Bot, SecurityInfo.token);
+            await _client.StartAsync();
+            await _client.SetGameAsync("@The FBI help", null, ActivityType.Listening);
+
+            IServiceProvider _services = new ServiceCollection().BuildServiceProvider();
+            _handler = new CommandHandler(_client, _services);
+            Task initCmd = _handler.InitCommandsAsync();
+
+            await Task.WhenAll(cmds);
             if (isConsole)
             {
                 Console.WriteLine($"{SecurityInfo.botName} has finished loading");
