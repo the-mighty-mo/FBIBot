@@ -19,15 +19,16 @@ namespace FBIBot.Modules.Config
                 SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
                 if (channel != null)
                 {
-                    await channel.DeleteMessagesAsync(await channel.GetMessagesAsync(int.MaxValue).FlattenAsync());
+                    var msgs = await channel.GetMessagesAsync(int.MaxValue).FlattenAsync();
+                    await channel.DeleteMessagesAsync(msgs);
 
-                    var msgs = await channel.GetMessagesAsync(int.MaxValue)?.FlattenAsync();
-                    if (msgs != null)
+                    foreach (var msg in msgs)
                     {
-                        foreach (IMessage msg in msgs)
+                        try
                         {
                             await msg?.DeleteAsync();
                         }
+                        catch { }
                     }
                 }
             }

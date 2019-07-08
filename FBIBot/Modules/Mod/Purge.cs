@@ -24,7 +24,18 @@ namespace FBIBot.Modules.Mod
                 num = 1000;
             }
             SocketTextChannel channel = Context.Guild.GetTextChannel(Context.Channel.Id);
-            await channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(num).FlattenAsync());
+
+            var msgs = await channel.GetMessagesAsync(num).FlattenAsync();
+            await channel.DeleteMessagesAsync(msgs);
+
+            foreach (var msg in msgs)
+            {
+                try
+                {
+                    msg?.DeleteAsync();
+                }
+                catch { }
+            }
 
             await Context.Channel.SendMessageAsync($"We have successfully shredded, burned, and disposed of {num} messages. Encrypt them better next time.");
         }
