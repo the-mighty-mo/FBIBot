@@ -5,7 +5,7 @@
 
 Discord Admin bot, created for Hack Week.
 
-Built using .NET Framework 4.7.2, Discord.Net v2.1.1, Microsoft.Data.Sqlite v2.2.4, and CaptchaGen v1.0.0.
+Built using .NET Framework 4.8 (C# 7.3), Discord.Net v2.1.1, Microsoft.Data.Sqlite v2.2.4, and CaptchaGen v1.0.0.
 
 **Someone has to keep the server in check, and who better than the FBI?**
 
@@ -16,7 +16,7 @@ This bot requires permissions: 289533110
 ## Build instructions
 
 1. Download/clone the repository.
-2. Open `FBIBot.sln` in Visual Studio on a Windows machine with .NET Framework 4.7.2.  
+2. Open `FBIBot.sln` in Visual Studio on a Windows machine with .NET Framework 4.8.  
 **NOTE:** This project was created in Visual Studio 2019 and may not be backwards compatible with older versions of Visual Studio.
 3. Add your Client ID, Token, and Discriminator to `SecurityInfo.cs` so the bot can come online and respond to commands.  
 **NOTE:** It is recommended that you set your bot's profile picture to FBIBot/FBI.png and its name to "The FBI" for maximum effect.
