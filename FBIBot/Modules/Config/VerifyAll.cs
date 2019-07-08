@@ -28,7 +28,8 @@ namespace FBIBot.Modules.Config
                 }
             }
 
-            await Context.Channel.SendMessageAsync("All current members have been given citizenship.");
+            await Context.Channel.SendMessageAsync("All current members have been granted citizenship.");
+            await Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.VerifyAll, Context.User as SocketGuildUser, null);
         }
     }
 }

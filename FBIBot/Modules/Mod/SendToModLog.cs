@@ -14,6 +14,7 @@ namespace FBIBot.Modules.Mod
         {
             RaidMode,
             Verify,
+            VerifyAll,
             Warn,
             Mute,
             Arrest,
@@ -147,6 +148,14 @@ namespace FBIBot.Modules.Mod
                 info.color = new Color(255, 255, 255);
                 info.reasonAllowed = false;
                 info.isTime = false;
+                break;
+            case LogType.VerifyAll:
+                info.color = new Color(255, 255, 255);
+                info.cmd = "Verify All Users";
+                info.reasonAllowed = false;
+                info.isTime = false;
+                info.hasTarget = false;
+                info.state = "Executed";
                 break;
             case LogType.Warn:
                 info.color = new Color(255, 213, 31);
