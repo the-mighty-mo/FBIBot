@@ -269,7 +269,7 @@
     <Compile Include="Modules\Config\RaidMode.cs" />
     <Compile Include="Modules\Config\Config.cs" />
     <Compile Include="Modules\Config\ModifyMutedRoles.cs" />
-    <Compile Include="Modules\Config\Prefix.cs" />
+    <Compile Include="Modules\Config\SetPrefix.cs" />
     <Compile Include="Modules\Config\RemoveAdminRole.cs" />
     <Compile Include="Modules\Config\RemoveModRole.cs" />
     <Compile Include="Modules\Config\SetModLog.cs" />

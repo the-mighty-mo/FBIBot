@@ -11,7 +11,7 @@ namespace FBIBot.Modules.Config
         [RequireAdmin]
         public async Task ConfigAsync()
         {
-            string prefix = await Prefix.GetPrefixAsync(Context.Guild);
+            string prefix = await SetPrefix.GetPrefixAsync(Context.Guild);
             SocketRole verify = await SetVerify.GetVerificationRoleAsync(Context.Guild);
             SocketRole mute = await SetMute.GetMuteRole(Context.Guild);
             bool modifyMuted = await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);

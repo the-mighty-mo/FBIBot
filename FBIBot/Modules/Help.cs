@@ -108,7 +108,7 @@ namespace FBIBot.Modules
             string prefix = CommandHandler.prefix;
             if (Context.Guild != null)
             {
-                prefix = await Config.Prefix.GetPrefixAsync(Context.Guild);
+                prefix = await Config.SetPrefix.GetPrefixAsync(Context.Guild);
             }
             List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>
             {
