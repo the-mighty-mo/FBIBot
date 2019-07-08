@@ -14,12 +14,12 @@ namespace FBIBot.Modules.Config
         {
             if (await GetPrefixAsync(Context.Guild) == prefix)
             {
-                await Context.Channel.SendMessageAsync($"The FBI's prefix is already {(prefix == @"\" ? @"\\" : prefix)}.");
+                await Context.Channel.SendMessageAsync($"The FBI's prefix is already `{(prefix == @"\" ? @"\\" : prefix)}`.");
                 return;
             }
 
             await SetPrefixAsync(prefix);
-            await Context.Channel.SendMessageAsync($"The FBI's prefix has been set to {(prefix == @"\" ? @"\\" : prefix)}.");
+            await Context.Channel.SendMessageAsync($"The FBI's prefix has been set to `{(prefix == @"\" ? @"\\" : prefix)}`.");
         }
 
         public static async Task<string> GetPrefixAsync(SocketGuild g)

@@ -104,14 +104,20 @@ namespace FBIBot.Modules
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("The FBI")
                 .WithCurrentTimestamp();
+
+            string prefix = CommandHandler.prefix;
+            if (Context.Guild != null)
+            {
+                prefix = await Config.Prefix.GetPrefixAsync(Context.Guild);
+            }
             List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>
             {
                 new EmbedFieldBuilder()
-                .WithIsInline(false)
-                .WithName("Prefix")
-                .WithValue(await Config.Prefix.GetPrefixAsync(Context.Guild) +
-                "\n**or**\n" +
-                Context.Client.CurrentUser.Mention + "\n\u200b")
+                    .WithIsInline(false)
+                    .WithName("Prefix")
+                    .WithValue(prefix +
+                        "\n**or**\n" +
+                        Context.Client.CurrentUser.Mention + "\n\u200b")
             };
 
             bool jumpToHelp = false;
