@@ -26,7 +26,7 @@ namespace FBIBot.Modules.Config
                     {
                         try
                         {
-                            await msg?.DeleteAsync();
+                            await msg.DeleteAsync();
                         }
                         catch { }
                     }

@@ -32,7 +32,7 @@ namespace FBIBot.Modules.Mod
             {
                 try
                 {
-                    msg?.DeleteAsync();
+                    await msg.DeleteAsync();
                 }
                 catch { }
             }
