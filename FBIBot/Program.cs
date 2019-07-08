@@ -87,7 +87,7 @@ namespace FBIBot
 
         static async Task InitVerifySqlite()
         {
-            cnVerify.Open();
+            await cnVerify.OpenAsync();
 
             List<Task> cmds = new List<Task>();
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Captcha (user_id TEXT PRIMARY KEY, captcha TEXT NOT NULL);", cnVerify))
@@ -112,7 +112,7 @@ namespace FBIBot
 
         static async Task InitModRolesSqlite()
         {
-            cnModRoles.Open();
+            await cnModRoles.OpenAsync();
 
             List<Task> cmds = new List<Task>();
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Muted (guild_id TEXT PRIMARY KEY, role_id TEXT NOT NULL);", cnModRoles))
@@ -149,7 +149,7 @@ namespace FBIBot
 
         static async Task InitModLogsSqlite()
         {
-            cnModLogs.Open();
+            await cnModLogs.OpenAsync();
 
             List<Task> cmds = new List<Task>();
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS ModLogChannel (guild_id TEXT PRIMARY KEY, channel_id TEXT NOT NULL);", cnModLogs))
@@ -170,7 +170,7 @@ namespace FBIBot
 
         static async Task InitConfigSqlite()
         {
-            cnConfig.Open();
+            await cnConfig.OpenAsync();
 
             List<Task> cmds = new List<Task>();
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Prefixes (guild_id TEXT PRIMARY KEY, prefix TEXT NOT NULL);", cnConfig))
@@ -215,7 +215,7 @@ namespace FBIBot
 
         static async Task InitAntiRaidSqlite()
         {
-            cnRaidMode.Open();
+            await cnRaidMode.OpenAsync();
 
             List<Task> cmds = new List<Task>();
             using (SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS RaidMode (guild_id TEXT PRIMARY KEY, level TEXT NOT NULL);", cnRaidMode))
