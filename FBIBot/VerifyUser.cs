@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FBIBot
 {
-    public class VerifyUser
+    public static class VerifyUser
     {
         public static async Task<bool> IsAdmin(SocketGuildUser user)
         {
@@ -18,7 +18,7 @@ namespace FBIBot
                 }
                 isValidAdmin = user.Roles.Contains(r);
             }
-            return await Task.Run(() => isValidAdmin);
+            return isValidAdmin;
         }
 
         public static async Task<bool> IsMod(SocketGuildUser user)
@@ -32,20 +32,20 @@ namespace FBIBot
                 }
                 isValidMod = user.Roles.Contains(r);
             }
-            return await Task.Run(() => isValidMod);
+            return isValidMod;
         }
 
         public static async Task<bool> InvokerIsHigher(SocketGuildUser invoker, SocketGuildUser target)
         {
             bool isHigher = target.Hierarchy < invoker.Hierarchy
                 && (invoker == invoker.Guild.Owner || invoker == invoker.Guild.CurrentUser || (!await IsMod(target) && !await IsAdmin(target)));
-            return await Task.Run(() => isHigher);
+            return isHigher;
         }
 
         public static async Task<bool> BotIsHigher(SocketGuildUser bot, SocketGuildUser target)
         {
-            bool isHigher = target.Hierarchy < bot.Hierarchy;
-            return await Task.Run(() => isHigher);
+            bool isHigher = await Task.Run(() => target.Hierarchy < bot.Hierarchy);
+            return isHigher;
         }
     }
 }

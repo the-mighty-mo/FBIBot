@@ -17,9 +17,9 @@ namespace FBIBot.Modules.AutoMod
                 $"Message removed: {Context.Message.Content}");
         }
 
-        public static async Task<bool> HasLinkAsync(SocketCommandContext context)
+        public static async Task<bool> HasLinkAsync(SocketCommandContext Context)
         {
-            string message = context.Message.Content;
+            string message = Context.Message.Content;
             bool hasLink = message.Contains("http://") || message.Contains("https://");
 
             return await Task.Run(() => hasLink);

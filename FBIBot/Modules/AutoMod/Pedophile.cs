@@ -28,12 +28,12 @@ namespace FBIBot.Modules.AutoMod
             await Context.Channel.SendMessageAsync($"\\arrest {Context.User.Mention} 5");
         }
 
-        public static async Task<bool> IsPedophileAsync(SocketUserMessage msg)
+        public static async Task<bool> IsPedophileAsync(SocketCommandContext Context)
         {
             bool isPedophile = false;
 
             Regex regex = new Regex(@"\bI (like|love) (?!(no|none of the) )(\w*\s+|)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            Match match = regex.Match(msg.Content);
+            Match match = regex.Match(Context.Message.Content);
 
             isPedophile = match.Success;
 

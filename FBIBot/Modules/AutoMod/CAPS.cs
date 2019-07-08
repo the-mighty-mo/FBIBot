@@ -16,11 +16,11 @@ namespace FBIBot.Modules.AutoMod
             await CONTEXT.Message.DeleteAsync();
         }
 
-        public static async Task<bool> ISCAPSASYNC(SocketCommandContext context)
+        public static async Task<bool> ISCAPSASYNC(SocketCommandContext Context)
         {
             bool isCaps = false;
 
-            string message = context.Message.Content.Replace(" ", string.Empty);
+            string message = Context.Message.Content.Replace(" ", string.Empty);
             if (message.Length >= 40)
             {
                 int caps = 0;

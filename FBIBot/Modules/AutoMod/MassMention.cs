@@ -16,9 +16,9 @@ namespace FBIBot.Modules.AutoMod
             await Context.Message.DeleteAsync();
         }
 
-        public static async Task<bool> IsMassMentionAsync(SocketCommandContext context)
+        public static async Task<bool> IsMassMentionAsync(SocketCommandContext Context)
         {
-            int count = context.Message.MentionedRoles.Count + context.Message.MentionedUsers.Count;
+            int count = Context.Message.MentionedRoles.Count + Context.Message.MentionedUsers.Count;
             bool hasMassMention = count >= 5;
 
             return await Task.Run(() => hasMassMention);

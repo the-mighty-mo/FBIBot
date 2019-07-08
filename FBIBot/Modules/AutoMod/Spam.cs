@@ -20,15 +20,15 @@ namespace FBIBot.Modules.AutoMod
             await Context.Message.DeleteAsync();
         }
 
-        public static async Task<bool> IsSpamAsync(SocketCommandContext context)
+        public static async Task<bool> IsSpamAsync(SocketCommandContext Context)
         {
             bool isSpam = false;
 
-            List<IMessage> msgs = (await context.Channel.GetMessagesAsync().FlattenAsync()).ToList();
+            List<IMessage> msgs = (await Context.Channel.GetMessagesAsync().FlattenAsync()).ToList();
             List<string> userMsgs = new List<string>();
             foreach (IMessage msg in msgs)
             {
-                if (msg.Author.Id == context.Message.Author.Id)
+                if (msg.Author.Id == Context.Message.Author.Id)
                 {
                     userMsgs.Add(msg.Content);
                 }
@@ -40,7 +40,7 @@ namespace FBIBot.Modules.AutoMod
 
             int i = 0;
             int j = 0;
-            string message = context.Message.Content;
+            string message = Context.Message.Content;
             foreach (string msg in userMsgs)
             {
                 if (i >= 5 || (i >= 3 && j == 1) || (i >= 2 && j >= 3)) // Five duplicates OR two groups of three duplicates OR 3+ groups of two duplicates

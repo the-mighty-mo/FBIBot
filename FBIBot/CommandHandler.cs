@@ -73,8 +73,12 @@ namespace FBIBot
         {
             if (await RaidMode.GetVerificationLevelAsync(u.Guild) != null && !u.IsBot)
             {
-                await u.SendMessageAsync($":rotating_light: :rotating_light: The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time.:rotating_light: :rotating_light:");
-                await RaidMode.AddBlockedUserAsync(u);
+                List<Task> cmds = new List<Task>()
+                {
+                    u.SendMessageAsync($":rotating_light: :rotating_light: The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time.:rotating_light: :rotating_light:"),
+                    RaidMode.AddBlockedUserAsync(u)
+                };
+                await Task.WhenAll(cmds);
                 await u.KickAsync("FBI RAID MODE");
                 return;
             }
@@ -115,21 +119,26 @@ namespace FBIBot
                 return;
             }
 
-            SocketCommandContext context = new SocketCommandContext(_client, msg);
-            string _prefix = context.Guild != null ? await SetPrefix.GetPrefixAsync(context.Guild) : prefix;
+            SocketCommandContext Context = new SocketCommandContext(_client, msg);
+            string _prefix = Context.Guild != null ? await SetPrefix.GetPrefixAsync(Context.Guild) : prefix;
             bool isCommand = msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos);
+
             if (isCommand)
             {
-                var result = await _commands.ExecuteAsync(context, argPos, _services);
+                var result = await _commands.ExecuteAsync(Context, argPos, _services);
+
+                List<Task> cmds = new List<Task>();
                 if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
                 {
-                    await context.Channel.SendMessageAsync(result.ErrorReason);
+                    cmds.Add(Context.Channel.SendMessageAsync(result.ErrorReason));
                 }
 
                 if (msg.Author.IsBot)
                 {
-                    await msg.DeleteAsync();
+                    cmds.Add(msg.DeleteAsync());
                 }
+
+                await Task.WhenAll(cmds);
             }
 
             if (msg.Author.IsBot)
@@ -137,39 +146,39 @@ namespace FBIBot
                 return;
             }
 
-            await AutoModAsync(context, isCommand);
+            await AutoModAsync(Context, isCommand);
         }
 
-        private async Task AutoModAsync(SocketCommandContext context, bool isCommand)
+        private static async Task AutoModAsync(SocketCommandContext Context, bool isCommand)
         {
-            if (await AutoSurveillance.GetAutoSurveillanceAsync(context.Guild))
+            if (await AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild))
             {
-                if (await Pedophile.IsPedophileAsync(context.Message))
+                if (await Pedophile.IsPedophileAsync(Context))
                 {
-                    await new Pedophile(context).ArrestAsync();
+                    await new Pedophile(Context).ArrestAsync();
                     return;
                 }
             }
-            if (((await Spam.IsSpamAsync(context) && await AntiSpam.GetAntiSpamAsync(context.Guild))
-                || (await Spam.IsSingleSpamAsync(context) && await AntiSingleSpam.GetAntiSingleSpamAsync(context.Guild))) && !isCommand)
+            if (((await Spam.IsSpamAsync(Context) && await AntiSpam.GetAntiSpamAsync(Context.Guild))
+                || (await Spam.IsSingleSpamAsync(Context) && await AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild))) && !isCommand)
             {
-                await new Spam(context).WarnAsync();
+                await new Spam(Context).WarnAsync();
             }
-            else if (await MassMention.IsMassMentionAsync(context) && await AntiMassMention.GetAntiMassMentionAsync(context.Guild))
+            else if (await MassMention.IsMassMentionAsync(Context) && await AntiMassMention.GetAntiMassMentionAsync(Context.Guild))
             {
-                await new MassMention(context).WarnAsync();
+                await new MassMention(Context).WarnAsync();
             }
-            else if (await CAPS.ISCAPSASYNC(context) && await AntiCaps.GetAntiCapsAsync(context.Guild))
+            else if (await CAPS.ISCAPSASYNC(Context) && await AntiCaps.GetAntiCapsAsync(Context.Guild))
             {
-                await new CAPS(context).WARNASYNC();
+                await new CAPS(Context).WARNASYNC();
             }
-            else if (await Invite.HasInviteAsync(context) && await AntiInvite.GetAntiInviteAsync(context.Guild))
+            else if (await Invite.HasInviteAsync(Context) && await AntiInvite.GetAntiInviteAsync(Context.Guild))
             {
-                await new Invite(context).RemoveAsync();
+                await new Invite(Context).RemoveAsync();
             }
-            else if (await Link.HasLinkAsync(context) && await AntiLink.GetAntiLinkAsync(context.Guild))
+            else if (await Link.HasLinkAsync(Context) && await AntiLink.GetAntiLinkAsync(Context.Guild))
             {
-                await new Link(context).RemoveAsync();
+                await new Link(Context).RemoveAsync();
             }
         }
     }

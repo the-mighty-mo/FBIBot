@@ -17,9 +17,9 @@ namespace FBIBot.Modules.AutoMod
                 $"Message removed: {Context.Message.Content}");
         }
 
-        public static async Task<bool> HasInviteAsync(SocketCommandContext context)
+        public static async Task<bool> HasInviteAsync(SocketCommandContext Context)
         {
-            string message = context.Message.Content;
+            string message = Context.Message.Content;
 
             Regex regex = new Regex(@"\b(discord\.gg\/|discordapp\.com\/invite\/)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
             Match match = regex.Match(message);
