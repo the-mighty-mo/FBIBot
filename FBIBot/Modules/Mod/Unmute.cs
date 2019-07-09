@@ -23,18 +23,25 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
+            List<Task> cmds = new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection."),
+                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.User as SocketGuildUser, user)
+            };
             if (roles.Count > 0)
             {
-                await user.AddRolesAsync(roles);
-                await RemoveUserRolesAsync(user);
+                cmds.AddRange(new List<Task>()
+                {
+                    user.AddRolesAsync(roles),
+                    RemoveUserRolesAsync(user)
+                });
             }
             if (role != null)
             {
-                await user.RemoveRoleAsync(role);
+                cmds.Add(user.RemoveRoleAsync(role));
             }
 
-            await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.User as SocketGuildUser, user);
+            await Task.WhenAll(cmds);
         }
 
         [Command("unmute")]

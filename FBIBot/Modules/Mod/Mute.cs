@@ -15,7 +15,7 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task MuteAsync([RequireBotHierarchy("mute")] [RequireInvokerHierarchy("mute")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
         {
-            SocketRole role = await Config.SetMute.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
+            IRole role = await Config.SetMute.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
@@ -25,19 +25,27 @@ namespace FBIBot.Modules.Mod
             List<SocketRole> roles = user.Roles.ToList();
             roles.Remove(Context.Guild.EveryoneRole);
 
+            List<Task> cmds = new List<Task>();
             bool modifyRoles = await Config.ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);
             if (modifyRoles)
             {
-                await SaveUserRolesAsync(roles, user);
-                await user.RemoveRolesAsync(roles);
+                cmds.AddRange(new List<Task>()
+                {
+                    SaveUserRolesAsync(roles, user),
+                    user.RemoveRolesAsync(roles)
+                });
             }
-            await user.AddRoleAsync(role);
+            cmds.Add(user.AddRoleAsync(role));
+
+            await Task.WhenAll(cmds);
 
             bool isTimeout = double.TryParse(timeout, out double minutes);
-
-            await Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}." +
-                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User as SocketGuildUser, user, timeout, reason);
+            await Task.WhenAll
+            (
+                Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}." +
+                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User as SocketGuildUser, user, timeout, reason)
+            );
 
             if (timeout != null && isTimeout)
             {
@@ -48,14 +56,18 @@ namespace FBIBot.Modules.Mod
                     return;
                 }
 
+                cmds = new List<Task>()
+                {
+                    user.RemoveRoleAsync(role),
+                    Unmute.RemoveUserRolesAsync(user),
+                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.Guild.CurrentUser, user)
+                };
                 if (modifyRoles)
                 {
-                    await user.AddRolesAsync(roles);
+                    cmds.Add(user.AddRolesAsync(roles));
                 }
-                await user.RemoveRoleAsync(role);
-                await Unmute.RemoveUserRolesAsync(user);
 
-                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.Guild.CurrentUser, user);
+                await Task.WhenAll(cmds);
             }
         }
 
@@ -73,13 +85,11 @@ namespace FBIBot.Modules.Mod
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
 
-        async Task<SocketRole> CreateMuteRoleAsync()
+        async Task<IRole> CreateMuteRoleAsync()
         {
-            SocketRole role;
             GuildPermissions perms = new GuildPermissions(viewChannel: true, sendMessages: false, addReactions: false, connect: true, speak: false);
             Color color = new Color(54, 57, 63);
-            ulong roleID = (await Context.Guild.CreateRoleAsync("Muted", perms, color)).Id;
-            role = Context.Guild.GetRole(roleID);
+            var role = await Context.Guild.CreateRoleAsync("Muted", perms, color);
 
             await Config.SetMute.SetMuteRoleAsync(role, Context.Guild);
             return role;
