@@ -49,7 +49,7 @@ namespace FBIBot
                 }
             }
 
-            List<Task> cmds = new List<Task>()
+            List<Task> initSqlite = new List<Task>()
             {
                 InitVerifySqlite(),
                 InitModRolesSqlite(),
@@ -72,7 +72,7 @@ namespace FBIBot
             _handler = new CommandHandler(_client, _services);
             Task initCmd = _handler.InitCommandsAsync();
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(initSqlite);
             if (isConsole)
             {
                 Console.WriteLine($"{SecurityInfo.botName} has finished loading");
