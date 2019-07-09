@@ -12,10 +12,13 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task KickAsync([RequireBotHierarchy("kick")] [RequireInvokerHierarchy("kick")] SocketGuildUser user, [Remainder] string reason = null)
         {
-            await user.KickAsync(reason);
-            await Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe." +
-                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Kick, Context.User as SocketGuildUser, user, null, reason);
+            await Task.WhenAll
+            (
+                user.KickAsync(reason),
+                Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe." +
+                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Kick, Context.User as SocketGuildUser, user, null, reason)
+            );
         }
 
         [Command("kick")]
