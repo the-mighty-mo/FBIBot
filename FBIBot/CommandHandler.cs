@@ -73,12 +73,11 @@ namespace FBIBot
         {
             if (await RaidMode.GetVerificationLevelAsync(u.Guild) != null && !u.IsBot)
             {
-                List<Task> cmds = new List<Task>()
-                {
+                await Task.WhenAll
+                (
                     u.SendMessageAsync($":rotating_light: :rotating_light: The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time.:rotating_light: :rotating_light:"),
                     RaidMode.AddBlockedUserAsync(u)
-                };
-                await Task.WhenAll(cmds);
+                );
                 await u.KickAsync("FBI RAID MODE");
                 return;
             }
