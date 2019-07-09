@@ -29,12 +29,7 @@ namespace FBIBot.Modules.AutoMod
             {
                 await Task.Yield();
 
-                int caps = 0;
-                foreach (char c in message.Where(x => char.IsUpper(x)))
-                {
-                    caps++;
-                }
-
+                int caps = message.Where(x => char.IsUpper(x)).Count();
                 isCaps = (double)caps / message.Length >= 0.80;
             }
 
