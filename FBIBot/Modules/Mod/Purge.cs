@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -28,14 +29,17 @@ namespace FBIBot.Modules.Mod
             var msgs = await channel.GetMessagesAsync(num).FlattenAsync();
             await channel.DeleteMessagesAsync(msgs);
 
-            foreach (var msg in msgs)
+            try
             {
-                try
+                List<Task> cmds = new List<Task>();
+                foreach (var msg in msgs)
                 {
-                    await msg.DeleteAsync();
+                    cmds.Add(msg.DeleteAsync());
                 }
-                catch { }
+
+                await Task.WhenAll(cmds);
             }
+            catch { }
 
             await Context.Channel.SendMessageAsync($"We have successfully shredded, burned, and disposed of {num} messages. Encrypt them better next time.");
         }
@@ -58,24 +62,25 @@ namespace FBIBot.Modules.Mod
             SocketTextChannel channel = Context.Guild.GetTextChannel(Context.Channel.Id);
             IEnumerable<IMessage> msgs = await channel.GetMessagesAsync(1000).FlattenAsync();
             int i = 0;
-            foreach (IMessage msg in msgs)
+
+            try
             {
-                if (msg.Author == (user as IUser))
+                List<Task> cmds = new List<Task>();
+                foreach (IMessage msg in msgs.Where(x => x.Author == (user as IUser)))
                 {
-                    try
-                    {
-                        await msg.DeleteAsync();
-                    }
-                    catch { }
+                    cmds.Add(msg.DeleteAsync());
                     i++;
+
+                    if (i >= num)
+                    {
+                        i = num;
+                        break;
+                    }
                 }
 
-                if (i >= num)
-                {
-                    i = num;
-                    break;
-                }
+                await Task.WhenAll(cmds);
             }
+            catch { }
 
             await Context.Channel.SendMessageAsync($"We have successfully shredded, burned, and disposed of {num} messages sent by {user.Mention}. There goes all of the socialist propaganda.");
         }
