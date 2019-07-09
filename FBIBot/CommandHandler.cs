@@ -180,13 +180,12 @@ namespace FBIBot
 
             if (await AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild))
             {
-                Task<bool> isPedophile = Pedophile.IsPedophileAsync(Context);
-                if (await isPedophile)
+                if (await AutoSurveillanceAsync(Context))
                 {
-                    await new Pedophile(Context).ArrestAsync();
                     return;
                 }
             }
+
             if (((await isSpam[0] && await isSpam[1]) || (await isSpam[2] && await isSpam[3])) && !isCommand)
             {
                 await new Spam(Context).WarnAsync();
@@ -207,6 +206,23 @@ namespace FBIBot
             {
                 await new Link(Context).RemoveAsync();
             }
+        }
+
+        private static async Task<bool> AutoSurveillanceAsync(SocketCommandContext Context)
+        {
+            bool ran = true;
+            Task<bool> isPedophile = Pedophile.IsPedophileAsync(Context);
+
+            if (await isPedophile)
+            {
+                await new Pedophile(Context).ArrestAsync();
+            }
+            else
+            {
+                ran = false;
+            }
+
+            return ran;
         }
     }
 }
