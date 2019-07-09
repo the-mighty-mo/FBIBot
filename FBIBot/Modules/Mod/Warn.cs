@@ -9,12 +9,18 @@ namespace FBIBot.Modules.Mod
     {
         [Command("warn")]
         [RequireMod]
+        [RequireModLog]
         public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length = null, [Remainder] string reason = null)
         {
-            await Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism." +
-                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-            ulong id = await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User as SocketGuildUser, user, length, reason);
-            await AddWarningAsync(user, id);
+            ulong id = await SendToModLog.GetNextModLogID(Context.Guild);
+
+            await Task.WhenAll
+            (
+                Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism." +
+                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User as SocketGuildUser, user, length, reason),
+                AddWarningAsync(user, id)
+            );
 
             if (double.TryParse(length, out double hours))
             {
@@ -25,13 +31,17 @@ namespace FBIBot.Modules.Mod
                     return;
                 }
 
-                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Guild.CurrentUser, user, id.ToString());
-                await RemoveWarning.RemoveWarningAsync(user, id);
+                await Task.WhenAll
+                (
+                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Guild.CurrentUser, user, id.ToString()),
+                    RemoveWarning.RemoveWarningAsync(user, id)
+                );
             }
         }
 
         [Command("warn")]
         [RequireMod]
+        [RequireModLog]
         public async Task WarnAsync(string user, string length = null, [Remainder] string reason = null)
         {
             SocketGuildUser u;

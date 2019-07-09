@@ -1,5 +1,4 @@
 ﻿using Discord.Commands;
-using Discord.WebSocket;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -9,6 +8,7 @@ namespace FBIBot.Modules.Mod
         [Command("modifyreason")]
         [Alias("modify-reason")]
         [RequireMod]
+        [RequireModLog]
         public async Task ModifyReasonAsync(string id, [Remainder] string reason = null)
         {
             if (!ulong.TryParse(id, out ulong ID) || ID >= await SendToModLog.GetNextModLogID(Context.Guild))

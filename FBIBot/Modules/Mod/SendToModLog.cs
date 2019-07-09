@@ -66,25 +66,31 @@ namespace FBIBot.Modules.Mod
         }
 
         // Note: length for LogType.RemoveWarn is the Mod Log ID, and length for LogType.RemoveWarns is the number of removed warnings
-        public static async Task<ulong> SendToModLogAsync(LogType t, SocketGuildUser invoker, SocketGuildUser target, string length = null, string reason = null)
+        public static async Task SendToModLogAsync(LogType t, SocketGuildUser invoker, SocketGuildUser target, string length = null, string reason = null)
         {
             ModLogInfo info = new ModLogInfo(t, target, length, reason);
             LogTypeSwitch(ref info);
 
-            return await SendToModLogAsync(info, invoker, target?.Id);
+            await SendToModLogAsync(info, invoker, target?.Id);
         }
 
-        public static async Task<ulong> SendToModLogAsync(LogType t, SocketGuildUser invoker, ulong targetID, string length = null, string reason = null)
+        public static async Task SendToModLogAsync(LogType t, SocketGuildUser invoker, ulong targetID, string length = null, string reason = null)
         {
             ModLogInfo info = new ModLogInfo(t, length, reason);
             LogTypeSwitch(ref info);
 
-            return await SendToModLogAsync(info, invoker, targetID);
+            await SendToModLogAsync(info, invoker, targetID);
         }
 
-        private static async Task<ulong> SendToModLogAsync(ModLogInfo info, SocketGuildUser invoker, ulong? targetID)
+        private static async Task SendToModLogAsync(ModLogInfo info, SocketGuildUser invoker, ulong? targetID)
         {
             ulong id = await GetNextModLogID(invoker.Guild);
+            SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(invoker.Guild);
+
+            if (channel == null)
+            {
+                return;
+            }
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(info.color)
@@ -123,13 +129,11 @@ namespace FBIBot.Modules.Mod
                 embed.AddField(field);
             }
 
-            var msg = await (await SetModLog.GetModLogChannelAsync(invoker.Guild))?.SendMessageAsync("", false, embed.Build());
+            var msg = await channel.SendMessageAsync("", false, embed.Build());
             if (msg != null)
             {
                 await SaveModLogAsync(msg, invoker.Guild, id);
             }
-
-            return id;
         }
 
         private static void LogTypeSwitch(ref ModLogInfo info)
