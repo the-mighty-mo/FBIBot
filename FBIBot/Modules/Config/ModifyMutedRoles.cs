@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -12,23 +13,29 @@ namespace FBIBot.Modules.Config
         public async Task ModifyMutedRolesAsync(string modify)
         {
             bool isModify = modify.ToLower() == "true" || modify.ToLower() == "enable";
+            bool isModifying = await GetModifyMutedAsync(Context.Guild);
             string state = isModify ? "permitted to modify" : "prohibited from modifying";
 
-            if (isModify && !await GetModifyMutedAsync(Context.Guild))
-            {
-                await AddModifyMutedAsync(Context.Guild);
-            }
-            else if (!isModify && await GetModifyMutedAsync(Context.Guild))
-            {
-                await RemoveModifyMutedAsync(Context.Guild);
-            }
-            else
+            if (isModify == isModifying)
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that we are already {state} muted member's roles.");
                 return;
             }
 
-            await Context.Channel.SendMessageAsync($"We are now {state} muted member's roles.");
+            List<Task> cmds = new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"We are now {state} muted member's roles.")
+            };
+            if (isModify)
+            {
+                cmds.Add(AddModifyMutedAsync(Context.Guild));
+            }
+            else
+            {
+                cmds.Add(RemoveModifyMutedAsync(Context.Guild));
+            }
+
+            await Task.WhenAll(cmds);
         }
 
         public static async Task AddModifyMutedAsync(SocketGuild g)
