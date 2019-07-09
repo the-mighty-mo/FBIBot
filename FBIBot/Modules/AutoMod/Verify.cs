@@ -115,14 +115,17 @@ namespace FBIBot.Modules.AutoMod
 
         async Task GiveVerificationAsync()
         {
+            List<Task> cmds = new List<Task>();
             foreach (SocketGuild g in Context.User.MutualGuilds)
             {
                 SocketRole role = await Config.SetVerify.GetVerificationRoleAsync(g);
                 if (role != null && g.CurrentUser.GetPermissions(g.DefaultChannel).ManageRoles)
                 {
-                    await g.GetUser(Context.User.Id).AddRoleAsync(role);
+                    cmds.Add(g.GetUser(Context.User.Id).AddRoleAsync(role));
                 }
             }
+
+            await Task.WhenAll(cmds);
         }
 
         public static async Task<string> GetCaptchaAsync(SocketUser u)
