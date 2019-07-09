@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod
@@ -29,12 +30,9 @@ namespace FBIBot.Modules.AutoMod
                 await Task.Yield();
 
                 int caps = 0;
-                foreach (char c in message)
+                foreach (char c in message.Where(x => char.IsUpper(x)))
                 {
-                    if (char.IsUpper(c))
-                    {
-                        caps++;
-                    }
+                    caps++;
                 }
 
                 isCaps = (double)caps / message.Length >= 0.80;
