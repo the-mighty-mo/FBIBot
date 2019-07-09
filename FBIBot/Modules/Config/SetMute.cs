@@ -16,10 +16,15 @@ namespace FBIBot.Modules.Config
             if (GetMuteRole(Context.Guild) == null)
             {
                 await Context.Channel.SendMessageAsync("Our intelligence team has informed us that you already lack a muted role.");
+                return;
             }
-            await RemoveMuteRoleAsync(Context.Guild);
-            await Context.Channel.SendMessageAsync("You no longer have a muted role.\n" +
-                "~~Guess we'll take things into our own hands~~");
+
+            await Task.WhenAll
+            (
+                RemoveMuteRoleAsync(Context.Guild),
+                Context.Channel.SendMessageAsync("You no longer have a muted role.\n" +
+                    "~~Guess we'll take things into our own hands~~")
+            );
         }
 
         [Command("setmute")]
@@ -33,8 +38,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await SetMuteRoleAsync(role, Context.Guild);
-            await Context.Channel.SendMessageAsync($"All who commit treason will now receive the {role.Name} role.");
+            await Task.WhenAll
+            (
+                SetMuteRoleAsync(role, Context.Guild),
+                Context.Channel.SendMessageAsync($"All who commit treason will now receive the {role.Name} role.")
+            );
         }
 
         [Command("setmute")]

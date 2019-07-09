@@ -18,8 +18,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await RemoveModLogChannelAsync(Context.Guild);
-            await Context.Channel.SendMessageAsync("Moderation logs will now go undisclosed. That information was confidential, anyways.");
+            await Task.WhenAll
+            (
+                RemoveModLogChannelAsync(Context.Guild),
+                Context.Channel.SendMessageAsync("Moderation logs will now go undisclosed. That information was confidential, anyways.")
+            );
         }
 
         [Command("setmodlog")]
@@ -33,8 +36,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await SetModLogChannelAsync(channel);
-            await Context.Channel.SendMessageAsync($"Once-confidential moderation logs will now be disclosed to {channel.Mention}.");
+            await Task.WhenAll
+            (
+                SetModLogChannelAsync(channel),
+                Context.Channel.SendMessageAsync($"Once-confidential moderation logs will now be disclosed to {channel.Mention}.")
+            );
         }
 
         [Command("setmodlog")]

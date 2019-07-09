@@ -19,8 +19,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await RemoveVerificationRoleAsync(Context.Guild);
-            await Context.Channel.SendMessageAsync("Citizenship will now go unchecked. This could go very poorly.");
+            await Task.WhenAll
+            (
+                RemoveVerificationRoleAsync(Context.Guild),
+                Context.Channel.SendMessageAsync("Citizenship will now go unchecked. This could go very poorly.")
+            );
         }
 
         [Command("setverify")]
@@ -35,8 +38,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await SetVerificationRoleAsync(role);
-            await Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.");
+            await Task.WhenAll
+            (
+                SetVerificationRoleAsync(role),
+                Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.")
+            );
         }
 
         [Command("setverify")]

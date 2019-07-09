@@ -18,8 +18,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await RemoveModAsync(role);
-            await Context.Channel.SendMessageAsync($"Members with the {role.Name} role are no longer assistants of the agency. They were getting kind of suspicious, anyways.");
+            await Task.WhenAll
+            (
+                RemoveModAsync(role),
+                Context.Channel.SendMessageAsync($"Members with the {role.Name} role are no longer assistants of the agency. They were getting kind of suspicious, anyways.")
+            );
         }
 
         [Command("remove-mod")]

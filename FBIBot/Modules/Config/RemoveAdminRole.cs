@@ -18,8 +18,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await RemoveAdminAsync(role);
-            await Context.Channel.SendMessageAsync($"Members with the {role.Name} role are no longer local directors of the agency. The president was displeased with their performance.");
+            await Task.WhenAll
+            (
+                RemoveAdminAsync(role),
+                Context.Channel.SendMessageAsync($"Members with the {role.Name} role are no longer local directors of the agency. The president was displeased with their performance.")
+            );
         }
 
         [Command("remove-admin")]

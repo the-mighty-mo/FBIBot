@@ -18,8 +18,11 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await SetPrefixAsync(Context.Guild, prefix);
-            await Context.Channel.SendMessageAsync($"The FBI's prefix has been set to `{prefix}`.");
+            await Task.WhenAll
+            (
+                SetPrefixAsync(Context.Guild, prefix),
+                Context.Channel.SendMessageAsync($"The FBI's prefix has been set to `{prefix}`.")
+            );
         }
 
         public static async Task<string> GetPrefixAsync(SocketGuild g)
