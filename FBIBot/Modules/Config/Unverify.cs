@@ -13,7 +13,7 @@ namespace FBIBot.Modules.Config
         [Command("unverify")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task UnverifyAsync([RequireBotHierarchy("unverify")] [RequireInvokerHierarchy("unverify")] SocketGuildUser user, [Remainder] string reason = null)
+        public async Task UnverifyAsync([RequireInvokerHierarchy("unverify")] SocketGuildUser user, [Remainder] string reason = null)
         {
             SocketRole role = await SetVerify.GetVerificationRoleAsync(Context.Guild);
             if (role == null)
