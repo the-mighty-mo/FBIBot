@@ -1,10 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -12,7 +8,7 @@ namespace FBIBot.Modules.Mod
     public class RemoveWarnings : ModuleBase<SocketCommandContext>
     {
         [Command("removewarnings")]
-        [Alias("remove-warnings")]
+        [Alias("remove-warnings", "clearwarnings", "clear-warnings")]
         [RequireMod]
         public async Task RemoveWarnsAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, string count = null)
         {

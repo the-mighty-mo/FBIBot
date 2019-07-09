@@ -62,7 +62,11 @@ namespace FBIBot.Modules.Mod
             {
                 if (msg.Author == (user as IUser))
                 {
-                    await msg.DeleteAsync();
+                    try
+                    {
+                        await msg.DeleteAsync();
+                    }
+                    catch { }
                     i++;
                 }
 
