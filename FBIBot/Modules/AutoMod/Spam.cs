@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -15,16 +14,19 @@ namespace FBIBot.Modules.AutoMod
 
         public async Task WarnAsync()
         {
-            await Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big spam\n" +
-                $"Message: {Context.Message.Content}");
-            await Context.Message.DeleteAsync();
+            await Task.WhenAll
+            (
+                Context.Message.DeleteAsync(),
+                Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big spam\n" +
+                    $"Message: {Context.Message.Content}")
+            );
         }
 
         public static async Task<bool> IsSpamAsync(SocketCommandContext Context)
         {
             bool isSpam = false;
 
-            List<IMessage> msgs = (await Context.Channel.GetMessagesAsync().FlattenAsync()).ToList();
+            var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
             List<string> userMsgs = new List<string>();
             foreach (IMessage msg in msgs)
             {
@@ -65,7 +67,7 @@ namespace FBIBot.Modules.AutoMod
                 i++;
             }
 
-            return await Task.Run(() => isSpam);
+            return isSpam;
         }
 
         public static async Task<bool> IsSingleSpamAsync(SocketCommandContext context)
@@ -73,9 +75,10 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             string message = context.Message.Content;
-
             if (message.Length > 40)
             {
+                await Task.Yield();
+
                 Regex regex = new Regex(@"(\W|^)(.+)\s*\2", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 MatchCollection matches = regex.Matches(message);
 
@@ -99,7 +102,7 @@ namespace FBIBot.Modules.AutoMod
                 }
             }
 
-            return await Task.Run(() => isSpam);
+            return isSpam;
         }
     }
 }

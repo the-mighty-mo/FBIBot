@@ -12,20 +12,23 @@ namespace FBIBot.Modules.AutoMod
 
         public async Task RemoveAsync()
         {
-            await Context.Message.DeleteAsync();
-            await Context.User.SendMessageAsync($"You cannot send invite links in the server {Context.Guild.Name}.\n" +
-                $"Message removed: {Context.Message.Content}");
+            await Task.WhenAll
+            (
+                Context.Message.DeleteAsync(),
+                Context.User.SendMessageAsync($"You cannot send invite links in the server {Context.Guild.Name}.\n" +
+                    $"Message removed: {Context.Message.Content}")
+            );
         }
 
         public static async Task<bool> HasInviteAsync(SocketCommandContext Context)
         {
+            await Task.Yield();
+
             string message = Context.Message.Content;
+            Regex regex = new Regex(@"\b(discord\.gg\/|discordapp\.com\/invite\/)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            bool hasInvite = regex.IsMatch(message);
 
-            Regex regex = new Regex(@"\b(discord\.gg\/|discordapp\.com\/invite\/)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
-            Match match = regex.Match(message);
-
-            bool hasInvite = match.Success;
-            return await Task.Run(() => hasInvite);
+            return hasInvite;
         }
     }
 }

@@ -11,17 +11,22 @@ namespace FBIBot.Modules.AutoMod
 
         public async Task WarnAsync()
         {
-            await Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big mass mention\n" +
-                $"Message: {Context.Message.Content}");
-            await Context.Message.DeleteAsync();
+            await Task.WhenAll
+            (
+                Context.Message.DeleteAsync(),
+                Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big mass mention\n" +
+                    $"Message: {Context.Message.Content}")
+            );
         }
 
         public static async Task<bool> IsMassMentionAsync(SocketCommandContext Context)
         {
+            await Task.Yield();
+
             int count = Context.Message.MentionedRoles.Count + Context.Message.MentionedUsers.Count;
             bool hasMassMention = count >= 5;
 
-            return await Task.Run(() => hasMassMention);
+            return hasMassMention;
         }
     }
 }

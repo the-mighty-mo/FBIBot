@@ -12,17 +12,22 @@ namespace FBIBot.Modules.AutoMod
 
         public async Task RemoveAsync()
         {
-            await Context.Message.DeleteAsync();
-            await Context.User.SendMessageAsync($"You cannot send links in the server {Context.Guild.Name}.\n" +
-                $"Message removed: {Context.Message.Content}");
+            await Task.WhenAll
+            (
+                Context.Message.DeleteAsync(),
+                Context.User.SendMessageAsync($"You cannot send links in the server {Context.Guild.Name}.\n" +
+                    $"Message removed: {Context.Message.Content}")
+            );
         }
 
         public static async Task<bool> IsLinkAsync(SocketCommandContext Context)
         {
+            await Task.Yield();
+
             string message = Context.Message.Content;
             bool hasLink = message.Contains("http://") || message.Contains("https://");
 
-            return await Task.Run(() => hasLink);
+            return hasLink;
         }
     }
 }

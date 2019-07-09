@@ -20,8 +20,11 @@ namespace FBIBot.Modules.AutoMod
         {
             if (await GetVerifiedAsync(Context.User))
             {
-                await GiveVerificationAsync();
-                await Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck.");
+                await Task.WhenAll
+                (
+                    GiveVerificationAsync(),
+                    Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck.")
+                );
                 return;
             }
 
@@ -38,23 +41,31 @@ namespace FBIBot.Modules.AutoMod
                 int attempts = await GetAttemptsAsync(Context.User);
                 attempts++;
 
-                if (attempts >= maxAttempts)
-                {
-                    await RemoveCaptchaAsync(Context.User);
-                    await RemoveAttemptsAsync(Context.User);
-                    await Context.User.SendMessageAsync("You have run out of attempts, communist spy.\n" +
-                        "If you would like to try again, please get a new captcha by typing `\\verify`.");
-                    return;
-                }
-
-                await SetAttemptsAsync(Context.User, attempts);
-                await Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.");
+                await Task.WhenAll
+                (
+                    attempts >= maxAttempts
+                    ? new List<Task>()
+                    {
+                        RemoveCaptchaAsync(Context.User),
+                        RemoveAttemptsAsync(Context.User),
+                        Context.User.SendMessageAsync("You have run out of attempts, communist spy.\n" +
+                            "If you would like to try again, please get a new captcha by typing `\\verify`.")
+                    }
+                    : new List<Task>()
+                    {
+                        SetAttemptsAsync(Context.User, attempts),
+                        Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.")
+                    }
+                );
                 return;
             }
 
-            await GiveVerificationAsync();
-            await Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.");
-            await SetVerifiedAsync(Context.User);
+            await Task.WhenAll
+            (
+                GiveVerificationAsync(),
+                SetVerifiedAsync(Context.User),
+                Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.")
+            );
 
             List<Task> cmds = new List<Task>();
             foreach (SocketGuild g in Context.User.MutualGuilds)
@@ -76,6 +87,8 @@ namespace FBIBot.Modules.AutoMod
             string captchaCode = "";
             List<string> badCaptcha = new List<string>() { "I", "l", "0", "O" };
 
+            await Task.Yield();
+
             do
             {
                 captchaCode = CaptchaCodeFactory.GenerateCaptchaCode(6);
@@ -90,8 +103,11 @@ namespace FBIBot.Modules.AutoMod
             Image image = Image.FromStream(imageStream);
             image.Save($"{u.Id}.png", ImageFormat.Png);
 
-            await save;
-            await u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{(u.Guild != null ? $" to {u.Guild.Name}" : "")}.\n");
+            await Task.WhenAll
+            (
+                save,
+                u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{(u.Guild != null ? $" to {u.Guild.Name}" : "")}.\n")
+            );
 
             image.Dispose();
             File.Delete($"{u.Id}.png");
@@ -118,7 +134,7 @@ namespace FBIBot.Modules.AutoMod
             {
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
                     captcha = (string)reader["captcha"];
@@ -126,7 +142,7 @@ namespace FBIBot.Modules.AutoMod
                 reader.Close();
             }
 
-            return await Task.Run(() => captcha);
+            return captcha;
         }
 
         public static async Task SetCaptchaAsync(string captcha, SocketUser u)
@@ -161,7 +177,7 @@ namespace FBIBot.Modules.AutoMod
             {
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                 if (reader.Read())
                 {
                     attempts = int.Parse(reader["attempts"].ToString());
@@ -169,7 +185,7 @@ namespace FBIBot.Modules.AutoMod
                 reader.Close();
             }
 
-            return await Task.Run(() => attempts);
+            return attempts;
         }
 
         public static async Task SetAttemptsAsync(SocketUser u, int attempts)
@@ -204,12 +220,12 @@ namespace FBIBot.Modules.AutoMod
             {
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                 isVerified = reader.Read();
                 reader.Close();
             }
 
-            return await Task.Run(() => isVerified);
+            return isVerified;
         }
 
         public static async Task SetVerifiedAsync(SocketUser u)

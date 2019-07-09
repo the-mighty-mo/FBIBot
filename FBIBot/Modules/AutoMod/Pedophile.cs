@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,22 +21,24 @@ namespace FBIBot.Modules.AutoMod
                 "FBI OPEN UP!",
                 "Where do you think you're going?"
             };
-            
-            await Context.Message.DeleteAsync();
-            await Context.User.SendMessageAsync(messages[Program.rng.Next(messages.Count)]);
-            await Context.Channel.SendMessageAsync($"\\arrest {Context.User.Mention} 5");
+
+            await Task.WhenAll
+            (
+                Context.Message.DeleteAsync(),
+                Context.Channel.SendMessageAsync($"\\arrest {Context.User.Mention} 5"),
+                Context.User.SendMessageAsync(messages[Program.rng.Next(messages.Count)])
+            );
         }
 
         public static async Task<bool> IsPedophileAsync(SocketCommandContext Context)
         {
-            bool isPedophile = false;
+            await Task.Yield();
 
+            string message = Context.Message.Content;
             Regex regex = new Regex(@"\bI (like|love) (?!(no|none of the) )(\w*\s+|)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            Match match = regex.Match(Context.Message.Content);
+            bool isPedophile = regex.IsMatch(message);
 
-            isPedophile = match.Success;
-
-            return await Task.Run(() => isPedophile);
+            return isPedophile;
         }
     }
 }
