@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -11,35 +12,37 @@ namespace FBIBot.Modules.Config
         [RequireAdmin]
         public async Task ConfigAsync()
         {
-            string prefix = await SetPrefix.GetPrefixAsync(Context.Guild);
-            SocketRole verify = await SetVerify.GetVerificationRoleAsync(Context.Guild);
-            SocketRole mute = await SetMute.GetMuteRole(Context.Guild);
-            bool modifyMuted = await ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);
-            SocketTextChannel modlog = await SetModLog.GetModLogChannelAsync(Context.Guild);
-            bool raidMode = await RaidMode.GetVerificationLevelAsync(Context.Guild) != null;
-            bool autoSurveillance = await AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
-            bool antiSpam = await AntiSpam.GetAntiSpamAsync(Context.Guild);
-            bool antiSingleSpam = await AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild);
-            bool antiMassMention = await AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
-            bool antiCaps = await AntiCaps.GetAntiCapsAsync(Context.Guild);
-            bool antiInvite = await AntiInvite.GetAntiInviteAsync(Context.Guild);
-            bool antiLink = await AntiLink.GetAntiLinkAsync(Context.Guild);
+            Task<string> prefix = SetPrefix.GetPrefixAsync(Context.Guild);
+            Task<SocketRole> verify = SetVerify.GetVerificationRoleAsync(Context.Guild);
+            Task<SocketRole> mute = SetMute.GetMuteRole(Context.Guild);
+            Task<bool> modifyMuted = ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);
+            Task<List<SocketRole>> modRoles = AddMod.GetModRolesAsync(Context.Guild);
+            Task<List<SocketRole>> adminRoles = AddAdmin.GetAdminRolesAsync(Context.Guild);
+            Task<SocketTextChannel> modlog = SetModLog.GetModLogChannelAsync(Context.Guild);
+            Task<VerificationLevel?> raidMode = RaidMode.GetVerificationLevelAsync(Context.Guild);
+            Task<bool> autoSurveillance = AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
+            Task<bool> antiSpam = AntiSpam.GetAntiSpamAsync(Context.Guild);
+            Task<bool> antiSingleSpam = AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild);
+            Task<bool> antiMassMention = AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
+            Task<bool> antiCaps = AntiCaps.GetAntiCapsAsync(Context.Guild);
+            Task<bool> antiInvite = AntiInvite.GetAntiInviteAsync(Context.Guild);
+            Task<bool> antiLink = AntiLink.GetAntiLinkAsync(Context.Guild);
 
-            string config = $"Prefix: **{(prefix == @"\" ? @"\\" : prefix)}**\n" +
-                $"Verification Role: **{(verify != null ? verify.Name : "(none)")}**\n" +
-                $"Mute Role: **{(mute != null ? mute.Name : "(none)")}**\n" +
-                $"Modify Muted Member's Roles: **{(modifyMuted ? "Enabled" : "Disabled")}**\n" +
-                $"Mod Roles: **{string.Join(", ", await AddMod.GetModRolesAsync(Context.Guild))}**\n" +
-                $"Admin Roles: **{string.Join(", ", await AddAdmin.GetAdminRolesAsync(Context.Guild))}**\n" +
-                $"Mod Log: **{(modlog != null ? modlog.Mention : "(none)")}**\n" +
-                $"FBI RAID MODE: **{(raidMode ? "ENABLED" : "Disabled")}**\n" +
-                $"Auto Surveillance: **{(autoSurveillance ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Spam: **{(antiSpam ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Single-Spam: **{(antiSingleSpam ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Mass-Mention: **{(antiMassMention ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-CAPS: **{(antiCaps ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Invite: **{(antiInvite ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Link: **{(antiLink ? "Enabled" : "Disabled")}**\n";
+            string config = $"Prefix: **{(await prefix == @"\" ? @"\\" : await prefix)}**\n" +
+                $"Verification Role: **{(await verify != null ? (await verify).Name : "(none)")}**\n" +
+                $"Mute Role: **{(await mute != null ? (await mute).Name : "(none)")}**\n" +
+                $"Modify Muted Member's Roles: **{(await modifyMuted ? "Enabled" : "Disabled")}**\n" +
+                $"Mod Roles: **{string.Join(", ", await modRoles)}**\n" +
+                $"Admin Roles: **{string.Join(", ", await adminRoles)}**\n" +
+                $"Mod Log: **{(await modlog != null ? (await modlog).Mention : "(none)")}**\n" +
+                $"FBI RAID MODE: **{(await raidMode != null ? "ENABLED" : "Disabled")}**\n" +
+                $"Auto Surveillance: **{(await autoSurveillance ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Spam: **{(await antiSpam ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Single-Spam: **{(await antiSingleSpam ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Mass-Mention: **{(await antiMassMention ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-CAPS: **{(await antiCaps ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Invite: **{(await antiInvite ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Link: **{(await antiLink ? "Enabled" : "Disabled")}**\n";
 
             string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
                 $"Mute Role: Muted **(created on mute command)**\n" +

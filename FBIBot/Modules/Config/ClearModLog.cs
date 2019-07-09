@@ -39,9 +39,12 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await SendToModLog.RemoveModLogsAsync(Context.Guild);
-            await RemoveWarnings.RemoveAllWarningsAsync(Context.Guild);
-            await Context.Channel.SendMessageAsync("We have shredded and burned all of the moderation logs. The Russians shall never get hold of them!");
+            await Task.WhenAll
+            (
+                SendToModLog.RemoveModLogsAsync(Context.Guild),
+                RemoveWarnings.RemoveAllWarningsAsync(Context.Guild),
+                Context.Channel.SendMessageAsync("We have shredded and burned all of the moderation logs. The Russians shall never get hold of them!")
+            );
         }
     }
 }
