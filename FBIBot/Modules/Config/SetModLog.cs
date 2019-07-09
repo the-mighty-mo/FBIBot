@@ -68,7 +68,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => channel);
+            return channel;
         }
 
         public static async Task SetModLogChannelAsync(SocketTextChannel channel)

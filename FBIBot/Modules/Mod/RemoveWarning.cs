@@ -59,7 +59,7 @@ namespace FBIBot.Modules.Mod
                 reader.Close();
             }
 
-            return await Task.Run(() => hasWarning);
+            return hasWarning;
         }
 
         public static async Task RemoveWarningAsync(SocketGuildUser u, ulong id)

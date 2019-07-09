@@ -239,7 +239,7 @@ namespace FBIBot.Modules.Mod
 
             await msg.ModifyAsync(x => x.Embed = embed.Build());
 
-            return await Task.Run(() => true);
+            return true;
         }
 
         public static async Task<ulong> GetNextModLogID(SocketGuild g)
@@ -259,7 +259,7 @@ namespace FBIBot.Modules.Mod
                 reader.Close();
             }
 
-            return await Task.Run(() => ++id);
+            return ++id;
         }
 
         public static async Task<IUserMessage> GetModLogAsync(SocketGuild g, ulong id)
@@ -283,7 +283,7 @@ namespace FBIBot.Modules.Mod
                 reader.Close();
             }
 
-            return await Task.Run(() => msg);
+            return msg;
         }
 
         public static async Task SaveModLogAsync(IUserMessage msg, SocketGuild g, ulong id)

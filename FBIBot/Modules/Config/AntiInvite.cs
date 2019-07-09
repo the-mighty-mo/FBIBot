@@ -37,7 +37,7 @@ namespace FBIBot.Modules.Config
 
         public static async Task<bool> GetAntiInviteAsync(SocketGuild g)
         {
-            bool isAntiSpam = false;
+            bool isAntiInvite = false;
 
             string getSpam = "SELECT guild_id FROM AntiInvite WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
@@ -45,11 +45,11 @@ namespace FBIBot.Modules.Config
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isAntiSpam = await reader.ReadAsync();
+                isAntiInvite = await reader.ReadAsync();
                 reader.Close();
             }
 
-            return await Task.Run(() => isAntiSpam);
+            return isAntiInvite;
         }
 
         public static async Task SetAntiInviteAsync(SocketGuild g)

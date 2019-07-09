@@ -98,7 +98,7 @@ namespace FBIBot.Modules.Mod
                 reader.Close();
             }
 
-            return await Task.Run(() => hasPrisoners);
+            return hasPrisoners;
         }
 
         public static async Task RemovePrisonerAsync(SocketGuildUser user)

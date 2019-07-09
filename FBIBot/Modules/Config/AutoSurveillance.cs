@@ -37,7 +37,7 @@ namespace FBIBot.Modules.Config
 
         public static async Task<bool> GetAutoSurveillanceAsync(SocketGuild g)
         {
-            bool isAntiSpam = false;
+            bool isAutoSurveillance = false;
 
             string getSpam = "SELECT guild_id FROM AutoSurveillance WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
@@ -45,11 +45,11 @@ namespace FBIBot.Modules.Config
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isAntiSpam = await reader.ReadAsync();
+                isAutoSurveillance = await reader.ReadAsync();
                 reader.Close();
             }
 
-            return await Task.Run(() => isAntiSpam);
+            return isAutoSurveillance;
         }
 
         public static async Task SetAutoSurveillanceAsync(SocketGuild g)

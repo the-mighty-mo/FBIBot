@@ -66,7 +66,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => modify);
+            return modify;
         }
     }
 }

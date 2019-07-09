@@ -49,7 +49,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => isAntiLink);
+            return isAntiLink;
         }
 
         public static async Task SetAntiLinkAsync(SocketGuild g)

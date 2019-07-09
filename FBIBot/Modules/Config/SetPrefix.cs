@@ -39,7 +39,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => prefix);
+            return prefix;
         }
 
         public static async Task SetPrefixAsync(SocketGuild g, string prefix)

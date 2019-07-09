@@ -89,7 +89,7 @@ namespace FBIBot.Modules.Mod
             role = Context.Guild.GetRole(roleID);
 
             await SetPrisonerRoleAsync(role);
-            return await Task.Run(() => role);
+            return role;
         }
 
         async Task<SocketTextChannel> CreateGuantanamoAsync(SocketRole role)
@@ -108,7 +108,7 @@ namespace FBIBot.Modules.Mod
 
             await SetPrisonerChannelAsync(textChannel);
 
-            return await Task.Run(() => textChannel);
+            return textChannel;
         }
 
         public static async Task<SocketRole> GetPrisonerRoleAsync(SocketGuild g)
@@ -129,7 +129,7 @@ namespace FBIBot.Modules.Mod
                 reader.Close();
             }
 
-            return await Task.Run(() => role);
+            return role;
         }
 
         public static async Task SetPrisonerRoleAsync(SocketRole role)
@@ -163,7 +163,7 @@ namespace FBIBot.Modules.Mod
                 reader.Close();
             }
 
-            return await Task.Run(() => channel);
+            return channel;
         }
 
         public static async Task SetPrisonerChannelAsync(SocketTextChannel channel)

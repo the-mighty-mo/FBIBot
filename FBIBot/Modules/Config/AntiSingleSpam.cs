@@ -49,7 +49,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => isAntiSingleSpam);
+            return isAntiSingleSpam;
         }
 
         public static async Task SetAntiSingleSpamAsync(SocketGuild g)

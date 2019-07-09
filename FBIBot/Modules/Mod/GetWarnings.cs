@@ -58,7 +58,7 @@ namespace FBIBot.Modules.Mod
                 }
             }
 
-            return await Task.Run(() => ids);
+            return ids;
         }
     }
 }

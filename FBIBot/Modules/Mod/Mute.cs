@@ -81,7 +81,7 @@ namespace FBIBot.Modules.Mod
             role = Context.Guild.GetRole(roleID);
 
             await Config.SetMute.SetMuteRoleAsync(role, Context.Guild);
-            return await Task.Run(() => role);
+            return role;
         }
 
         public static async Task SaveUserRolesAsync(List<SocketRole> roles, SocketGuildUser user)

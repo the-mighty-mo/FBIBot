@@ -37,7 +37,7 @@ namespace FBIBot.Modules.Config
 
         public static async Task<bool> GetAntiCapsAsync(SocketGuild g)
         {
-            bool isAntiSpam = false;
+            bool isAntiCaps = false;
 
             string getSpam = "SELECT guild_id FROM AntiCaps WHERE guild_id = @guild_id;";
             using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
@@ -45,11 +45,11 @@ namespace FBIBot.Modules.Config
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isAntiSpam = await reader.ReadAsync();
+                isAntiCaps = await reader.ReadAsync();
                 reader.Close();
             }
 
-            return await Task.Run(() => isAntiSpam);
+            return isAntiCaps;
         }
 
         public static async Task SetAntiCapsAsync(SocketGuild g)

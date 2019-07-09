@@ -68,7 +68,7 @@ namespace FBIBot.Modules.Config
                 }
             }
 
-            return await Task.Run(() => role);
+            return role;
         }
 
         public static async Task SetMuteRoleAsync(SocketRole role, SocketGuild g)

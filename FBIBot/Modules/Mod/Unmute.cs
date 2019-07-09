@@ -74,7 +74,7 @@ namespace FBIBot.Modules.Mod
                 reader.Close();
             }
 
-            return await Task.Run(() => roles);
+            return roles;
         }
 
         public static async Task RemoveUserRolesAsync(SocketGuildUser user)

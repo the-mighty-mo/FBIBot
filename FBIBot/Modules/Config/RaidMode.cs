@@ -123,7 +123,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => level);
+            return level;
         }
 
         public static async Task SaveVerificationLevelAsync(SocketGuild g)
@@ -181,7 +181,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => blockedUsers);
+            return blockedUsers;
         }
 
         public static async Task RemoveBlockedUsersAsync(SocketGuild g)

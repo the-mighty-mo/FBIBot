@@ -72,7 +72,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => role);
+            return role;
         }
 
         public static async Task SetVerificationRoleAsync(SocketRole role)

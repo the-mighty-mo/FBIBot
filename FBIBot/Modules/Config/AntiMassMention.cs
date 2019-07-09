@@ -49,7 +49,7 @@ namespace FBIBot.Modules.Config
                 reader.Close();
             }
 
-            return await Task.Run(() => isAntiMassMention);
+            return isAntiMassMention;
         }
 
         public static async Task SetAntiMassMentionAsync(SocketGuild g)
