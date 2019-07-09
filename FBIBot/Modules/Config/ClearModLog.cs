@@ -14,6 +14,18 @@ namespace FBIBot.Modules.Config
         public async Task ClearModLogAsync(string clear = "false")
         {
             bool isClear = clear.ToLower() == "true";
+            if (await SendToModLog.GetNextModLogID(Context.Guild) == 1 && !isClear)
+            {
+                await Context.Channel.SendMessageAsync("Our security team has informed us that there are no moderation logs.");
+                return;
+            }
+
+            Task[] cmds =
+            {
+                SendToModLog.RemoveModLogsAsync(Context.Guild),
+                RemoveWarnings.RemoveAllWarningsAsync(Context.Guild)
+            };
+
             if (isClear)
             {
                 SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
@@ -33,16 +45,10 @@ namespace FBIBot.Modules.Config
                 }
             }
 
-            if (await SendToModLog.GetNextModLogID(Context.Guild) == 1 && !isClear)
-            {
-                await Context.Channel.SendMessageAsync("Our security team has informed us that there are no moderation logs.");
-                return;
-            }
-
             await Task.WhenAll
             (
-                SendToModLog.RemoveModLogsAsync(Context.Guild),
-                RemoveWarnings.RemoveAllWarningsAsync(Context.Guild),
+                cmds[0],
+                cmds[1],
                 Context.Channel.SendMessageAsync("We have shredded and burned all of the moderation logs. The Russians shall never get hold of them!")
             );
         }
