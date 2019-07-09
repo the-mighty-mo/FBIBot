@@ -52,7 +52,26 @@ namespace FBIBot.Modules.Config
                 SetVerificationRoleAsync(role),
                 Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.")
             );
+            await ManageRolesAsync(role, currentRole, changeRole);
+        }
 
+        [Command("setverify")]
+        [Alias("set-verify")]
+        [RequireAdmin]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        public async Task SetVerifyAsync(string role, string changeRole = "true")
+        {
+            SocketRole r;
+            if (ulong.TryParse(role, out ulong roleID) && (r = Context.Guild.GetRole(roleID)) != null)
+            {
+                await SetVerifyAsync(r, changeRole);
+                return;
+            }
+            await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");
+        }
+
+        private async Task ManageRolesAsync(SocketRole role, SocketRole currentRole, string changeRole)
+        {
             SocketRole newRole;
             foreach (SocketGuildUser user in Context.Guild.Users)
             {
@@ -82,21 +101,6 @@ namespace FBIBot.Modules.Config
                     }
                 }
             }
-        }
-
-        [Command("setverify")]
-        [Alias("set-verify")]
-        [RequireAdmin]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task SetVerifyAsync(string role, string changeRole = "true")
-        {
-            SocketRole r;
-            if (ulong.TryParse(role, out ulong roleID) && (r = Context.Guild.GetRole(roleID)) != null)
-            {
-                await SetVerifyAsync(r, changeRole);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");
         }
 
         public static async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
