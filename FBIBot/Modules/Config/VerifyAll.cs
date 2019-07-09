@@ -28,8 +28,11 @@ namespace FBIBot.Modules.Config
                 }
             }
 
-            await Context.Channel.SendMessageAsync("All current members have been granted citizenship.");
-            await Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.VerifyAll, Context.User as SocketGuildUser, null);
+            await Task.WhenAll
+            (
+                Context.Channel.SendMessageAsync("All current members have been granted citizenship."),
+                Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.VerifyAll, Context.User as SocketGuildUser, null)
+            );
         }
     }
 }

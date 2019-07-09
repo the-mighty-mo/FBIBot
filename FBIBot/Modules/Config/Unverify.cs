@@ -27,11 +27,14 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await user.RemoveRoleAsync(role);
-            await Context.Channel.SendMessageAsync($"We have put the potential communist {user.Mention} under quarantine.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unverify, Context.User as SocketGuildUser, user, null, reason);
-            await Verify.RemoveVerifiedAsync(user);
-            await Verify.SendCaptchaAsync(user);
+            await Task.WhenAll
+            (
+                user.RemoveRoleAsync(role),
+                Verify.RemoveVerifiedAsync(user),
+                Verify.SendCaptchaAsync(user),
+                Context.Channel.SendMessageAsync($"We have put the potential communist {user.Mention} under quarantine."),
+                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unverify, Context.User as SocketGuildUser, user, null, reason)
+            );
         }
 
         [Command("unverify")]
