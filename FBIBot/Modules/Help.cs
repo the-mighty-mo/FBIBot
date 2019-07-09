@@ -56,8 +56,8 @@ namespace FBIBot.Modules
             "  - Displays the current bot configuration\n\n" +
             "setprefix [prefix]\n" +
             $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
-            "setverify [role mention / role ID]\n" +
-            "  - Sets the role for democracy-loving citizens; *Unsets if no role is given*\n\n" +
+            "setverify [role mention / role ID] [**true** (default) / false]\n" +
+            "  - Sets and **slowly** gives out the role for democracy-loving citizens and, if true, **slowly** removes the old verification role from verified users; *Unsets if no role is given*\n\n" +
             "verifyall\n" +
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
             "unverify [user mention / user ID] [reason (optional)]\n" +

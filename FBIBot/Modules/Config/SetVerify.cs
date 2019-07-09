@@ -2,6 +2,8 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -30,31 +32,63 @@ namespace FBIBot.Modules.Config
         [Alias("set-verify")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task SetVerifyAsync(SocketRole role)
+        public async Task SetVerifyAsync(SocketRole role, string changeRole = "true")
         {
-            if (await GetVerificationRoleAsync(Context.Guild) == role)
+            SocketRole currentRole = await GetVerificationRoleAsync(Context.Guild);
+            if (currentRole == role)
             {
                 await Context.Channel.SendMessageAsync($"Our customs team has informed us that all patriotic citizens already receive the {role.Name} role.");
                 return;
             }
 
-            await Task.WhenAll
-            (
+            if (role.Position >= Context.Guild.CurrentUser.Hierarchy)
+            {
+                await Context.Channel.SendMessageAsync("We cannot give members a role with equal or higher authority than our highest-ranking role.");
+                return;
+            }
+
+            List<Task> cmds = new List<Task>();
+            foreach (SocketGuildUser user in Context.Guild.Users)
+            {
+                if (await AutoMod.Verify.GetVerifiedAsync(user) || (currentRole != null && user.Roles.Contains(currentRole)))
+                {
+                    cmds.Add(user.AddRoleAsync(role));
+                }
+            }
+
+            cmds.AddRange(new List<Task>()
+            {
                 SetVerificationRoleAsync(role),
                 Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.")
-            );
+            });
+
+            await Task.WhenAll(cmds);
+
+            if (changeRole == "true" && currentRole != null)
+            {
+                cmds = new List<Task>();
+                foreach (SocketGuildUser user in Context.Guild.Users)
+                {
+                    if (await AutoMod.Verify.GetVerifiedAsync(user) || (currentRole != null && user.Roles.Contains(currentRole)))
+                    {
+                        cmds.Add(user.RemoveRoleAsync(currentRole));
+                    }
+                }
+
+                await Task.WhenAll(cmds);
+            }
         }
 
         [Command("setverify")]
         [Alias("set-verify")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task SetVerifyAsync(string role)
+        public async Task SetVerifyAsync(string role, string changeRole = "true")
         {
             SocketRole r;
             if (ulong.TryParse(role, out ulong roleID) && (r = Context.Guild.GetRole(roleID)) != null)
             {
-                await SetVerifyAsync(r);
+                await SetVerifyAsync(r, changeRole);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");

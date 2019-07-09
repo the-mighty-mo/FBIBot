@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -28,12 +29,9 @@ namespace FBIBot.Modules.AutoMod
 
             var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
             List<string> userMsgs = new List<string>();
-            foreach (IMessage msg in msgs)
+            foreach (IMessage msg in msgs.Where(x => x.Author.Id == Context.Message.Author.Id))
             {
-                if (msg.Author.Id == Context.Message.Author.Id)
-                {
-                    userMsgs.Add(msg.Content);
-                }
+                userMsgs.Add(msg.Content);
                 if (userMsgs.Count >= 6)
                 {
                     break;
