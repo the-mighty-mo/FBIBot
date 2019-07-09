@@ -30,8 +30,7 @@ namespace FBIBot.Modules.Mod
 
             cmds.AddRange(new List<Task>()
             {
-                Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been exiled to Mexico for {length} {(days == 1 ? "day" : "days")}." +
-                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been exiled to Mexico for {length} {(days == 1 ? "day" : "days")}."),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, user, length, reason)
             });
             await Task.WhenAll(cmds);
@@ -71,8 +70,7 @@ namespace FBIBot.Modules.Mod
 
                 cmds.AddRange(new List<Task>()
                 {
-                    Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}." +
-                        $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                    Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}."),
                     SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, length, reason)
                 });
                 await Task.WhenAll(cmds);

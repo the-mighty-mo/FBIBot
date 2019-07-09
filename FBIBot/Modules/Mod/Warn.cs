@@ -16,8 +16,7 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism." +
-                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism."),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User as SocketGuildUser, user, length, reason),
                 AddWarningAsync(user, id)
             );

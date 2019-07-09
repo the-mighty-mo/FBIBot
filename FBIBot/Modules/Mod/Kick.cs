@@ -15,8 +15,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 user.KickAsync(reason),
-                Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe." +
-                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe."),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Kick, Context.User as SocketGuildUser, user, null, reason)
             );
         }

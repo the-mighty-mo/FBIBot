@@ -42,8 +42,7 @@ namespace FBIBot.Modules.Mod
             bool isTimeout = double.TryParse(timeout, out double minutes);
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}." +
-                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}."),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User as SocketGuildUser, user, timeout, reason)
             );
 

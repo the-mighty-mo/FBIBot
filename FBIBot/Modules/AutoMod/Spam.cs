@@ -71,20 +71,13 @@ namespace FBIBot.Modules.AutoMod
 
                 Regex regex = new Regex(@"(\W|^)(.+)\s*\2", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 MatchCollection matches = regex.Matches(message);
+                IEnumerable<Match> m = matches.Cast<Match>();
 
-                int duplicate = 0;
-                int firstIndex = message.Length;
-                int lastIndex = 0;
-                foreach (Match m in matches)
-                {
-                    duplicate += m.Length;
-                    int last = m.Index + m.Length;
+                int duplicate = m.Select(x => x.Length).Sum();
+                int firstIndex = m.Select(x => x.Index).OrderBy(x => x).DefaultIfEmpty(0).First();
+                int lastIndex = m.Select(x => x.Index + x.Length).OrderByDescending(x => x).DefaultIfEmpty(0).First();
 
-                    lastIndex = last > lastIndex ? last : lastIndex;
-                    firstIndex = m.Index < firstIndex ? m.Index : firstIndex;
-                }
-
-                if (firstIndex != message.Length)
+                if (firstIndex != lastIndex)
                 {
                     string msg = message.Substring(firstIndex, lastIndex - firstIndex);
                     isSpam = (double)duplicate / msg.Length >= 0.80
