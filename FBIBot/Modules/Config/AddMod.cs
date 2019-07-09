@@ -19,19 +19,24 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            await AddModRoleAsync(role);
+            List<Task> cmds = new List<Task>()
+            {
+                AddModRoleAsync(role)
+            };
             if ((await AddAdmin.GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
-                await Task.WhenAll
-                (
+                cmds.AddRange(new List<Task>()
+                {
                     RemoveAdminRole.RemoveAdminAsync(role),
                     Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been demoted to assistants of the agency.")
-                );
+                });
             }
             else
             {
-                await Context.Channel.SendMessageAsync($"Members with the {role.Name} role may now assist our agents in ensuring freedom, democracy, and justice for all.");
+                cmds.Add(Context.Channel.SendMessageAsync($"Members with the {role.Name} role may now assist our agents in ensuring freedom, democracy, and justice for all."));
             }
+
+            await Task.WhenAll(cmds);
         }
 
         [Command("add-mod")]
