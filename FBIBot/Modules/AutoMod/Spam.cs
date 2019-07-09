@@ -28,15 +28,7 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
-            List<string> userMsgs = new List<string>();
-            foreach (IMessage msg in msgs.Where(x => x.Author.Id == Context.Message.Author.Id))
-            {
-                userMsgs.Add(msg.Content);
-                if (userMsgs.Count >= 6)
-                {
-                    break;
-                }
-            }
+            List<string> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(6).Select(x => x.Content).ToList();
 
             int i = 0;
             int j = 0;
