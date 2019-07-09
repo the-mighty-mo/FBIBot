@@ -159,7 +159,7 @@ namespace FBIBot.Modules.Mod
                 info.reasonAllowed = false;
                 info.isTime = false;
                 info.hasTarget = false;
-                info.state = "Executed";
+                info.state = "Running";
                 break;
             case LogType.Warn:
                 info.color = new Color(255, 213, 31);
@@ -239,6 +239,41 @@ namespace FBIBot.Modules.Mod
 
             field.WithValue(reason ?? "(none given)");
             fields.Add(field);
+            embed.WithFields(fields);
+
+            await msg.ModifyAsync(x => x.Embed = embed.Build());
+
+            return true;
+        }
+
+        public static async Task<bool> SetStateAsync(SocketGuild g, ulong id, string state, LogType t)
+        {
+            ModLogInfo info = new ModLogInfo(t, null, null);
+            LogTypeSwitch(ref info);
+
+            IUserMessage msg = await GetModLogAsync(g, id);
+            if (msg == null || msg.Embeds.Count == 0 || info.hasTarget)
+            {
+                return false;
+            }
+            EmbedBuilder e = msg.Embeds.ToList()[0].ToEmbedBuilder();
+            List<EmbedFieldBuilder> fields = e.Fields.ToList();
+
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(e.Color ?? SecurityInfo.botColor)
+                .WithTitle($"Federal Bureau of Investigation - Log {id}")
+                .WithCurrentTimestamp();
+
+            EmbedFieldBuilder field = e.Fields.FirstOrDefault(x => x.Name == $"{info.cmd}{(info.isTime ? $" for {info.length}" : "")}");
+            if (field == null)
+            {
+                return false;
+            }
+            int index = fields.IndexOf(field);
+            fields.Remove(field);
+
+            field.WithValue(state);
+            fields.Insert(index, field);
             embed.WithFields(fields);
 
             await msg.ModifyAsync(x => x.Embed = embed.Build());
