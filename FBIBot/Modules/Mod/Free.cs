@@ -42,7 +42,6 @@ namespace FBIBot.Modules.Mod
             {
                 cmds.Add(user.RemoveRoleAsync(role));
             }
-
             await Task.WhenAll(cmds);
 
             if (!await HasPrisoners(Context.Guild))

@@ -105,15 +105,14 @@ namespace FBIBot.Modules.Mod
         async Task<ITextChannel> CreateGuantanamoAsync(IRole role)
         {
             ITextChannel channel = await Context.Guild.CreateTextChannelAsync("guantanamo");
-
             OverwritePermissions perms = new OverwritePermissions(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);
 
             await Task.WhenAll
             (
                 channel.AddPermissionOverwriteAsync(role, perms),
-                channel.AddPermissionOverwriteAsync(Context.Client.CurrentUser, OverwritePermissions.AllowAll(channel)),
-                channel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel))
+                channel.AddPermissionOverwriteAsync(Context.Client.CurrentUser, OverwritePermissions.AllowAll(channel))
             );
+            await channel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
             await SetPrisonerChannelAsync(channel);
 
             return channel;

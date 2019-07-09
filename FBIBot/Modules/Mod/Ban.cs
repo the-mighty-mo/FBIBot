@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -12,18 +13,21 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanAsync([RequireBotHierarchy("ban")] [RequireInvokerHierarchy("ban")] SocketGuildUser user, string prune = null, [Remainder] string reason = null)
         {
-            if (int.TryParse(prune, out int pruneDays))
-            {
-                await user.BanAsync(pruneDays, reason);
-            }
-            else
-            {
-                await user.BanAsync(0, reason);
-            }
+            List<Task> cmds = int.TryParse(prune, out int pruneDays)
+                ? new List<Task>() {
+                    user.BanAsync(pruneDays, reason)
+                }
+                : new List<Task>() {
+                    user.BanAsync(0, reason)
+                };
 
-            await Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been given the ~~ban~~ freedom hammer." +
-                $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, user, null, reason);
+            cmds.AddRange(new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been given the ~~ban~~ freedom hammer." +
+                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, user, null, reason)
+            });
+            await Task.WhenAll(cmds);
         }
 
         [Command("ban")]
@@ -40,18 +44,23 @@ namespace FBIBot.Modules.Mod
                     return;
                 }
 
-                if (int.TryParse(prune, out int pruneDays))
-                {
-                    await Context.Guild.AddBanAsync(userID, pruneDays, reason);
-                }
-                else
-                {
-                    await Context.Guild.AddBanAsync(userID, 0, reason);
-                }
+                List<Task> cmds = int.TryParse(prune, out int pruneDays)
+                    ? new List<Task>()
+                    {
+                        Context.Guild.AddBanAsync(userID, pruneDays, reason)
+                    }
+                    : new List<Task>() {
+                        Context.Guild.AddBanAsync(userID, 0, reason)
+                    };
 
-                await Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders." +
-                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, null, reason);
+                cmds.AddRange(new List<Task>()
+                {
+                    Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders." +
+                        $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, null, reason)
+                });
+                await Task.WhenAll(cmds);
+
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
