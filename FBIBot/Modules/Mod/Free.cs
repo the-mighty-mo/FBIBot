@@ -24,28 +24,38 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
+            List<Task> cmds = new List<Task>()
+            {
+                RemovePrisonerAsync(user),
+                Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education."),
+                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.User as SocketGuildUser, user)
+            };
             if (roles.Count > 0)
             {
-                await user.AddRolesAsync(roles);
-                await Unmute.RemoveUserRolesAsync(user);
+                cmds.AddRange(new List<Task>()
+                {
+                    user.AddRolesAsync(roles),
+                    Unmute.RemoveUserRolesAsync(user)
+                });
             }
             if (role != null)
             {
-                await user.RemoveRoleAsync(role);
+                cmds.Add(user.RemoveRoleAsync(role));
             }
-            await RemovePrisonerAsync(user);
 
-            await Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
-            await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.User as SocketGuildUser, user);
+            await Task.WhenAll(cmds);
 
             if (!await HasPrisoners(Context.Guild))
             {
                 SocketTextChannel channel = await Arrest.GetPrisonerChannelAsync(Context.Guild);
 
-                await channel?.DeleteAsync();
-                await role?.DeleteAsync();
-                await RemovePrisonerChannelAsync(Context.Guild);
-                await RemovePrisonerRoleAsync(Context.Guild);
+                await Task.WhenAll
+                (
+                    channel?.DeleteAsync(),
+                    role?.DeleteAsync(),
+                    RemovePrisonerChannelAsync(Context.Guild),
+                    RemovePrisonerRoleAsync(Context.Guild)
+                );
             }
         }
 
