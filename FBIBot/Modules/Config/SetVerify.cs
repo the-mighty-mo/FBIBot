@@ -47,35 +47,40 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            List<Task> cmds = new List<Task>();
+            await Task.WhenAll
+            (
+                SetVerificationRoleAsync(role),
+                Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.")
+            );
+
+            SocketRole newRole;
             foreach (SocketGuildUser user in Context.Guild.Users)
             {
                 if (await AutoMod.Verify.GetVerifiedAsync(user) || (currentRole != null && user.Roles.Contains(currentRole)))
                 {
-                    cmds.Add(user.AddRoleAsync(role));
+                    await user.AddRoleAsync(role);
+                    if ((newRole = await GetVerificationRoleAsync(Context.Guild)) != role)
+                    {
+                        await user.RemoveRoleAsync(role);
+                        return;
+                    }
                 }
             }
 
-            cmds.AddRange(new List<Task>()
-            {
-                SetVerificationRoleAsync(role),
-                Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.")
-            });
-
-            await Task.WhenAll(cmds);
-
             if (changeRole == "true" && currentRole != null)
             {
-                cmds = new List<Task>();
                 foreach (SocketGuildUser user in Context.Guild.Users)
                 {
                     if (await AutoMod.Verify.GetVerifiedAsync(user) || (currentRole != null && user.Roles.Contains(currentRole)))
                     {
-                        cmds.Add(user.RemoveRoleAsync(currentRole));
+                        await user.RemoveRoleAsync(currentRole);
+                        if ((newRole = await GetVerificationRoleAsync(Context.Guild)) != role && newRole == currentRole)
+                        {
+                            await user.AddRoleAsync(currentRole);
+                            return;
+                        }
                     }
                 }
-
-                await Task.WhenAll(cmds);
             }
         }
 
