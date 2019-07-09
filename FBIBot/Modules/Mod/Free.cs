@@ -93,8 +93,8 @@ namespace FBIBot.Modules.Mod
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
-                hasPrisoners = reader.Read();
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+                hasPrisoners = await reader.ReadAsync();
                 reader.Close();
             }
 

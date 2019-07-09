@@ -63,8 +63,8 @@ namespace FBIBot.Modules.Config
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id);
 
-                SqliteDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
                 {
                     ulong roleID = ulong.Parse(reader["role_id"].ToString());
                     role = g.GetRole(roleID);

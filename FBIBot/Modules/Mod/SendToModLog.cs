@@ -251,8 +251,8 @@ namespace FBIBot.Modules.Mod
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
                 {
                     ulong.TryParse(reader["id"].ToString(), out id);
                 }
@@ -272,8 +272,8 @@ namespace FBIBot.Modules.Mod
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 cmd.Parameters.AddWithValue("@id", id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
                 {
                     ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                     ulong.TryParse(reader["message_id"].ToString(), out ulong messageID);

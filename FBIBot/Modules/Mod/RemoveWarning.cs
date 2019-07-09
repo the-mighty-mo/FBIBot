@@ -54,8 +54,8 @@ namespace FBIBot.Modules.Mod
                 cmd.Parameters.AddWithValue("@id", id.ToString());
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
-                hasWarning = reader.Read();
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+                hasWarning = await reader.ReadAsync();
                 reader.Close();
             }
 

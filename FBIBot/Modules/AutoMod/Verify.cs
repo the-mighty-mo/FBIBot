@@ -135,7 +135,7 @@ namespace FBIBot.Modules.AutoMod
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                if (reader.Read())
+                if (await reader.ReadAsync())
                 {
                     captcha = (string)reader["captcha"];
                 }
@@ -178,7 +178,7 @@ namespace FBIBot.Modules.AutoMod
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                if (reader.Read())
+                if (await reader.ReadAsync())
                 {
                     attempts = int.Parse(reader["attempts"].ToString());
                 }
@@ -221,7 +221,7 @@ namespace FBIBot.Modules.AutoMod
                 cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isVerified = reader.Read();
+                isVerified = await reader.ReadAsync();
                 reader.Close();
             }
 

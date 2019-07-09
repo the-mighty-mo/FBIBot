@@ -61,8 +61,8 @@ namespace FBIBot.Modules.Mod
                 cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
                 cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
 
-                SqliteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
                 {
                     ulong.TryParse(reader["role_id"].ToString(), out ulong roleID);
                     SocketRole role = user.Guild.GetRole(roleID);
