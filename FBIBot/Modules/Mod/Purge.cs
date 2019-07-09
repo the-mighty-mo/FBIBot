@@ -20,6 +20,8 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
+            await Context.Message.DeleteAsync();
+
             if (num > 1000)
             {
                 num = 1000;
@@ -31,13 +33,7 @@ namespace FBIBot.Modules.Mod
 
             try
             {
-                List<Task> cmds = new List<Task>();
-                foreach (var msg in msgs)
-                {
-                    cmds.Add(msg.DeleteAsync());
-                }
-
-                await Task.WhenAll(cmds);
+                await Task.WhenAll(msgs.Select(msg => msg.DeleteAsync()));
             }
             catch { }
 
@@ -55,30 +51,21 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
+            if (user == (Context.User as SocketGuildUser))
+            {
+                await Context.Message.DeleteAsync();
+            }
+
             if (num > 100)
             {
                 num = 100;
             }
             SocketTextChannel channel = Context.Guild.GetTextChannel(Context.Channel.Id);
             IEnumerable<IMessage> msgs = await channel.GetMessagesAsync(1000).FlattenAsync();
-            int i = 0;
 
             try
             {
-                List<Task> cmds = new List<Task>();
-                foreach (IMessage msg in msgs.Where(x => x.Author == (user as IUser)))
-                {
-                    cmds.Add(msg.DeleteAsync());
-                    i++;
-
-                    if (i >= num)
-                    {
-                        i = num;
-                        break;
-                    }
-                }
-
-                await Task.WhenAll(cmds);
+                await Task.WhenAll(msgs.Where(x => x.Author == (user as IUser)).Take(num).Select(msg => msg.DeleteAsync()));
             }
             catch { }
 

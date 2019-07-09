@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -37,13 +38,7 @@ namespace FBIBot.Modules.Config
 
                     try
                     {
-                        List<Task> dels = new List<Task>();
-                        foreach (var msg in msgs)
-                        {
-                            dels.Add(msg.DeleteAsync());
-                        }
-
-                        await Task.WhenAll(dels);
+                        await Task.WhenAll(msgs.Select(msg => msg.DeleteAsync()));
                     }
                     catch { }
                 }

@@ -9,29 +9,15 @@ namespace FBIBot
     {
         public static async Task<bool> IsAdmin(SocketGuildUser user)
         {
-            bool isValidAdmin = user == user.Guild.Owner || user == user.Guild.CurrentUser;
-            foreach (SocketRole r in await AddAdmin.GetAdminRolesAsync(user.Guild))
-            {
-                if (isValidAdmin)
-                {
-                    break;
-                }
-                isValidAdmin = user.Roles.Contains(r);
-            }
+            bool isValidAdmin = user == user.Guild.Owner || user == user.Guild.CurrentUser ||
+                (await AddAdmin.GetAdminRolesAsync(user.Guild)).Select(r => user.Roles.Contains(r)).Contains(true);
             return isValidAdmin;
         }
 
         public static async Task<bool> IsMod(SocketGuildUser user)
         {
-            bool isValidMod = await IsAdmin(user);
-            foreach (SocketRole r in await AddMod.GetModRolesAsync(user.Guild))
-            {
-                if (isValidMod)
-                {
-                    break;
-                }
-                isValidMod = user.Roles.Contains(r);
-            }
+            bool isValidMod = await IsAdmin(user) ||
+                (await AddMod.GetModRolesAsync(user.Guild)).Select(r => user.Roles.Contains(r)).Contains(true);
             return isValidMod;
         }
 
