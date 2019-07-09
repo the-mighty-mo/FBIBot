@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -23,16 +24,20 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            List<Task> cmds = new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} messages linking external, communist media.")
+            };
             if (isEnable)
             {
-                await SetAntiLinkAsync(Context.Guild);
+                cmds.Add(SetAntiLinkAsync(Context.Guild));
             }
             else
             {
-                await RemoveAntiLinkAsync(Context.Guild);
+                cmds.Add(RemoveAntiLinkAsync(Context.Guild));
             }
 
-            await Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} messages linking external, communist media.");
+            await Task.WhenAll(cmds);
         }
 
         public static async Task<bool> GetAntiLinkAsync(SocketGuild g)

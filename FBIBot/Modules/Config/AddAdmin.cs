@@ -22,8 +22,11 @@ namespace FBIBot.Modules.Config
             await AddAdminRoleAsync(role);
             if ((await AddMod.GetModRolesAsync(Context.Guild)).Contains(role))
             {
-                await RemoveModRole.RemoveModAsync(role);
-                await Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been promoted to local directors of the FBI.");
+                await Task.WhenAll
+                (
+                    RemoveModRole.RemoveModAsync(role),
+                    Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been promoted to local directors of the FBI.")
+                );
             }
             else
             {

@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -22,17 +23,21 @@ namespace FBIBot.Modules.Config
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that anti-spam is already {(isEnabled ? "enabled" : "disabled")}.");
                 return;
             }
-            
+
+            List<Task> cmds = new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} spammy, anti-American messages.")
+            };
             if (isEnable)
             {
-                await SetAntiSpamAsync(Context.Guild);
+                cmds.Add(SetAntiSpamAsync(Context.Guild));
             }
             else
             {
-                await RemoveAntiSpamAsync(Context.Guild);
+                cmds.Add(RemoveAntiSpamAsync(Context.Guild));
             }
 
-            await Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} spammy, anti-American messages.");
+            await Task.WhenAll(cmds);
         }
 
         public static async Task<bool> GetAntiSpamAsync(SocketGuild g)

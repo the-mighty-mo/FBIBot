@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -23,16 +24,20 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            List<Task> cmds = new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} REALLY LOUD PROTESTS.")
+            };
             if (isEnable)
             {
-                await SetAntiCapsAsync(Context.Guild);
+                cmds.Add(SetAntiCapsAsync(Context.Guild));
             }
             else
             {
-                await RemoveAntiCapsAsync(Context.Guild);
+                cmds.Add(RemoveAntiCapsAsync(Context.Guild));
             }
 
-            await Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} REALLY LOUD PROTESTS.");
+            await Task.WhenAll(cmds);
         }
 
         public static async Task<bool> GetAntiCapsAsync(SocketGuild g)

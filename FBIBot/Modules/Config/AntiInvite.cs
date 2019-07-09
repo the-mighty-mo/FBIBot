@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -23,16 +24,20 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            List<Task> cmds = new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} invitations to the socialist party.")
+            };
             if (isEnable)
             {
-                await SetAntiInviteAsync(Context.Guild);
+                cmds.Add(SetAntiInviteAsync(Context.Guild));
             }
             else
             {
-                await RemoveAntiInviteAsync(Context.Guild);
+                cmds.Add(RemoveAntiInviteAsync(Context.Guild));
             }
 
-            await Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} invitations to the socialist party.");
+            await Task.WhenAll(cmds);
         }
 
         public static async Task<bool> GetAntiInviteAsync(SocketGuild g)

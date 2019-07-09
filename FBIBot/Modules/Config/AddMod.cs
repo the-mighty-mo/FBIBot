@@ -22,8 +22,11 @@ namespace FBIBot.Modules.Config
             await AddModRoleAsync(role);
             if ((await AddAdmin.GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
-                await RemoveAdminRole.RemoveAdminAsync(role);
-                await Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been demoted to assistants of the agency.");
+                await Task.WhenAll
+                (
+                    RemoveAdminRole.RemoveAdminAsync(role),
+                    Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been demoted to assistants of the agency.")
+                );
             }
             else
             {

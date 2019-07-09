@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -23,16 +24,20 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            List<Task> cmds = new List<Task>()
+            {
+                Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to perform" : "prohibited from performing")} surveillance on server members.")
+            };
             if (isEnable)
             {
-                await SetAutoSurveillanceAsync(Context.Guild);
+                cmds.Add(SetAutoSurveillanceAsync(Context.Guild));
             }
             else
             {
-                await RemoveAutoSurveillanceAsync(Context.Guild);
+                cmds.Add(RemoveAutoSurveillanceAsync(Context.Guild));
             }
 
-            await Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to perform" : "prohibited from performing")} surveillance on server members.");
+            await Task.WhenAll(cmds);
         }
 
         public static async Task<bool> GetAutoSurveillanceAsync(SocketGuild g)
