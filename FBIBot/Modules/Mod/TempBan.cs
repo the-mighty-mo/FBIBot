@@ -59,23 +59,30 @@ namespace FBIBot.Modules.Mod
                     return;
                 }
 
-                if (int.TryParse(prune, out int pruneDays))
-                {
-                    await Context.Guild.AddBanAsync(userID, pruneDays, reason);
-                }
-                else
-                {
-                    await Context.Guild.AddBanAsync(userID, 0, reason);
-                }
+                List<Task> cmds = int.TryParse(prune, out int pruneDays)
+                    ? new List<Task>()
+                    {
+                        Context.Guild.AddBanAsync(userID, pruneDays, reason)
+                    }
+                    : new List<Task>()
+                    {
+                        Context.Guild.AddBanAsync(userID, 0, reason)
+                    };
 
-                await Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}." +
-                    $"{(reason != null ? $"\nThe reason: {reason}" : "")}");
-                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, length, reason);
+                cmds.AddRange(new List<Task>()
+                {
+                    Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}." +
+                        $"{(reason != null ? $"\nThe reason: {reason}" : "")}"),
+                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, length, reason)
+                });
+                await Task.WhenAll(cmds);
 
                 await Task.Delay((int)(days * 24 * 60 * 60 * 1000));
-                await Context.Guild.RemoveBanAsync(userID);
-                await SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.Guild.CurrentUser, userID);
-
+                await Task.WhenAll
+                (
+                    Context.Guild.RemoveBanAsync(userID),
+                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.Guild.CurrentUser, userID)
+                );
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
