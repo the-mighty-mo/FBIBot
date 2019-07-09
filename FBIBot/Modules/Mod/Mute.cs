@@ -19,6 +19,7 @@ namespace FBIBot.Modules.Mod
             if (user.Roles.Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
+                return;
             }
 
             List<SocketRole> roles = user.Roles.ToList();

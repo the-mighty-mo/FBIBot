@@ -21,6 +21,7 @@ namespace FBIBot.Modules.Mod
             if (user.Roles.Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already held captive.");
+                return;
             }
 
             SocketTextChannel channel = await GetPrisonerChannelAsync(Context.Guild) ?? await CreateGuantanamoAsync(role);
