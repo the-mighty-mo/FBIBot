@@ -19,6 +19,7 @@ namespace FBIBot
         private CommandHandler _handler;
 
         public static readonly Random rng = new Random();
+
         public static readonly SqliteConnection cnVerify = new SqliteConnection("Filename=Verification.db");
         public static readonly SqliteConnection cnModRoles = new SqliteConnection("Filename=ModRoles.db");
         public static readonly SqliteConnection cnModLogs = new SqliteConnection("Filename=ModLogs.db");

@@ -18,6 +18,12 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            if (prefix == "/")
+            {
+                await Context.Channel.SendMessageAsync($"The prefix `/` is not permitted due to Discord's commands using the prefix.");
+                return;
+            }
+
             await Task.WhenAll
             (
                 SetPrefixAsync(Context.Guild, prefix),
