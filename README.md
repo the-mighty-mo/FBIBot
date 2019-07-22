@@ -5,7 +5,7 @@
 
 Discord Admin bot, created for Hack Week.
 
-Built using .NET Framework 4.8 (C# 7.3), Discord.Net v2.1.1, Microsoft.Data.Sqlite v2.2.4, and CaptchaGen v1.0.0.
+Built using .NET Framework 4.8 (C# 7.3), Discord.Net v2.1.1, Microsoft.Data.Sqlite v2.2.6, and CaptchaGen v1.0.0.
 
 **Someone has to keep the server in check, and who better than the FBI?**
 
