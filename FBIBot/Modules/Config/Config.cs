@@ -21,6 +21,7 @@ namespace FBIBot.Modules.Config
             Task<SocketTextChannel> modlog = SetModLog.GetModLogChannelAsync(Context.Guild);
             Task<VerificationLevel?> raidMode = RaidMode.GetVerificationLevelAsync(Context.Guild);
             Task<bool> autoSurveillance = AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
+            Task<bool> antiZalgo = AntiZalgo.GetAntiZalgoAsync(Context.Guild);
             Task<bool> antiSpam = AntiSpam.GetAntiSpamAsync(Context.Guild);
             Task<bool> antiSingleSpam = AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild);
             Task<bool> antiMassMention = AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
@@ -36,7 +37,10 @@ namespace FBIBot.Modules.Config
                 $"Admin Roles: **{string.Join(", ", await adminRoles)}**\n" +
                 $"Mod Log: **{(await modlog != null ? (await modlog).Mention : "(none)")}**\n" +
                 $"FBI RAID MODE: **{(await raidMode != null ? "ENABLED" : "Disabled")}**\n" +
+                $"\n" +
+                $"__AutoMod:__\n" +
                 $"Auto Surveillance: **{(await autoSurveillance ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Zalgo: **{(await antiZalgo ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Spam: **{(await antiSpam ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Single-Spam: **{(await antiSingleSpam ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Mass-Mention: **{(await antiMassMention ? "Enabled" : "Disabled")}**\n" +
@@ -44,16 +48,10 @@ namespace FBIBot.Modules.Config
                 $"Anti-Invite: **{(await antiInvite ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Link: **{(await antiLink ? "Enabled" : "Disabled")}**\n";
 
-            string @default = $"Prefix: **{CommandHandler.prefix}**\n" +
+            string @default = $"Prefix: **{(CommandHandler.prefix == @"\" ? @"\\" : CommandHandler.prefix)}**\n" +
                 $"Mute Role: Muted **(created on mute command)**\n" +
                 $"Modify Muted Member's Roles: **Disabled**\n" +
-                $"Auto Surveillance: **Disabled**\n" +
-                $"Anti-Spam: **Disabled**\n" +
-                $"Anti-Single-Spam: **Disabled**\n" +
-                $"Anti-Mass-Mention: **Disabled**\n" +
-                $"Anti-CAPS: **Disabled**\n" +
-                $"Anti-Invite: **Disabled**\n" +
-                $"Anti-Link: **Disabled**";
+                $"__AutoMod:__ **Disabled**";
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)

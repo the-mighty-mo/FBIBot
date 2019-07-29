@@ -84,6 +84,8 @@ namespace FBIBot.Modules
 
         private static readonly string automod = "auto-surveillance [true/enable / false/disable]\n" +
             "  - Permits the FBI to perform surveillance operations on server members; we recommend you enable this\n\n" +
+            "anti-zalgo [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will check if a message was leaked from Area 51 and, if it was, take it down with a warning\n\n" +
             "anti-spam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
             "anti-singlespam [true/enable / false/disable]\n" +
