@@ -44,8 +44,8 @@ namespace FBIBot.Modules.Config
         {
             bool isAntiCaps = false;
 
-            string getSpam = "SELECT guild_id FROM AntiCaps WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
+            string getCaps = "SELECT guild_id FROM AntiCaps WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getCaps, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 

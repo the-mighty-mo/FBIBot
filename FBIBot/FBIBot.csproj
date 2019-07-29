@@ -258,6 +258,7 @@
     <Compile Include="Modules\AutoMod\Pedophile.cs" />
     <Compile Include="Modules\AutoMod\Spam.cs" />
     <Compile Include="Modules\AutoMod\Verify.cs" />
+    <Compile Include="Modules\AutoMod\Zalgo.cs" />
     <Compile Include="Modules\Config\AddAdmin.cs" />
     <Compile Include="Modules\Config\AddMod.cs" />
     <Compile Include="Modules\Config\AntiCaps.cs" />
@@ -266,6 +267,7 @@
     <Compile Include="Modules\Config\AntiMassMention.cs" />
     <Compile Include="Modules\Config\AntiSingleSpam.cs" />
     <Compile Include="Modules\Config\AntiSpam.cs" />
+    <Compile Include="Modules\Config\AntiZalgo.cs" />
     <Compile Include="Modules\Config\AutoSurveillance.cs" />
     <Compile Include="Modules\Config\RaidMode.cs" />
     <Compile Include="Modules\Config\Config.cs" />

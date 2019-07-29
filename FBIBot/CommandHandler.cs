@@ -150,10 +150,18 @@ namespace FBIBot
 
         private static async Task AutoModAsync(SocketCommandContext Context, bool isCommand)
         {
+            Task<bool>[] isZalgo =
+            {
+                Zalgo.IsZalgoAsync(Context),
+                AntiZalgo.GetAntiZalgoAsync(Context.Guild)
+            };
             Task<bool>[] isSpam =
             {
                 Spam.IsSpamAsync(Context),
-                AntiSpam.GetAntiSpamAsync(Context.Guild),
+                AntiSpam.GetAntiSpamAsync(Context.Guild)
+            };
+            Task<bool>[] isSingleSpam =
+            {
                 Spam.IsSingleSpamAsync(Context),
                 AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild)
             };
@@ -186,7 +194,11 @@ namespace FBIBot
                 }
             }
 
-            if (((await isSpam[0] && await isSpam[1]) || (await isSpam[2] && await isSpam[3])) && !isCommand)
+            if (await isZalgo[0] && await isZalgo[1])
+            {
+                await new Zalgo(Context).WarnAsync();
+            }
+            else if (((await isSpam[0] && await isSpam[1]) || (await isSingleSpam[0] && await isSingleSpam[1])) && !isCommand)
             {
                 await new Spam(Context).WarnAsync();
             }

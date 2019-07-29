@@ -44,8 +44,8 @@ namespace FBIBot.Modules.Config
         {
             bool isAntiLink = false;
 
-            string getSpam = "SELECT guild_id FROM AntiLink WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
+            string getLink = "SELECT guild_id FROM AntiLink WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getLink, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 

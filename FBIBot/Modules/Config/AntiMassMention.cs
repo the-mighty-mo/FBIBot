@@ -44,8 +44,8 @@ namespace FBIBot.Modules.Config
         {
             bool isAntiMassMention = false;
 
-            string getSpam = "SELECT guild_id FROM AntiMassMention WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
+            string getMassMention = "SELECT guild_id FROM AntiMassMention WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getMassMention, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 

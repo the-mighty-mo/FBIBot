@@ -44,8 +44,8 @@ namespace FBIBot.Modules.Config
         {
             bool isAntiSingleSpam = false;
 
-            string getSpam = "SELECT guild_id FROM AntiSingleSpam WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
+            string getSingleSpam = "SELECT guild_id FROM AntiSingleSpam WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getSingleSpam, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 

@@ -44,8 +44,8 @@ namespace FBIBot.Modules.Config
         {
             bool isAutoSurveillance = false;
 
-            string getSpam = "SELECT guild_id FROM AutoSurveillance WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getSpam, Program.cnConfig))
+            string getSurveillance = "SELECT guild_id FROM AutoSurveillance WHERE guild_id = @guild_id;";
+            using (SqliteCommand cmd = new SqliteCommand(getSurveillance, Program.cnConfig))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
