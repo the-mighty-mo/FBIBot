@@ -16,7 +16,9 @@ namespace FBIBot.Modules
             "config2\n" +
             "  - Displays page 2 of bot configuration commands\n\n" +
             "automod\n" +
-            "  - Displays automod configuration commands";
+            "  - Displays page 1 of automod configuration commands\n\n" +
+            "automod2\n" +
+            "  - Displays page 2 of automod configuration commands";
 
         private static readonly string mod = "slowmode [seconds]\n" +
             "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*\n\n" +
@@ -85,12 +87,13 @@ namespace FBIBot.Modules
         private static readonly string automod = "auto-surveillance [true/enable / false/disable]\n" +
             "  - Permits the FBI to perform surveillance operations on server members; we recommend you enable this\n\n" +
             "anti-zalgo [true/enable / false/disable]\n" +
-            "  - When enabled, the FBI will check if a message was leaked from Area 51 and, if it was, take it down with a warning\n\n" +
+            "  - When enabled, the FBI will detect if a message was leaked from Area 51 and take it down with a warning\n\n" +
             "anti-spam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
             "anti-singlespam [true/enable / false/disable]\n" +
-            "  - When enabled, the FBI will detect if the user sends one big, spammy message and takes it down with a warning\n\n" +
-            "anti-massmention [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will detect if the user sends one big, spammy message and takes it down with a warning";
+
+        private static readonly string automod2 = "anti-massmention [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down with a warning messages mentioning all the people the user hates (5+)\n\n" +
             "anti-caps [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down with a warning VERY LOUD PROTESTS\n\n" +
@@ -156,8 +159,12 @@ namespace FBIBot.Modules
                         .WithValue(config2);
                     break;
                 case "automod":
-                    field.WithName("AutoMod Commands")
+                    field.WithName("AutoMod Commands - Page 1")
                         .WithValue(automod);
+                    break;
+                case "automod2":
+                    field.WithName("Automod Commands - Page 2")
+                        .WithValue(automod2);
                     break;
                 default:
                     jumpToHelp = true;
