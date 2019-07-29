@@ -37,6 +37,7 @@ namespace FBIBot
             _client.Disconnected += SendDisconnectError;
             _client.JoinedGuild += SendJoinMessage;
             _client.UserJoined += SendWelcomeMessage;
+            _client.GuildMemberUpdated += CheckUsernameAsync;
             _client.MessageReceived += HandleCommandAsync;
 
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
@@ -108,6 +109,43 @@ namespace FBIBot
             else if (!u.IsBot && await SetVerify.GetVerificationRoleAsync(u.Guild) != null)
             {
                 await Verify.SendCaptchaAsync(u);
+            }
+
+            string name = u.Nickname ?? u.Username;
+            Task<bool>[] isZalgo =
+            {
+                Zalgo.IsZalgoAsync(name),
+                AntiZalgo.GetAntiZalgoAsync(u.Guild)
+            };
+
+            if (await isZalgo[0] && await isZalgo[1])
+            {
+                try
+                {
+                    await u.ModifyAsync(async x => x.Nickname = await Zalgo.RemoveZalgoAsync(name));
+                }
+                catch { }
+            }
+        }
+
+        private async Task CheckUsernameAsync(SocketGuildUser orig, SocketGuildUser updated)
+        {
+            string oldName = orig.Nickname ?? orig.Username;
+            string newName = updated.Nickname ?? updated.Username;
+
+            Task<bool>[] isZalgo =
+            {
+                Zalgo.IsZalgoAsync(newName),
+                AntiZalgo.GetAntiZalgoAsync(updated.Guild)
+            };
+
+            if (await isZalgo[0] && await isZalgo[1])
+            {
+                try
+                {
+                    await updated.ModifyAsync(x => x.Nickname = oldName);
+                }
+                catch { }
             }
         }
 

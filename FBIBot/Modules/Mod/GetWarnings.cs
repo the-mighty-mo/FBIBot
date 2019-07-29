@@ -56,6 +56,7 @@ namespace FBIBot.Modules.Mod
                         ids.Add(id);
                     }
                 }
+                reader.Close();
             }
 
             return ids;

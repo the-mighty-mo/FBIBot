@@ -1,5 +1,7 @@
 ﻿using Discord.Commands;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod
@@ -19,24 +21,18 @@ namespace FBIBot.Modules.AutoMod
             );
         }
 
-        public static async Task<bool> IsZalgoAsync(SocketCommandContext Context)
-        {
-            IEnumerable<bool> GetZalgoList()
-            {
-                foreach (char c in Context.Message.Content)
-                {
-                    yield return char.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.NonSpacingMark;
-                }
-            }
+        public static async Task<bool> IsZalgoAsync(SocketCommandContext Context) => await IsZalgoAsync(Context.Message.Content);
 
+        public static async Task<bool> IsZalgoAsync(string msg)
+        {
             int i = 0;
 
-            IEnumerable<bool> zalgoList = await Task.Run(() => GetZalgoList());
+            IEnumerable<bool> zalgoList = await Task.Run(() => msg.ToCharArray().Select(c => char.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark));
             foreach (bool isZalgo in zalgoList)
             {
                 if (!isZalgo)
                 {
-                    if (i == 3)
+                    if (i >= 3)
                     {
                         return true;
                     }
@@ -49,6 +45,14 @@ namespace FBIBot.Modules.AutoMod
             }
 
             return false;
+        }
+
+        public static async Task<string> RemoveZalgoAsync(string msg)
+        {
+            System.Console.WriteLine("here");
+            IEnumerable<string> msgList = await Task.Run(() => msg.Where(c => char.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).Select(c => c.ToString()));
+
+            return string.Join("", msgList);
         }
     }
 }

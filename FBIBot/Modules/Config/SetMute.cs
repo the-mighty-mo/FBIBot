@@ -74,6 +74,7 @@ namespace FBIBot.Modules.Config
                     ulong roleID = ulong.Parse(reader["role_id"].ToString());
                     role = g.GetRole(roleID);
                 }
+                reader.Close();
             }
 
             return role;
