@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
 {
-    public class SendToModLog
+    public static class SendToModLog
     {
         public enum LogType
         {

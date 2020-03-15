@@ -7,7 +7,7 @@ namespace FBIBot.Modules
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
-        private static readonly string help = "mod\n" +
+        private const string help = "mod\n" +
             "  - Displays page 1 of moderation commands\n\n" +
             "mod2\n" +
             "  - Displays page 2 of moderation commands\n\n" +
@@ -20,7 +20,7 @@ namespace FBIBot.Modules
             "automod2\n" +
             "  - Displays page 2 of automod configuration commands";
 
-        private static readonly string mod = "slowmode [seconds]\n" +
+        private const string mod = "slowmode [seconds]\n" +
             "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*\n\n" +
             "modifyreason [mod log ID] [reason (optional)]\n" +
             "  - Modifies the reason for the given mod log\n\n" +
@@ -37,7 +37,7 @@ namespace FBIBot.Modules
             "unmute [user mention / user ID]\n" +
             "  - Frees the house-arrested user";
 
-        private static readonly string mod2 = "arrest [user mention / user ID] [minutes (optional)]\n" +
+        private const string mod2 = "arrest [user mention / user ID] [minutes (optional)]\n" +
             "  - Sends the user to Guantanamo Bay for a bit\n\n" +
             "free [user mention / user ID]\n" +
             "  - Frees the user from Guantanamo Bay because the Constitution exists; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
@@ -69,7 +69,7 @@ namespace FBIBot.Modules
             "modify-muted-roles [true/enable / false/disable]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
 
-        private static readonly string config2 = "add-mod [role mention / role ID]\n" +
+        private const string config2 = "add-mod [role mention / role ID]\n" +
             "  - Adds the role to a list of assistants of the agency\n\n" +
             "remove-mod [role mention / role ID]\n" +
             "  - Removes the role from the list of assistants of the agency out of suspicion\n\n" +
@@ -84,7 +84,7 @@ namespace FBIBot.Modules
             "raidmode\n" +
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
 
-        private static readonly string automod = "auto-surveillance [true/enable / false/disable]\n" +
+        private const string automod = "auto-surveillance [true/enable / false/disable]\n" +
             "  - Permits the FBI to perform surveillance operations on server members; we recommend you enable this\n\n" +
             "anti-zalgo [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if a message was leaked from Area 51 and take it down with a warning\n\n" +
@@ -93,7 +93,7 @@ namespace FBIBot.Modules
             "anti-singlespam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if the user sends one big, spammy message and takes it down with a warning";
 
-        private static readonly string automod2 = "anti-massmention [true/enable / false/disable]\n" +
+        private const string automod2 = "anti-massmention [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down with a warning messages mentioning all the people the user hates (5+)\n\n" +
             "anti-caps [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down with a warning VERY LOUD PROTESTS\n\n" +
