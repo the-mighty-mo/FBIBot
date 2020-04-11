@@ -1,7 +1,7 @@
 # The FBI
 
 [![CodeFactor](https://www.codefactor.io/repository/github/the-mighty-mo/fbibot/badge)](https://www.codefactor.io/repository/github/josedolf-staller/fbibot)
-[![Build Status](https://hallb1016.visualstudio.com/FBIBot/_apis/build/status/josedolf-staller.FBIBot?branchName=master)](https://hallb1016.visualstudio.com/FBIBot/_build/latest?definitionId=2&branchName=master)
+[![Build Status](https://hallb1016.visualstudio.com/FBIBot/_apis/build/status/the-mighty-mo.FBIBot?branchName=master)](https://hallb1016.visualstudio.com/FBIBot/_build/latest?definitionId=2&branchName=master)
 
 Discord Admin bot, created for Hack Week.
 
