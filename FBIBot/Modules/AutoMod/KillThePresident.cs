@@ -35,7 +35,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.Yield();
 
             string message = Context.Message.Content;
-            Regex regex = new Regex(@"\bI(('m|\s+am)\s+going\s+to|\s+want\s+to)(\s+\w*)*(kill|assassinate|murder)(\w*\s)+the\s+president\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex regex = new Regex(@"\bI(('m|\s+am)\s+going\s+to|\s+want\s+to)(\s+\w*)*(kill|kil(?!\w+)|assassinate|murder)(\w*\s)+the\s+president\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             return regex.IsMatch(message);
         }
     }
