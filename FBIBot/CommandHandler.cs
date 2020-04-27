@@ -262,10 +262,15 @@ namespace FBIBot
         {
             bool ran = true;
             Task<bool> isPedophile = Pedophile.IsPedophileAsync(Context);
+            Task<bool> isGoingToKillThePresident = KillThePresident.IsGoingToKillThePresidentAsync(Context);
 
             if (await isPedophile)
             {
                 await new Pedophile(Context).ArrestAsync();
+            }
+            else if (await isGoingToKillThePresident)
+            {
+                await new KillThePresident(Context).ArrestAsync();
             }
             else
             {

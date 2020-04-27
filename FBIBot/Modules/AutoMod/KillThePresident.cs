@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod
 {
-    public class Pedophile
+    public class KillThePresident
     {
         readonly SocketCommandContext Context;
 
-        public Pedophile(SocketCommandContext context) => Context = context;
+        public KillThePresident(SocketCommandContext context) => Context = context;
 
         public async Task ArrestAsync()
         {
@@ -30,12 +30,12 @@ namespace FBIBot.Modules.AutoMod
             );
         }
 
-        public static async Task<bool> IsPedophileAsync(SocketCommandContext Context)
+        public static async Task<bool> IsGoingToKillThePresidentAsync(SocketCommandContext Context)
         {
             await Task.Yield();
 
             string message = Context.Message.Content;
-            Regex regex = new Regex(@"\bI\s+(like|love)\s+(?!((no(?!\w+))|none\s*of))(\w*\s)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex regex = new Regex(@"\bI(('m|\s+am)\s+going\s+to|\s+want\s+to)(\s+\w*)*(kill|assassinate|murder)(\w*\s)+the\s+president\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             return regex.IsMatch(message);
         }
     }
