@@ -88,7 +88,7 @@ namespace FBIBot.Modules.Mod
         {
             GuildPermissions perms = new GuildPermissions(viewChannel: true, sendMessages: false, addReactions: false, connect: true, speak: false);
             Color color = new Color(54, 57, 63);
-            var role = await Context.Guild.CreateRoleAsync("Muted", perms, color);
+            var role = await Context.Guild.CreateRoleAsync("Muted", perms, color, false, false);
 
             await Config.SetMute.SetMuteRoleAsync(role, Context.Guild);
             return role;

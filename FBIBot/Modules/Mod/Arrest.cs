@@ -96,7 +96,7 @@ namespace FBIBot.Modules.Mod
             IRole role;
             GuildPermissions perms = new GuildPermissions(viewChannel: false);
             Color color = new Color(127, 127, 127);
-            role = await Context.Guild.CreateRoleAsync("Prisoner", perms, color);
+            role = await Context.Guild.CreateRoleAsync("Prisoner", perms, color, false, true);
 
             await SetPrisonerRoleAsync(role);
             return role;
