@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace FBIBot
 {
@@ -45,7 +44,11 @@ namespace FBIBot
                 isRunning = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Count() > 1;
                 if (isRunning)
                 {
-                    MessageBox.Show("Program is already running", SecurityInfo.botName);
+                    if (isConsole)
+                    {
+                        Console.WriteLine("Program is already running");
+                        Console.ReadLine();
+                    }
                     return;
                 }
             }
