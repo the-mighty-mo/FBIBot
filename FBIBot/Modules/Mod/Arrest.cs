@@ -164,7 +164,7 @@ namespace FBIBot.Modules.Mod
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    ulong channelID = ulong.Parse(reader["channel_id"].ToString());
+                    ulong channelID = ulong.Parse(reader["channel_id"].ToString()!);
                     channel = g.GetTextChannel(channelID);
                 }
                 reader.Close();

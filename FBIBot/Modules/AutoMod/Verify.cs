@@ -183,7 +183,7 @@ namespace FBIBot.Modules.AutoMod
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    attempts = int.Parse(reader["attempts"].ToString());
+                    attempts = int.Parse(reader["attempts"].ToString()!);
                 }
                 reader.Close();
             }

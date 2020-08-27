@@ -33,7 +33,7 @@ namespace FBIBot.Modules.Config
 
             Task[] cmds =
             {
-                Context.Guild.ModifyAsync(x => x.VerificationLevel = (VerificationLevel)level),
+                Context.Guild.ModifyAsync(x => x.VerificationLevel = (VerificationLevel)level!),
                 RemoveVerificationLevelAsync(Context.Guild)
             };
 

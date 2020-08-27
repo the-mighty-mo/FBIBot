@@ -65,7 +65,7 @@ namespace FBIBot.Modules.Config
                 SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    ulong roleID = ulong.Parse(reader["role_id"].ToString());
+                    ulong roleID = ulong.Parse(reader["role_id"].ToString()!);
                     SocketRole role = g.GetRole(roleID);
                     if (role != null)
                     {
