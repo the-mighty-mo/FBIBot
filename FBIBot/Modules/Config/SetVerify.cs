@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,7 +31,7 @@ namespace FBIBot.Modules.Config
         [Alias("set-verify")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task SetVerifyAsync(SocketRole role, string changeRole = "true")
+        public async Task SetVerifyAsync(SocketRole role, string changeRole = "false")
         {
             SocketRole currentRole = await GetVerificationRoleAsync(Context.Guild);
             if (currentRole == role)
@@ -52,14 +51,18 @@ namespace FBIBot.Modules.Config
                 SetVerificationRoleAsync(role),
                 Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.")
             );
-            await ManageRolesAsync(role, currentRole, changeRole);
+
+            if (changeRole.Equals("true"))
+            {
+                await ManageRolesAsync(role, currentRole);
+            }
         }
 
         [Command("setverify")]
         [Alias("set-verify")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task SetVerifyAsync(string role, string changeRole = "true")
+        public async Task SetVerifyAsync(string role, string changeRole = "false")
         {
             SocketRole r;
             if (ulong.TryParse(role, out ulong roleID) && (r = Context.Guild.GetRole(roleID)) != null)
@@ -70,7 +73,7 @@ namespace FBIBot.Modules.Config
             await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");
         }
 
-        private async Task ManageRolesAsync(SocketRole role, SocketRole currentRole, string changeRole)
+        private async Task ManageRolesAsync(SocketRole role, SocketRole currentRole)
         {
             SocketRole newRole;
             foreach (SocketGuildUser user in Context.Guild.Users)
@@ -86,7 +89,7 @@ namespace FBIBot.Modules.Config
                 }
             }
 
-            if (changeRole == "true" && currentRole != null)
+            if (currentRole != null)
             {
                 foreach (SocketGuildUser user in Context.Guild.Users)
                 {
