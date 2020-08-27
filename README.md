@@ -14,12 +14,12 @@ This bot requires permissions: 289533110
 ## Build instructions
 
 1. Download/clone the repository.
-2. Open `FBIBot.sln` in Visual Studio on a Windows machine with .NET Framework 4.8.  
+2. Open `FBIBot.sln` in Visual Studio on a Windows machine with .NET Core 3.1.  
 **NOTE:** This project was created in Visual Studio 2019 and may not be backwards compatible with older versions of Visual Studio.
 3. Add your Client ID, Token, and Discriminator to `SecurityInfo.cs` so the bot can come online and respond to commands.  
 **NOTE:** It is recommended that you set your bot's profile picture to FBIBot/FBI.png and its name to "The FBI" for maximum effect.
 4. Restore NuGet packages (if necessary before build).
-5. Build the project in Release mode (Any CPU) and run `FBIBot.exe` in `FBIBot\bin\Release`.
+5. Build the project in Release mode (Any CPU) and run `FBIBot.exe` in `FBIBot\bin\Release\netcoreapp3.1`.
 
 ### Some notes
 
