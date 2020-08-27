@@ -9,8 +9,6 @@ Built using .NET Core 3.1, Discord.Net v2.2.0, Microsoft.Data.Sqlite v3.1.7, and
 
 **Someone has to keep the server in check, and who better than the FBI?**
 
-*Email all bug reports to hallb1016@gmail.com*
-
 This bot requires permissions: 289533110
 
 ## Build instructions
