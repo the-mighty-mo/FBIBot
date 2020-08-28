@@ -165,14 +165,13 @@ namespace FBIBot
                 var result = await _commands.ExecuteAsync(Context, argPos, _services);
 
                 List<Task> cmds = new List<Task>();
-                if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
-                {
-                    cmds.Add(Context.Channel.SendMessageAsync(result.ErrorReason));
-                }
-
-                if (msg.Author.IsBot)
+                if (msg.Author == Context.Guild?.CurrentUser)
                 {
                     cmds.Add(msg.DeleteAsync());
+                }
+                else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
+                {
+                    cmds.Add(Context.Channel.SendMessageAsync(result.ErrorReason));
                 }
 
                 await Task.WhenAll(cmds);
