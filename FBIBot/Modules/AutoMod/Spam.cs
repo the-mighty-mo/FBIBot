@@ -29,7 +29,7 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
-            List<IMessage> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(6).ToList();
+            List<IMessage> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(10).ToList();
 
             int i = 0;
             int j = 0;
@@ -42,7 +42,7 @@ namespace FBIBot.Modules.AutoMod
                 }
                 else
                 {
-                    if (i >= 5 || (i >= 3 && j == 1) || (i >= 2 && j >= 3)) // Five duplicates OR two groups of three duplicates OR 3+ groups of two duplicates
+                    if (i >= 4 || (i >= 3 && j == 1) || (i >= 2 && j >= 3)) // Five duplicates OR two groups of three duplicates OR 3+ groups of two duplicates
                     {
                         isSpam = true;
                         break;
