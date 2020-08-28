@@ -165,7 +165,7 @@ namespace FBIBot
                 var result = await _commands.ExecuteAsync(Context, argPos, _services);
 
                 List<Task> cmds = new List<Task>();
-                if (msg.Author == Context.Guild?.CurrentUser)
+                if (msg.Author.IsBot)
                 {
                     cmds.Add(msg.DeleteAsync());
                 }
@@ -177,12 +177,10 @@ namespace FBIBot
                 await Task.WhenAll(cmds);
             }
 
-            if (msg.Author.IsBot)
+            if (!msg.Author.IsBot)
             {
-                return;
+                await AutoModAsync(Context, isCommand);
             }
-
-            await AutoModAsync(Context, isCommand);
         }
 
         private static async Task AutoModAsync(SocketCommandContext Context, bool isCommand)
