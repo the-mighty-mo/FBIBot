@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -28,33 +29,40 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
-            List<string> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(6).Select(x => x.Content).ToList();
+            List<IMessage> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(6).ToList();
 
             int i = 0;
             int j = 0;
             string message = Context.Message.Content;
-            foreach (string msg in userMsgs)
+            foreach (IMessage msg in userMsgs)
             {
-                if (i >= 5 || (i >= 3 && j == 1) || (i >= 2 && j >= 3)) // Five duplicates OR two groups of three duplicates OR 3+ groups of two duplicates
+                if (userMsgs[0].Timestamp - msg.Timestamp > TimeSpan.FromMinutes(1))
                 {
-                    isSpam = true;
                     break;
                 }
-                if (msg != message)
+                else
                 {
-                    if (i < 2)
+                    if (i >= 5 || (i >= 3 && j == 1) || (i >= 2 && j >= 3)) // Five duplicates OR two groups of three duplicates OR 3+ groups of two duplicates
                     {
+                        isSpam = true;
                         break;
                     }
-                    if (i == 2)
+                    else if (msg.Content != message)
                     {
-                        j++; // Checking for three groups of two duplicates, else two groups of three duplicates
+                        if (i < 2)
+                        {
+                            break;
+                        }
+                        else if (i == 2)
+                        {
+                            j++; // Checking for three groups of two duplicates, else two groups of three duplicates
+                        }
+                        message = msg.Content;
+                        j++;
+                        i = 0;
                     }
-                    message = msg;
-                    j++;
-                    i = 0;
+                    i++;
                 }
-                i++;
             }
 
             return isSpam;

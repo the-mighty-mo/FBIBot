@@ -23,7 +23,7 @@ namespace FBIBot
 
         public static async Task<bool> InvokerIsHigher(SocketGuildUser invoker, SocketGuildUser target)
         {
-            bool isHigher = ((invoker == invoker.Guild.Owner || invoker == invoker.Guild.CurrentUser) && invoker != target)
+            bool isHigher = invoker == invoker.Guild.Owner || invoker == invoker.Guild.CurrentUser
                 || (!await IsAdmin(target) && await IsAdmin(invoker)) || (!await IsMod(target) && await IsMod(invoker)) || invoker.Hierarchy > target.Hierarchy;
             return isHigher;
         }
