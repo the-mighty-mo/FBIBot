@@ -35,7 +35,7 @@ namespace FBIBot.Modules.AutoMod
                 return;
             }
 
-            if (response.ToLower() != captcha.ToLower())
+            if (response != captcha)
             {
                 int maxAttempts = 5;
                 int attempts = await GetAttemptsAsync(Context.User);
@@ -109,19 +109,12 @@ namespace FBIBot.Modules.AutoMod
 
         public static async Task SendCaptchaAsync(SocketUser u)
         {
-            string captchaCode = "";
-            List<string> badCaptcha = new List<string>() { "I", "l", "0", "O" };
+            string captchaCode = ImageFactory.CreateCode(6);
 
             await Task.Yield();
 
-            do
-            {
-                captchaCode = ImageFactory.CreateCode(6);
-            }
-            while (captchaCode.Any(x => badCaptcha.Contains(x.ToString())));
-
             Task save = SetCaptchaAsync(captchaCode, u);
-            var imageStream = ImageFactory.BuildImage(captchaCode, 60, 150, 24, 10);
+            var imageStream = ImageFactory.BuildImage(captchaCode, 60, 150, 24, 12);
             imageStream.Position = 0;
 
             Image image = Image.FromStream(imageStream);

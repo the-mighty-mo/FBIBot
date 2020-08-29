@@ -4,7 +4,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 
-// Fixing Linux incompatibilities with this library (Format64bppArgb should beFormat32bppArgb)
+// Fixing Linux incompatibilities with this library (Format64bppArgb -> Format32bppArgb)
+// Re-introduced lowercase letters into the CAPTCHA (if unique from capital variant)
 // Original at https://www.nuget.org/packages/CaptchaGen.NetCore/1.1.1?_src=template
 namespace CaptchaGen.NetCore
 {
@@ -24,7 +25,7 @@ namespace CaptchaGen.NetCore
         public static string CreateCode(int digitCount = 5)
         {
             char[] chars = {'A','B','C','D','G','H','K','M','N','P','Q','R','S','T','W','X','Y',
-                '3','4','5','6','8'};
+                'a', 'b', 'd', 'e', 'g', 'm', 'q', 'r', '3','4','5','6','8'}; // Edit 1: added lowercase letters
             StringBuilder sb = new StringBuilder();
             Random random = new Random();
             for (int i = 0; i < digitCount; i++)
@@ -56,9 +57,9 @@ namespace CaptchaGen.NetCore
             Random random = new Random();
             MemoryStream memoryStream = new MemoryStream();
             using (Bitmap captchaImage = new Bitmap(imageWidth, imageHeight,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb)) // Edit 2: Format64bppArgb -> Format32bppArgb
             using (Bitmap cache = new Bitmap(imageWidth, imageHeight,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb)) // Edit 3: Format64bppArgb -> Format32bppArgb
             using (Graphics g = Graphics.FromImage(captchaImage))
             using (Font txtFont = new Font(FONTFAMILY, fontSize, FontStyle.Italic))
             {
