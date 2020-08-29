@@ -4,8 +4,9 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 
-// Fixing Linux incompatibilities with this library (Format64bppArgb -> Format32bppArgb)
+// Fixed Linux incompatibilities with this library (Format64bppArgb -> Format32bppArgb)
 // Re-introduced lowercase letters into the CAPTCHA (if unique from capital variant)
+// Fixed text drawing just outside the image by moving the starting corner away from the image corner
 // Original at https://www.nuget.org/packages/CaptchaGen.NetCore/1.1.1?_src=template
 namespace CaptchaGen.NetCore
 {
