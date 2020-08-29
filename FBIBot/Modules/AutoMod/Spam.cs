@@ -36,7 +36,7 @@ namespace FBIBot.Modules.AutoMod
             string message = Context.Message.Content;
             foreach (IMessage msg in userMsgs)
             {
-                if (userMsgs[0].Timestamp - msg.Timestamp > TimeSpan.FromMinutes(1))
+                if (userMsgs[0].Timestamp - msg.Timestamp > TimeSpan.FromMinutes(2))
                 {
                     break;
                 }
