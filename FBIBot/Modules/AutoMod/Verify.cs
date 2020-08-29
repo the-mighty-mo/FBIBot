@@ -1,4 +1,4 @@
-﻿using CaptchaGen;
+﻿using CaptchaGen.NetCore;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -116,13 +116,12 @@ namespace FBIBot.Modules.AutoMod
 
             do
             {
-                captchaCode = CaptchaCodeFactory.GenerateCaptchaCode(6);
+                captchaCode = ImageFactory.CreateCode(6);
             }
             while (captchaCode.Any(x => badCaptcha.Contains(x.ToString())));
 
             Task save = SetCaptchaAsync(captchaCode, u);
-
-            var imageStream = ImageFactory.GenerateImage(captchaCode);
+            var imageStream = ImageFactory.BuildImage(captchaCode, 60, 150, 24, 10);
             imageStream.Position = 0;
 
             Image image = Image.FromStream(imageStream);
