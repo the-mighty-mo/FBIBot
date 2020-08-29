@@ -114,7 +114,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.Yield();
 
             Task save = SetCaptchaAsync(captchaCode, u);
-            var imageStream = ImageFactory.BuildImage(captchaCode, 60, 150, 24, 12);
+            var imageStream = ImageFactory.BuildImage(captchaCode, 60, 160, 24, 14);
             imageStream.Position = 0;
 
             Image image = Image.FromStream(imageStream);

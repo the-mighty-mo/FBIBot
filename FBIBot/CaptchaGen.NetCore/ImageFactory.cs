@@ -57,14 +57,14 @@ namespace CaptchaGen.NetCore
             Random random = new Random();
             MemoryStream memoryStream = new MemoryStream();
             using (Bitmap captchaImage = new Bitmap(imageWidth, imageHeight,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb)) // Edit 2: Format64bppArgb -> Format32bppArgb
+                PixelFormat.Format32bppArgb)) // Edit 2: Format64bppArgb -> Format32bppArgb
             using (Bitmap cache = new Bitmap(imageWidth, imageHeight,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb)) // Edit 3: Format64bppArgb -> Format32bppArgb
+                PixelFormat.Format32bppArgb)) // Edit 3: Format64bppArgb -> Format32bppArgb
             using (Graphics g = Graphics.FromImage(captchaImage))
             using (Font txtFont = new Font(FONTFAMILY, fontSize, FontStyle.Italic))
             {
                 g.Clear(BackgroundColor);
-                g.DrawString(captchaCode, txtFont, Brushes.Gray, new PointF(0, 0));
+                g.DrawString(captchaCode, txtFont, Brushes.Gray, new PointF(10f, 10f)); // Edit 4: Moved the starting point away from the corner
 
                 //Draw interfering lines
                 for (int i = 0; i < 8; i++)
