@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
@@ -10,13 +11,43 @@ namespace FBIBot.Modules.Mod
         [Command("warn")]
         [RequireMod]
         [RequireModLog]
-        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length = null, [Remainder] string reason = null)
+        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Remainder] string reason = null) => await TempWarnAsync(user, null, reason);
+
+        [Command("warn")]
+        [RequireMod]
+        [RequireModLog]
+        public async Task WarnAsync(string user, [Remainder] string reason = null) => await TempWarnAsync(user, null, reason);
+
+        [Command("tempwarn")]
+        [Alias("temp-warn")]
+        [RequireMod]
+        [RequireModLog]
+        public async Task TempWarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length, [Remainder] string reason = null)
         {
             ulong id = await SendToModLog.GetNextModLogID(Context.Guild);
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(255, 213, 31))
+                .WithDescription($"{user.Mention} stop protesting capitalism.");
+
+            if (double.TryParse(length, out double h))
+            {
+                EmbedFieldBuilder lengthField = new EmbedFieldBuilder()
+                        .WithIsInline(false)
+                        .WithName("Length")
+                        .WithValue(h < 1 ? $"{h * 60} minutes" : $"{h} hours");
+                embed.AddField(lengthField);
+            }
+
+            EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName("Reason")
+                    .WithValue($"{reason ?? "[none given]"}");
+            embed.AddField(reasonField);
+
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync($"{user.Mention} stop protesting capitalism."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User as SocketGuildUser, user, length, reason),
                 AddWarningAsync(user, id)
             );
@@ -38,15 +69,16 @@ namespace FBIBot.Modules.Mod
             }
         }
 
-        [Command("warn")]
+        [Command("tempwarn")]
+        [Alias("temp-warn")]
         [RequireMod]
         [RequireModLog]
-        public async Task WarnAsync(string user, string length = null, [Remainder] string reason = null)
+        public async Task TempWarnAsync(string user, string length, [Remainder] string reason = null)
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
             {
-                await WarnAsync(u, length, reason);
+                await TempWarnAsync(u, length, reason);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

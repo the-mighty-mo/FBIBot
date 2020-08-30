@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
@@ -24,9 +25,13 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(12, 156, 24))
+                .WithDescription($"The given warning has been pardoned.");
+
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync("Warning pardoned."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.User as SocketGuildUser, user, id.ToString()),
                 RemoveWarningAsync(user, ID)
             );

@@ -38,9 +38,13 @@ namespace FBIBot.Modules.Mod
             );
 
             bool isTimeout = double.TryParse(timeout, out double minutes);
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(255, 61, 24))
+                .WithDescription($"{user.Mention} has been sent to Guantanamo Bay{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}.");
+
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync($"{user.Mention} has been sent to Guantanamo Bay{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Arrest, Context.User as SocketGuildUser, user, timeout)
             );
 

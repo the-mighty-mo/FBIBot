@@ -28,9 +28,19 @@ namespace FBIBot.Modules.Mod
                     user.BanAsync(0, reason)
                 };
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(130, 0, 0))
+                .WithDescription($"The communist spy {user.Mention} has been sent to Brazil for {length} {(days == 1 ? "day" : "days")}.");
+
+            EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName("Reason")
+                    .WithValue($"{reason ?? "[none given]"}");
+            embed.AddField(reasonField);
+
             cmds.AddRange(new List<Task>()
             {
-                Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been exiled to Mexico for {length} {(days == 1 ? "day" : "days")}."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, user, length, reason)
             });
             await Task.WhenAll(cmds);
@@ -68,9 +78,19 @@ namespace FBIBot.Modules.Mod
                         Context.Guild.AddBanAsync(userID, 0, reason)
                     };
 
+                EmbedBuilder embed = new EmbedBuilder()
+                    .WithColor(new Color(130, 0, 0))
+                    .WithDescription($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}!");
+
+                EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                        .WithIsInline(false)
+                        .WithName("Reason")
+                        .WithValue($"{reason ?? "[none given]"}");
+                embed.AddField(reasonField);
+
                 cmds.AddRange(new List<Task>()
                 {
-                    Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders for {length} {(days == 1 ? "day" : "days")}."),
+                    Context.Channel.SendMessageAsync("", false, embed.Build()),
                     SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, length, reason)
                 });
                 await Task.WhenAll(cmds);

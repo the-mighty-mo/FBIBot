@@ -21,9 +21,19 @@ namespace FBIBot.Modules.Mod
                     user.BanAsync(0, reason)
                 };
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(130, 0, 0))
+                .WithDescription($"The communist spy {user.Mention} has been given the ~~ban~~ freedom hammer.");
+
+            EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName("Reason")
+                    .WithValue($"{reason ?? "[none given]"}");
+            embed.AddField(reasonField);
+
             cmds.AddRange(new List<Task>()
             {
-                Context.Channel.SendMessageAsync($"The communist spy {user.Mention} has been given the ~~ban~~ freedom hammer."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, user, null, reason)
             });
             await Task.WhenAll(cmds);
@@ -52,9 +62,19 @@ namespace FBIBot.Modules.Mod
                         Context.Guild.AddBanAsync(userID, 0, reason)
                     };
 
+                EmbedBuilder embed = new EmbedBuilder()
+                    .WithColor(new Color(130, 0, 0))
+                    .WithDescription($"The communist spy <@{user}> shall never enter our borders!");
+
+                EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                        .WithIsInline(false)
+                        .WithName("Reason")
+                        .WithValue($"{reason ?? "[none given]"}");
+                embed.AddField(reasonField);
+
                 cmds.AddRange(new List<Task>()
                 {
-                    Context.Channel.SendMessageAsync($"The communist spy <@{user}> shall not enter our borders."),
+                    Context.Channel.SendMessageAsync("", false, embed.Build()),
                     SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, null, reason)
                 });
                 await Task.WhenAll(cmds);

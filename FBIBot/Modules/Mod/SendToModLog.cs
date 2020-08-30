@@ -142,11 +142,15 @@ namespace FBIBot.Modules.Mod
             {
             case LogType.RaidMode:
                 info.color = new Color(206, 15, 65);
+                info.state = info.length;
                 info.cmd = "Raid Mode";
+                info.hasTarget = false;
                 info.reasonAllowed = false;
                 info.isTime = false;
-                info.hasTarget = false;
-                info.state = info.length;
+                if (info.state == "Disabled")
+                {
+                    goto default;
+                }
                 break;
             case LogType.Verify:
                 info.color = new Color(255, 255, 255);
@@ -165,7 +169,14 @@ namespace FBIBot.Modules.Mod
                 info.color = new Color(255, 213, 31);
                 if (info.isTime)
                 {
-                    info.length += $" {(info.time == 1 ? "hour" : "hours")}";
+                    if (info.time < 1)
+                    {
+                        info.length = $"{info.time * 60} {(info.time * 60 == 1 ? "minute" : "minutes")}";
+                    }
+                    else
+                    {
+                        info.length += $" {(info.time == 1 ? "hour" : "hours")}";
+                    }
                 }
                 break;
             case LogType.Mute:

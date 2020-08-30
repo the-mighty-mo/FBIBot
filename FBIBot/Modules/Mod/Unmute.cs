@@ -23,9 +23,13 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(12, 156, 24))
+                .WithDescription($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection.");
+
             List<Task> cmds = new List<Task>()
             {
-                Context.Channel.SendMessageAsync($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)

@@ -12,11 +12,15 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task UnbanAsync(SocketGuildUser user)
         {
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(12, 156, 24))
+                .WithDescription($"{user.Mention}, the now-ex-KGB spy, may reenter the nation.\n" +
+                    $"They better not let their guard down.");
+
             await Task.WhenAll
             (
                 Context.Guild.RemoveBanAsync(user),
-                Context.Channel.SendMessageAsync($"{user.Mention}, the now-ex-KGB spy, may reenter the nation.\n" +
-                    $"They better not let their guard down."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User as SocketGuildUser, user)
             );
         }
@@ -35,11 +39,15 @@ namespace FBIBot.Modules.Mod
                     return;
                 }
 
+                EmbedBuilder embed = new EmbedBuilder()
+                    .WithColor(new Color(12, 156, 24))
+                    .WithDescription($"<@{user}>, the now-ex-KGB spy, may enter the nation.\n" +
+                        $"They better not let their guard down.");
+
                 await Task.WhenAll
                 (
                     Context.Guild.RemoveBanAsync(userID),
-                    Context.Channel.SendMessageAsync($"<@{user}>, the now-ex-KGB spy, may enter the nation.\n" +
-                        $"They better not let their guard down."),
+                    Context.Channel.SendMessageAsync($"", false, embed.Build()),
                     SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User as SocketGuildUser, userID)
                 );
                 return;

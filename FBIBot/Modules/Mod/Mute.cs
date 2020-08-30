@@ -40,9 +40,19 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll(cmds);
 
             bool isTimeout = double.TryParse(timeout, out double minutes);
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(255, 110, 24))
+                .WithDescription($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}.");
+
+            EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName("Reason")
+                    .WithValue($"{reason ?? "[none given]"}");
+            embed.AddField(reasonField);
+
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User as SocketGuildUser, user, timeout, reason)
             );
 

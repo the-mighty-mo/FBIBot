@@ -24,8 +24,10 @@ namespace FBIBot.Modules
             "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*\n\n" +
             "modifyreason [mod log ID] [reason (optional)]\n" +
             "  - Modifies the reason for the given mod log\n\n" +
-            "warn [user mention / user ID] [hours (optional)] [reason (optional)]\n" +
+            "warn [user mention / user ID] [reason (optional)]\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
+            "tempwarn [user mention / user ID] [hours] [reason (optional)]\n" +
+            "  - Gives the user a temporary warning to stop protesting capitalism\n\n" +
             "getwarnings [user mention / user ID]\n" +
             "  - Gets the number of warnings and mod logs for the warnings for the given user\n\n" +
             "removewarning [user mention / user ID] [mod log ID]\n" +

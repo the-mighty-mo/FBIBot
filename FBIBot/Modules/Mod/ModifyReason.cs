@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -23,7 +24,11 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
-            await Context.Channel.SendMessageAsync("The mod log's reason has been updated. Probably.");
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithDescription("The mod log's reason has been updated. Probably.");
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
     }
 }

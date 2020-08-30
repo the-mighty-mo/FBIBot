@@ -12,10 +12,20 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task KickAsync([RequireBotHierarchy("kick")] [RequireInvokerHierarchy("kick")] SocketGuildUser user, [Remainder] string reason = null)
         {
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(255, 12, 12))
+                .WithDescription($"The criminal {user.Mention} has been sent to Brazil.");
+
+            EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName("Reason")
+                    .WithValue($"{reason ?? "[none given]"}");
+            embed.AddField(reasonField);
+
             await Task.WhenAll
             (
                 user.KickAsync(reason),
-                Context.Channel.SendMessageAsync($"The criminal {user.Mention} has been deported to probably Europe."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Kick, Context.User as SocketGuildUser, user, null, reason)
             );
         }

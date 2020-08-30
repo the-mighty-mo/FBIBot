@@ -33,7 +33,7 @@ namespace FBIBot.Modules.Config
                 SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
                 if (channel != null)
                 {
-                    var msgs = await channel.GetMessagesAsync(int.MaxValue).FlattenAsync();
+                    var msgs = (await channel.GetMessagesAsync(int.MaxValue).FlattenAsync()).Where(x => x.Author == Context.Guild.GetUser(Context.Client.CurrentUser.Id));
                     await channel.DeleteMessagesAsync(msgs);
 
                     try
@@ -44,11 +44,15 @@ namespace FBIBot.Modules.Config
                 }
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithDescription("We have shredded and burned all of the moderation logs. The Russians shall never get hold of them!");
+
             await Task.WhenAll
             (
                 cmds[0],
                 cmds[1],
-                Context.Channel.SendMessageAsync("We have shredded and burned all of the moderation logs. The Russians shall never get hold of them!")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
     }

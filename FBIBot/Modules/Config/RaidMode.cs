@@ -22,10 +22,14 @@ namespace FBIBot.Modules.Config
             {
                 await SaveVerificationLevelAsync(Context.Guild);
 
+                EmbedBuilder embed2 = new EmbedBuilder()
+                    .WithColor(new Color(206, 15, 65))
+                    .WithDescription(":rotating_light: :rotating_light: WE HERE AT THE FBI ARE IN RAID MODE! :rotating_light: :rotating_light:");
+
                 await Task.WhenAll
                 (
                     Context.Guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High),
-                    Context.Channel.SendMessageAsync(":rotating_light: :rotating_light: WE HERE AT THE FBI ARE IN RAID MODE! :rotating_light: :rotating_light:"),
+                    Context.Channel.SendMessageAsync("", false, embed2.Build()),
                     Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.RaidMode, Context.User as SocketGuildUser, null, "Enabled")
                 );
                 return;
@@ -37,9 +41,13 @@ namespace FBIBot.Modules.Config
                 RemoveVerificationLevelAsync(Context.Guild)
             };
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(12, 156, 24))
+                .WithDescription("The FBI is now out of raid mode. Surveillance results will be posted in the Mod Logs.");
+
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync("The FBI is now out of raid mode. Surveillance results will be posted in the Mod Logs."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.RaidMode, Context.User as SocketGuildUser, null, "Disabled")
             );
             await Task.WhenAll
@@ -59,11 +67,18 @@ namespace FBIBot.Modules.Config
 
             if (blockedUsers.Count == 0)
             {
+                EmbedBuilder embed2 = new EmbedBuilder()
+                    .WithColor(new Color(12, 156, 24))
+                    .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
+                    .WithCurrentTimestamp();
+
                 EmbedFieldBuilder field = new EmbedFieldBuilder()
                     .WithIsInline(false)
                     .WithName("No users blocked")
                     .WithValue("No users attempted to join the server during Raid Mode.");
-                fields.Add(field);
+                embed2.AddField(field);
+
+                await channel.SendMessageAsync("", false, embed2.Build());
             }
             else
             {
@@ -107,19 +122,17 @@ namespace FBIBot.Modules.Config
                         .WithValue(blocked);
                     fields.Add(field);
                 }
+
+                EmbedBuilder embed = new EmbedBuilder()
+                    .WithColor(new Color(206, 15, 65))
+                    .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
+                    .WithCurrentTimestamp()
+                    .WithFields(fields);
+
+                await channel.SendMessageAsync("", false, embed.Build());
             }
 
-            EmbedBuilder embed = new EmbedBuilder()
-                .WithColor(new Color(206, 15, 65))
-                .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
-                .WithCurrentTimestamp()
-                .WithFields(fields);
-
-            await Task.WhenAll
-            (
-                channel.SendMessageAsync("", false, embed.Build()),
-                RemoveBlockedUsersAsync(Context.Guild)
-            );
+            await RemoveBlockedUsersAsync(Context.Guild);
         }
 
         public static async Task<VerificationLevel?> GetVerificationLevelAsync(SocketGuild g)

@@ -24,10 +24,14 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(new Color(12, 156, 24))
+                .WithDescription($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education.");
+
             List<Task> cmds = new List<Task>()
             {
                 RemovePrisonerAsync(user),
-                Context.Channel.SendMessageAsync($"{user.Mention} has been freed from Guantanamo Bay after a good amount of ~~torture~~ re-education."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)

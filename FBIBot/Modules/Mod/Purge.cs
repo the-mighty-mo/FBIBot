@@ -37,7 +37,11 @@ namespace FBIBot.Modules.Mod
             }
             catch { }
 
-            await Context.Channel.SendMessageAsync($"We have successfully shredded, burned, and disposed of {num} messages. Encrypt them better next time.");
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithDescription($"We have successfully shredded, burned, and disposed of {num} messages. Encrypt them better next time.");
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         [Command("purge")]
