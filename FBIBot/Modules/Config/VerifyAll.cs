@@ -21,10 +21,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed1 = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription("Please give us a minute or two to give out citizenship documents...");
+
             ulong id = await Mod.SendToModLog.GetNextModLogID(Context.Guild);
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync("Please give us a minute or two to give out citizenship documents..."),
+                Context.Channel.SendMessageAsync("", false, embed1.Build()),
                 Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.VerifyAll, Context.User as SocketGuildUser, null)
             );
 
@@ -35,10 +40,15 @@ namespace FBIBot.Modules.Config
                     await user.AddRoleAsync(role);
                     if (await SetVerify.GetVerificationRoleAsync(Context.Guild) != role)
                     {
+                        EmbedBuilder embed2 = new EmbedBuilder()
+                            .WithColor(new Color(206, 15, 65))
+                            .WithTitle("Federal Bureau of Investigation")
+                            .WithDescription("The citizenship process has been canceled due to a change in the verification role.");
+
                         await Task.WhenAll
                         (
                             user.RemoveRoleAsync(role),
-                            Context.Channel.SendMessageAsync("The citizenship process has been canceled due to a change in the verification role."),
+                            Context.Channel.SendMessageAsync("", false, embed2.Build()),
                             Mod.SendToModLog.SetStateAsync(Context.Guild, id, "Canceled (change in verification role)", Mod.SendToModLog.LogType.VerifyAll)
                         );
                         return;
@@ -46,9 +56,14 @@ namespace FBIBot.Modules.Config
                 }
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription("All current members have been granted citizenship.");
+
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync("All current members have been granted citizenship."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 Mod.SendToModLog.SetStateAsync(Context.Guild, id, "Completed", Mod.SendToModLog.LogType.VerifyAll)
             );
         }

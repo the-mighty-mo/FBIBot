@@ -19,11 +19,16 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription("You no longer have a muted role.\n" +
+                    "~~Guess we'll take things into our own hands~~");
+
             await Task.WhenAll
             (
                 RemoveMuteRoleAsync(Context.Guild),
-                Context.Channel.SendMessageAsync("You no longer have a muted role.\n" +
-                    "~~Guess we'll take things into our own hands~~")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 
@@ -38,10 +43,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"All who commit treason will now receive the {role.Name} role.");
+
             await Task.WhenAll
             (
                 SetMuteRoleAsync(role, Context.Guild),
-                Context.Channel.SendMessageAsync($"All who commit treason will now receive the {role.Name} role.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 

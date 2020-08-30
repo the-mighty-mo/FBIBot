@@ -20,10 +20,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription("Citizenship will now go unchecked. This could go very poorly.");
+
             await Task.WhenAll
             (
                 RemoveVerificationRoleAsync(Context.Guild),
-                Context.Channel.SendMessageAsync("Citizenship will now go unchecked. This could go very poorly.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 
@@ -46,10 +51,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"All proud Americans will now receive the {role.Name} role.");
+
             await Task.WhenAll
             (
                 SetVerificationRoleAsync(role),
-                Context.Channel.SendMessageAsync($"All proud Americans will now receive the {role.Name} role.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
 
             if (changeRole.Equals("true"))

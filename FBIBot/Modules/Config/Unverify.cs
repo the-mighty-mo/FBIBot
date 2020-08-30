@@ -27,12 +27,17 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"We have put the potential communist {user.Mention} under quarantine.");
+
             await Task.WhenAll
             (
                 user.RemoveRoleAsync(role),
                 Verify.RemoveVerifiedAsync(user),
                 Verify.SendCaptchaAsync(user),
-                Context.Channel.SendMessageAsync($"We have put the potential communist {user.Mention} under quarantine."),
+                Context.Channel.SendMessageAsync("", false, embed.Build()),
                 SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unverify, Context.User as SocketGuildUser, user, null, reason)
             );
         }

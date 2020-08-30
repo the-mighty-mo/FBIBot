@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
@@ -7,8 +8,8 @@ namespace FBIBot.Modules.Config
 {
     public class RemoveModRole : ModuleBase<SocketCommandContext>
     {
-        [Command("remove-mod")]
-        [Alias("removemod", "remove-modrole")]
+        [Command("removemod")]
+        [Alias("remove-mod", "remove-modrole")]
         [RequireAdmin]
         public async Task RemoveModRoleAsync(SocketRole role)
         {
@@ -18,15 +19,20 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"Members with the {role.Name} role are no longer assistants of the agency. They were getting kind of suspicious, anyways.");
+
             await Task.WhenAll
             (
                 RemoveModAsync(role),
-                Context.Channel.SendMessageAsync($"Members with the {role.Name} role are no longer assistants of the agency. They were getting kind of suspicious, anyways.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 
-        [Command("remove-mod")]
-        [Alias("removemod", "remove-modrole")]
+        [Command("removemod")]
+        [Alias("remove-mod", "remove-modrole")]
         [RequireAdmin]
         public async Task RemoveModRoleAsync(string role)
         {

@@ -46,7 +46,8 @@ namespace FBIBot.Modules.Config
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
-                .WithDescription("We have shredded and burned all of the moderation logs. The Russians shall never get hold of them!");
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription("We have shredded and burned all the moderation logs. The Russians shall never get hold of them!");
 
             await Task.WhenAll
             (

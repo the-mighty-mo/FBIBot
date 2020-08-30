@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
@@ -8,8 +9,8 @@ namespace FBIBot.Modules.Config
 {
     public class AddMod : ModuleBase<SocketCommandContext>
     {
-        [Command("add-mod")]
-        [Alias("addmod")]
+        [Command("addmod")]
+        [Alias("add-mod", "add-modrole")]
         [RequireAdmin]
         public async Task AddModAsync(SocketRole role)
         {
@@ -23,24 +24,28 @@ namespace FBIBot.Modules.Config
             {
                 AddModRoleAsync(role)
             };
+            string description;
             if ((await AddAdmin.GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
-                cmds.AddRange(new List<Task>()
-                {
-                    RemoveAdminRole.RemoveAdminAsync(role),
-                    Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been demoted to assistants of the agency.")
-                });
+                description = $"Members with the {role.Name} role have been demoted to assistants of the agency.";
+                cmds.Add(RemoveAdminRole.RemoveAdminAsync(role));
             }
             else
             {
-                cmds.Add(Context.Channel.SendMessageAsync($"Members with the {role.Name} role may now assist our agents in ensuring freedom, democracy, and justice for all."));
+                description = $"Members with the {role.Name} role may now assist our agents in ensuring freedom, democracy, and justice for all.";
             }
+
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription(description);
+            cmds.Add(Context.Channel.SendMessageAsync("", false, embed.Build()));
 
             await Task.WhenAll(cmds);
         }
 
-        [Command("add-mod")]
-        [Alias("addmod")]
+        [Command("addmod")]
+        [Alias("add-mod", "add-modrole")]
         [RequireAdmin]
         public async Task AddModAsync(string role)
         {

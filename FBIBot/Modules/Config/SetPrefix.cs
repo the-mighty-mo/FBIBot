@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
@@ -24,10 +25,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"The FBI's prefix has been set to `{prefix}`.");
+
             await Task.WhenAll
             (
                 SetPrefixAsync(Context.Guild, prefix),
-                Context.Channel.SendMessageAsync($"The FBI's prefix has been set to `{prefix}`.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 

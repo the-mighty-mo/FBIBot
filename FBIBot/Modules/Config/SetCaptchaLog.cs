@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
@@ -18,10 +19,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription("CAPTCHA logs will now go undisclosed. That information was confidential, anyways.");
+
             await Task.WhenAll
             (
                 RemoveCaptchaLogChannelAsync(Context.Guild),
-                Context.Channel.SendMessageAsync("CAPTCHA logs will now go undisclosed. That information was confidential, anyways.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 
@@ -36,10 +42,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"Once-confidential CAPTCHA logs will now be disclosed to {channel.Mention}.");
+
             await Task.WhenAll
             (
                 SetCaptchaLogChannelAsync(channel),
-                Context.Channel.SendMessageAsync($"Once-confidential CAPTCHA logs will now be disclosed to {channel.Mention}.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 

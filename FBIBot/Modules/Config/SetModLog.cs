@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
@@ -18,10 +19,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription("Moderation logs will now go undisclosed. That information was confidential, anyways.");
+
             await Task.WhenAll
             (
                 RemoveModLogChannelAsync(Context.Guild),
-                Context.Channel.SendMessageAsync("Moderation logs will now go undisclosed. That information was confidential, anyways.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 
@@ -36,10 +42,15 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"Once-confidential moderation logs will now be disclosed to {channel.Mention}.");
+
             await Task.WhenAll
             (
                 SetModLogChannelAsync(channel),
-                Context.Channel.SendMessageAsync($"Once-confidential moderation logs will now be disclosed to {channel.Mention}.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
 

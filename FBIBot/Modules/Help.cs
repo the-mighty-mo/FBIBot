@@ -71,13 +71,13 @@ namespace FBIBot.Modules
             "modify-muted-roles [true/enable / false/disable]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
 
-        private const string config2 = "add-mod [role mention / role ID]\n" +
+        private const string config2 = "addmod [role mention / role ID]\n" +
             "  - Adds the role to a list of assistants of the bureau\n\n" +
-            "remove-mod [role mention / role ID]\n" +
+            "removemod [role mention / role ID]\n" +
             "  - Removes the role from the list of assistants of the bureau out of suspicion\n\n" +
-            "add-admin [role mention / role ID]\n" +
+            "addadmin [role mention / role ID]\n" +
             "  - Adds the role to a list of local directors of the bureau\n\n" +
-            "remove-admin [role mention / role ID]\n" +
+            "removeadmin [role mention / role ID]\n" +
             "  - Removes the role from the list of local directors of the bureau due to presidential disapproval\n\n" +
             "setmodlog [channel mention / channel ID]\n" +
             "  - Sets the channel for the Mod Log; *Unsets if no channel is given*\n\n" +
@@ -98,13 +98,13 @@ namespace FBIBot.Modules
             "  - When enabled, the FBI will detect if the user sends one big, spammy message and takes it down with a warning";
 
         private const string automod2 = "anti-massmention [true/enable / false/disable]\n" +
-            "  - When enabled, the FBI will take down, with a warning, messages mentioning all the people the user hates (5+)\n\n" +
+            "  - When enabled, the FBI will take down, with a warning, messages mentioning all the rich people the user wants to eat (5+)\n\n" +
             "anti-caps [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down, with a warning, VERY LOUD PROTESTS\n\n" +
             "anti-invite [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect invites to the socialist party and *kindly* remove them\n\n" +
             "anti-link [true/enable / false/disable]\n" +
-            "  - When enabled, the FBI will dispose of all messages containing links to communist websites";
+            "  - When enabled, the FBI will dispose of all messages containing links to communist propaganda websites";
 
         [Command("help")]
         public async Task HelpAsync(params string[] args)

@@ -24,9 +24,14 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} messages leaked from Area 51.");
+
             List<Task> cmds = new List<Task>()
             {
-                Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} messages leaked from Area 51.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             };
             if (isEnable)
             {

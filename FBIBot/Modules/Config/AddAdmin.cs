@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
@@ -8,8 +9,8 @@ namespace FBIBot.Modules.Config
 {
     public class AddAdmin : ModuleBase<SocketCommandContext>
     {
-        [Command("add-admin")]
-        [Alias("addadmin")]
+        [Command("addadmin")]
+        [Alias("add-admin", "add-adminrole")]
         [RequireAdmin]
         public async Task AddAdminAsync(SocketRole role)
         {
@@ -23,24 +24,28 @@ namespace FBIBot.Modules.Config
             {
                 AddAdminRoleAsync(role)
             };
+            string description;
             if ((await AddMod.GetModRolesAsync(Context.Guild)).Contains(role))
             {
-                cmds.AddRange(new List<Task>()
-                {
-                    RemoveModRole.RemoveModAsync(role),
-                    Context.Channel.SendMessageAsync($"Members with the {role.Name} role have been promoted to local directors of the FBI.")
-                });
+                description = $"Members with the {role.Name} role have been promoted to local directors of the FBI.";
+                cmds.Add(RemoveModRole.RemoveModAsync(role));
             }
             else
             {
-                cmds.Add(Context.Channel.SendMessageAsync($"Members with the {role.Name} role are now local directors of the FBI."));
+                description = $"Members with the {role.Name} role are now local directors of the FBI.";
             }
+
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription(description);
+            cmds.Add(Context.Channel.SendMessageAsync("", false, embed.Build()));
 
             await Task.WhenAll(cmds);
         }
 
-        [Command("add-admin")]
-        [Alias("addadmin")]
+        [Command("addadmin")]
+        [Alias("add-admin", "add-adminrole")]
         [RequireAdmin]
         public async Task AddAdminAsync(string role)
         {

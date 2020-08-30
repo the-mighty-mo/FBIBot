@@ -24,9 +24,14 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
+            EmbedBuilder embed = new EmbedBuilder()
+                .WithColor(SecurityInfo.botColor)
+                .WithTitle("Federal Bureau of Investigation")
+                .WithDescription($"We are now {(isEnable ? "permitted to perform" : "prohibited from performing")} surveillance on server members.");
+
             List<Task> cmds = new List<Task>()
             {
-                Context.Channel.SendMessageAsync($"We are now {(isEnable ? "permitted to perform" : "prohibited from performing")} surveillance on server members.")
+                Context.Channel.SendMessageAsync("", false, embed.Build())
             };
             if (isEnable)
             {
