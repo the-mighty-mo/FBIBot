@@ -107,7 +107,7 @@ namespace FBIBot.Modules
             "  - When enabled, the FBI will dispose of all messages containing links to communist propaganda websites";
 
         [Command("help")]
-        public async Task HelpAsync(params string[] args)
+        public async Task HelpAsync(string param = null)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
@@ -129,55 +129,40 @@ namespace FBIBot.Modules
                         Context.Client.CurrentUser.Mention + "\n\u200b")
             };
 
-            bool jumpToHelp = false;
-
-            Help:
-            if (args.Length == 0 || jumpToHelp)
+            EmbedFieldBuilder field = new EmbedFieldBuilder()
+                .WithIsInline(true);
+            switch (param)
             {
-                fields.Add(new EmbedFieldBuilder()
-                    .WithIsInline(true)
-                    .WithName("`help` Parameters")
-                    .WithValue(help));
+            case "mod":
+                field.WithName("Moderator Commands - Page 1")
+                    .WithValue(mod);
+                break;
+            case "mod2":
+                field.WithName("Moderator Commands - Page 2")
+                    .WithValue(mod2);
+                break;
+            case "config":
+                field.WithName("Configuration Commands - Page 1")
+                    .WithValue(config);
+                break;
+            case "config2":
+                field.WithName("Configuration Commands - Page 2")
+                    .WithValue(config2);
+                break;
+            case "automod":
+                field.WithName("AutoMod Commands - Page 1")
+                    .WithValue(automod);
+                break;
+            case "automod2":
+                field.WithName("Automod Commands - Page 2")
+                    .WithValue(automod2);
+                break;
+            default:
+                field.WithName("`help` Parameters")
+                    .WithValue(help);
+                break;
             }
-            else
-            {
-                EmbedFieldBuilder field = new EmbedFieldBuilder()
-                    .WithIsInline(true);
-
-                switch (args[0])
-                {
-                case "mod":
-                    field.WithName("Moderator Commands - Page 1")
-                        .WithValue(mod);
-                    break;
-                case "mod2":
-                    field.WithName("Moderator Commands - Page 2")
-                        .WithValue(mod2);
-                    break;
-                case "config":
-                    field.WithName("Configuration Commands - Page 1")
-                        .WithValue(config);
-                    break;
-                case "config2":
-                    field.WithName("Configuration Commands - Page 2")
-                        .WithValue(config2);
-                    break;
-                case "automod":
-                    field.WithName("AutoMod Commands - Page 1")
-                        .WithValue(automod);
-                    break;
-                case "automod2":
-                    field.WithName("Automod Commands - Page 2")
-                        .WithValue(automod2);
-                    break;
-                default:
-                    jumpToHelp = true;
-                    goto Help;
-                }
-
-                fields.Add(field);
-            }
-
+            fields.Add(field);
             embed.WithFields(fields);
 
             await Context.Channel.SendMessageAsync("Need a little democracy, freedom, and justice?", false, embed.Build());
