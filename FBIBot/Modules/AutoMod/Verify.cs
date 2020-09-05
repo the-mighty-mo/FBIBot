@@ -37,50 +37,7 @@ namespace FBIBot.Modules.AutoMod
 
             if (response != captcha)
             {
-                int maxAttempts = 5;
-                int attempts = await GetAttemptsAsync(Context.User);
-                attempts++;
-
-                if (attempts >= maxAttempts)
-                {
-                    List<Task> commands = new List<Task>()
-                    {
-                        RemoveCaptchaAsync(Context.User),
-                        RemoveAttemptsAsync(Context.User),
-                        Context.User.SendMessageAsync("You have run out of attempts, communist spy.\n" +
-                            "If you would like to try again, please get a new captcha by typing `\\verify`.")
-                    };
-
-                    foreach (SocketGuild g in Context.User.MutualGuilds)
-                    {
-                        if (await Config.SetVerify.GetVerificationRoleAsync(g) == null)
-                        {
-                            continue;
-                        }
-                        SocketGuildUser user = g.GetUser(Context.User.Id);
-                        commands.Add(SendToCaptchaLog.SendToCaptchaLogAsync(SendToCaptchaLog.CaptchaType.OutOfAttempts, user, captcha, response, maxAttempts));
-                    }
-                    await Task.WhenAll(commands);
-                }
-                else
-                {
-                    List<Task> commands = new List<Task>()
-                    {
-                        SetAttemptsAsync(Context.User, attempts),
-                        Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.")
-                    };
-
-                    foreach (SocketGuild g in Context.User.MutualGuilds)
-                    {
-                        if (await Config.SetVerify.GetVerificationRoleAsync(g) == null)
-                        {
-                            continue;
-                        }
-                        SocketGuildUser user = g.GetUser(Context.User.Id);
-                        commands.Add(SendToCaptchaLog.SendToCaptchaLogAsync(SendToCaptchaLog.CaptchaType.Failed, user, captcha, response, attempts));
-                    }
-                    await Task.WhenAll(commands);
-                }
+                await BadAttemptAsync(captcha, response);
                 return;
             }
 
@@ -103,6 +60,54 @@ namespace FBIBot.Modules.AutoMod
                 cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, g.CurrentUser, user));
             }
             await Task.WhenAll(cmds);
+        }
+
+        async Task BadAttemptAsync(string captcha, string response)
+        {
+            const int maxAttempts = 5;
+            int attempts = await GetAttemptsAsync(Context.User);
+            attempts++;
+
+            if (attempts >= maxAttempts)
+            {
+                List<Task> commands = new List<Task>()
+                {
+                    RemoveCaptchaAsync(Context.User),
+                    RemoveAttemptsAsync(Context.User),
+                    Context.User.SendMessageAsync("You have run out of attempts, communist spy.\n" +
+                        "If you would like to try again, please get a new captcha by typing `\\verify`.")
+                };
+
+                foreach (SocketGuild g in Context.User.MutualGuilds)
+                {
+                    if (await Config.SetVerify.GetVerificationRoleAsync(g) == null)
+                    {
+                        continue;
+                    }
+                    SocketGuildUser user = g.GetUser(Context.User.Id);
+                    commands.Add(SendToCaptchaLog.SendToCaptchaLogAsync(SendToCaptchaLog.CaptchaType.OutOfAttempts, user, captcha, response, maxAttempts));
+                }
+                await Task.WhenAll(commands);
+            }
+            else
+            {
+                List<Task> commands = new List<Task>()
+                {
+                    SetAttemptsAsync(Context.User, attempts),
+                    Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.")
+                };
+
+                foreach (SocketGuild g in Context.User.MutualGuilds)
+                {
+                    if (await Config.SetVerify.GetVerificationRoleAsync(g) == null)
+                    {
+                        continue;
+                    }
+                    SocketGuildUser user = g.GetUser(Context.User.Id);
+                    commands.Add(SendToCaptchaLog.SendToCaptchaLogAsync(SendToCaptchaLog.CaptchaType.Failed, user, captcha, response, attempts));
+                }
+                await Task.WhenAll(commands);
+            }
         }
 
         async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.User);
