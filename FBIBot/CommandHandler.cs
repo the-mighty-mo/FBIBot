@@ -120,7 +120,7 @@ namespace FBIBot
                 AntiZalgo.GetAntiZalgoAsync(u.Guild)
             };
 
-            if (await isZalgo[0] && await isZalgo[1])
+            if ((await Task.WhenAll(isZalgo)).All(x => x))
             {
                 try
                 {
@@ -141,7 +141,7 @@ namespace FBIBot
                 AntiZalgo.GetAntiZalgoAsync(updated.Guild)
             };
 
-            if (await isZalgo[0] && await isZalgo[1])
+            if ((await Task.WhenAll(isZalgo)).All(x => x))
             {
                 try
                 {

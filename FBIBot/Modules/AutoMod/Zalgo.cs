@@ -49,9 +49,7 @@ namespace FBIBot.Modules.AutoMod
 
         public static async Task<string> RemoveZalgoAsync(string msg)
         {
-            System.Console.WriteLine("here");
             IEnumerable<string> msgList = await Task.Run(() => msg.Where(c => char.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).Select(c => c.ToString()));
-
             return string.Join("", msgList);
         }
     }
