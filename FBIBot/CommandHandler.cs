@@ -2,9 +2,11 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.AutoMod;
+using FBIBot.Modules.AutoMod.AutoSurveillance;
 using FBIBot.Modules.Config;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -229,27 +231,27 @@ namespace FBIBot
                 }
             }
 
-            if (await isZalgo[0] && await isZalgo[1])
+            if ((await Task.WhenAll(isZalgo)).All(x => x))
             {
                 await new Zalgo(Context).WarnAsync();
             }
-            else if (((await isSpam[0] && await isSpam[1]) || (await isSingleSpam[0] && await isSingleSpam[1])) && !isCommand)
+            else if (((await Task.WhenAll(isSpam)).All(x => x) || (await Task.WhenAll(isSingleSpam)).All(x => x)) && !isCommand)
             {
                 await new Spam(Context).WarnAsync();
             }
-            else if (await isMassMention[0] && await isMassMention[1])
+            else if ((await Task.WhenAll(isMassMention)).All(x => x))
             {
                 await new MassMention(Context).WarnAsync();
             }
-            else if (await isCaps[0] && await isCaps[1])
+            else if ((await Task.WhenAll(isCaps)).All(x => x))
             {
                 await new CAPS(Context).WARNASYNC();
             }
-            else if (await isInvite[0] && await isInvite[1])
+            else if ((await Task.WhenAll(isInvite)).All(x => x))
             {
                 await new Invite(Context).RemoveAsync();
             }
-            else if (await isLink[0] && await isLink[1])
+            else if ((await Task.WhenAll(isLink)).All(x => x))
             {
                 await new Link(Context).RemoveAsync();
             }
@@ -257,24 +259,18 @@ namespace FBIBot
 
         private static async Task<bool> AutoSurveillanceAsync(SocketCommandContext Context)
         {
-            bool ran = true;
-            Task<bool> isPedophile = Pedophile.IsPedophileAsync(Context);
-            Task<bool> isGoingToKillThePresident = KillThePresident.IsGoingToKillThePresidentAsync(Context);
+            Task<bool>[] shouldArrest =
+            {
+                Pedophile.IsPedophileAsync(Context),
+                KillThePresident.IsGoingToKillThePresidentAsync(Context)
+            };
 
-            if (await isPedophile)
+            if ((await Task.WhenAll(shouldArrest)).Contains(true))
             {
-                await new Pedophile(Context).ArrestAsync();
+                await new AutoSurveillanceArrest(Context).ArrestAsync();
+                return true;
             }
-            else if (await isGoingToKillThePresident)
-            {
-                await new KillThePresident(Context).ArrestAsync();
-            }
-            else
-            {
-                ran = false;
-            }
-
-            return ran;
+            return false;
         }
     }
 }

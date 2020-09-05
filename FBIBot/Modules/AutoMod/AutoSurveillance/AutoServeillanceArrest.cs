@@ -1,16 +1,15 @@
 ﻿using Discord;
 using Discord.Commands;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FBIBot.Modules.AutoMod
+namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
-    public class Pedophile
+    public class AutoSurveillanceArrest
     {
         readonly SocketCommandContext Context;
 
-        public Pedophile(SocketCommandContext context) => Context = context;
+        public AutoSurveillanceArrest(SocketCommandContext context) => Context = context;
 
         public async Task ArrestAsync()
         {
@@ -28,15 +27,6 @@ namespace FBIBot.Modules.AutoMod
                 Context.Channel.SendMessageAsync($"\\arrest {Context.User.Mention} 5"),
                 Context.User.SendMessageAsync(messages[Program.rng.Next(messages.Count)])
             );
-        }
-
-        public static async Task<bool> IsPedophileAsync(SocketCommandContext Context)
-        {
-            await Task.Yield();
-
-            string message = Context.Message.Content;
-            Regex regex = new Regex(@"\bI\s+(like|love)\s+(?!(no(?!\w+)|none\s*of))(\w*\s)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            return regex.IsMatch(message);
         }
     }
 }
