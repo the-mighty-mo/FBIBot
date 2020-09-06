@@ -13,13 +13,13 @@ namespace FBIBot.Modules.Mod
         [RequireModLog]
         public async Task ModifyReasonAsync(string id, [Remainder] string reason = null)
         {
-            if (!ulong.TryParse(id, out ulong ID) || ID >= await ModLogBase.GetNextModLogID(Context.Guild))
+            if (!ulong.TryParse(id, out ulong ID) || ID >= await ModLogManager.GetNextModLogID(Context.Guild))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
                 return;
             }
 
-            if (!await ModLogBase.SetReasonAsync(Context.Guild, ID, reason))
+            if (!await ModLogManager.SetReasonAsync(Context.Guild, ID, reason))
             {
                 await Context.Channel.SendMessageAsync("Our security team has informed us that the given Mod Log is not permitted to have a valid reason. Don't ask.");
                 return;

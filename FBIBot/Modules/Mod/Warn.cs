@@ -25,7 +25,7 @@ namespace FBIBot.Modules.Mod
         [RequireModLog]
         public async Task TempWarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length, [Remainder] string reason = null)
         {
-            ulong id = await ModLogBase.GetNextModLogID(Context.Guild);
+            ulong id = await ModLogManager.GetNextModLogID(Context.Guild);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 213, 31))

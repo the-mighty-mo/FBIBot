@@ -9,7 +9,7 @@ namespace FBIBot.Modules.Mod.ModLog
     {
         public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string timeout)
         {
-            ulong id = await ModLogBase.GetNextModLogID(invoker.Guild);
+            ulong id = await ModLogManager.GetNextModLogID(invoker.Guild);
             SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(invoker.Guild);
 
             if (channel == null)
@@ -45,7 +45,7 @@ namespace FBIBot.Modules.Mod.ModLog
             var msg = await channel.SendMessageAsync("", false, embed.Build());
             if (msg != null)
             {
-                await ModLogBase.SaveModLogAsync(msg, invoker.Guild, id);
+                await ModLogManager.SaveModLogAsync(msg, invoker.Guild, id);
             }
         }
     }

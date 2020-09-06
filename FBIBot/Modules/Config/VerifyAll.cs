@@ -26,7 +26,7 @@ namespace FBIBot.Modules.Config
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription("Please give us a minute or two to give out citizenship documents...");
 
-            ulong id = await ModLogBase.GetNextModLogID(Context.Guild);
+            ulong id = await ModLogManager.GetNextModLogID(Context.Guild);
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed1.Build()),

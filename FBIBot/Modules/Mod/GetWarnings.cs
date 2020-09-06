@@ -27,7 +27,7 @@ namespace FBIBot.Modules.Mod
             List<ulong> idsPastHour = new List<ulong>();
             foreach (ulong id in ids)
             {
-                IUserMessage msg = await ModLogBase.GetModLogAsync(Context.Guild, id);
+                IUserMessage msg = await ModLogManager.GetModLogAsync(Context.Guild, id);
                 TimeSpan timeSinceLog = Context.Message.Timestamp - msg.Timestamp;
                 if (timeSinceLog <= TimeSpan.FromDays(1))
                 {
