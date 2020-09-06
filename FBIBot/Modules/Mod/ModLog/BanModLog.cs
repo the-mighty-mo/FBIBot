@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using FBIBot.Modules.Config;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod.ModLog
@@ -12,43 +11,20 @@ namespace FBIBot.Modules.Mod.ModLog
 
         public static async Task SendToModLogAsync(SocketGuildUser invoker, ulong? target, string timeout, string reason)
         {
-            ulong id = await ModLogManager.GetNextModLogID(invoker.Guild);
-            SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(invoker.Guild);
-
-            if (channel == null)
-            {
-                return;
-            }
             bool isTime = double.TryParse(timeout, out double time);
-
-            EmbedBuilder embed = new EmbedBuilder()
-                .WithColor(new Color(130, 0, 0))
-                .WithTitle($"Federal Bureau of Investigation - Log {id}")
-                .WithCurrentTimestamp();
-
-            EmbedFieldBuilder command = new EmbedFieldBuilder()
-                .WithIsInline(false)
-                .WithName($"Ban User{(isTime ? $" for {time} {(time == 1 ? "day" : "days")}" : "")}")
-                .WithValue($"<@{target}>");
-            embed.AddField(command);
-
-            EmbedFieldBuilder invoked = new EmbedFieldBuilder()
-                .WithIsInline(false)
-                .WithName("Invoked by")
-                .WithValue(invoker.Mention);
-            embed.AddField(invoked);
-
-            EmbedFieldBuilder field = new EmbedFieldBuilder()
-                .WithIsInline(false)
-                .WithName("Reason")
-                .WithValue(reason ?? "(none given)");
-            embed.AddField(field);
-
-            var msg = await channel.SendMessageAsync("", false, embed.Build());
-            if (msg != null)
-            {
-                await ModLogManager.SaveModLogAsync(msg, invoker.Guild, id);
-            }
+            await ModLogBase.SendToModLogAsync(
+                new ModLogBase.ModLogInfo(
+                    new ModLogBase.ModLogInfo.RequiredInfo(
+                        invoker,
+                        new Color(130, 0, 0),
+                        $"Ban User{(isTime ? $" for {time} {(time == 1 ? "day" : "days")}" : "")}",
+                        $"<@{target}>"
+                    ),
+                    new ModLogBase.ModLogInfo.ReasonInfo(
+                        reason
+                    )
+                )
+            );
         }
     }
 }

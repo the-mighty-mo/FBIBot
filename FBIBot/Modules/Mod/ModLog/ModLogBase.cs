@@ -7,9 +7,9 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class ModLogBase
     {
-        public struct ModLogInfo
+        public class ModLogInfo
         {
-            public struct RequiredInfo
+            public class RequiredInfo
             {
                 public readonly SocketGuildUser invoker;
                 public readonly Color color;
@@ -25,39 +25,34 @@ namespace FBIBot.Modules.Mod.ModLog
                 }
             }
 
-            public struct OptionalInfo
+            public class ReasonInfo
             {
                 public readonly string reason;
-                public readonly string timeout;
 
-                public OptionalInfo(string reason = null, string timeout = null)
+                public ReasonInfo(string reason = null)
                 {
                     this.reason = reason;
-                    this.timeout = timeout;
                 }
             }
 
-            public readonly SocketGuildUser Invoker { get; }
-            public readonly Color Color { get; }
-            public readonly string CommandName { get; }
-            public readonly string CommandValue { get; }
+            public SocketGuildUser Invoker { get; }
+            public Color Color { get; }
+            public string CommandName { get; }
+            public string CommandValue { get; }
 
-            public readonly bool HasReasonField { get; }
+            public bool HasReasonField { get; }
 
-            public readonly string Reason { get; }
-            public readonly string Timeout { get; }
+            public string Reason { get; }
 
-            public ModLogInfo(RequiredInfo info, bool hasReasonField = false, OptionalInfo optional = default)
+            public ModLogInfo(RequiredInfo info, ReasonInfo reasonInfo = null)
             {
                 Invoker = info.invoker;
                 Color = info.color;
                 CommandName = info.commandName;
                 CommandValue = info.commandValue;
 
-                HasReasonField = hasReasonField;
-
-                Reason = optional.reason;
-                Timeout = optional.timeout;
+                HasReasonField = reasonInfo != null;
+                Reason = reasonInfo?.reason;
             }
         }
 
