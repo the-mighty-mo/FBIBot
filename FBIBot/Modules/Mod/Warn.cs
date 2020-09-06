@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace FBIBot.Modules.Mod
         [RequireModLog]
         public async Task TempWarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length, [Remainder] string reason = null)
         {
-            ulong id = await SendToModLog.GetNextModLogID(Context.Guild);
+            ulong id = await ModLogBase.GetNextModLogID(Context.Guild);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 213, 31))
@@ -48,7 +49,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Warn, Context.User as SocketGuildUser, user, length, reason),
+                WarnModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, length, reason),
                 AddWarningAsync(user, id)
             );
 
@@ -63,7 +64,7 @@ namespace FBIBot.Modules.Mod
 
                 await Task.WhenAll
                 (
-                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarn, Context.Guild.CurrentUser, user, id.ToString()),
+                    RemoveWarningModLog.SendToModLogAsync(Context.Guild.CurrentUser, user, id.ToString()),
                     RemoveWarning.RemoveWarningAsync(user, id)
                 );
             }

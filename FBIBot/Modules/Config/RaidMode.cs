@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace FBIBot.Modules.Config
                 (
                     Context.Guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High),
                     Context.Channel.SendMessageAsync("", false, embed2.Build()),
-                    Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.RaidMode, Context.User as SocketGuildUser, null, "Enabled")
+                    RaidModeModLog.SendToModLogAsync(Context.User as SocketGuildUser, true)
                 );
                 return;
             }
@@ -48,7 +49,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.RaidMode, Context.User as SocketGuildUser, null, "Disabled")
+                RaidModeModLog.SendToModLogAsync(Context.User as SocketGuildUser, false)
             );
             await Task.WhenAll
             (

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,10 +54,10 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Mute, Context.User as SocketGuildUser, user, timeout, reason)
+                MuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
             );
 
-            if (timeout != null && isTimeout)
+            if (isTimeout)
             {
                 await Task.Delay((int)(minutes * 60 * 1000));
 
@@ -69,7 +70,7 @@ namespace FBIBot.Modules.Mod
                 {
                     user.RemoveRoleAsync(role),
                     Unmute.RemoveUserRolesAsync(user),
-                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.Guild.CurrentUser, user)
+                    UnmuteModLog.SendToModLogAsync(Context.Guild.CurrentUser, user)
                 };
                 if (modifyRoles)
                 {

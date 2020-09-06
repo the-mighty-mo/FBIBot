@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace FBIBot.Modules.Mod
             List<Task> cmds = new List<Task>()
             {
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unmute, Context.User as SocketGuildUser, user)
+                UnmuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)
             {

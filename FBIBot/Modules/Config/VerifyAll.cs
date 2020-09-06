@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using System.Collections.Generic;
+using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Config
@@ -26,11 +26,11 @@ namespace FBIBot.Modules.Config
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription("Please give us a minute or two to give out citizenship documents...");
 
-            ulong id = await Mod.SendToModLog.GetNextModLogID(Context.Guild);
+            ulong id = await ModLogBase.GetNextModLogID(Context.Guild);
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed1.Build()),
-                Mod.SendToModLog.SendToModLogAsync(Mod.SendToModLog.LogType.VerifyAll, Context.User as SocketGuildUser, null)
+                VerifyAllModLog.SendToModLogAsync(Context.User as SocketGuildUser)
             );
 
             foreach (SocketGuildUser user in Context.Guild.Users)
@@ -49,7 +49,7 @@ namespace FBIBot.Modules.Config
                         (
                             user.RemoveRoleAsync(role),
                             Context.Channel.SendMessageAsync("", false, embed2.Build()),
-                            Mod.SendToModLog.SetStateAsync(Context.Guild, id, "Canceled (change in verification role)", Mod.SendToModLog.LogType.VerifyAll)
+                            VerifyAllModLog.SetStateAsync(Context.Guild, id, "Canceled (change in verification role)")
                         );
                         return;
                     }
@@ -64,7 +64,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                Mod.SendToModLog.SetStateAsync(Context.Guild, id, "Completed", Mod.SendToModLog.LogType.VerifyAll)
+                VerifyAllModLog.SetStateAsync(Context.Guild, id, "Completed")
             );
         }
     }

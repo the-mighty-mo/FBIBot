@@ -1,8 +1,9 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,12 +46,13 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Arrest, Context.User as SocketGuildUser, user, timeout)
+                ArrestModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout)
             );
 
-            if (timeout != null && isTimeout)
+            if (isTimeout)
             {
                 await Task.Delay((int)(minutes * 60 * 1000));
+                role = Context.Guild.GetRole(role.Id);
 
                 if (!user.Roles.Contains(role))
                 {
@@ -74,7 +76,7 @@ namespace FBIBot.Modules.Mod
                         Free.RemovePrisonerRoleAsync(Context.Guild)
                     }
                     : new List<Task>();
-                cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.Guild.CurrentUser as SocketGuildUser, user));
+                cmds.Add(FreeModLog.SendToModLogAsync(Context.Guild.CurrentUser, user));
 
                 await Task.WhenAll(cmds);
             }

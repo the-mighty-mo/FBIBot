@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -26,7 +27,7 @@ namespace FBIBot.Modules.Mod
             (
                 user.KickAsync(reason),
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Kick, Context.User as SocketGuildUser, user, null, reason)
+                KickModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, reason)
             );
         }
 

@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.AutoMod;
 using FBIBot.Modules.Mod;
+using FBIBot.Modules.Mod.ModLog;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace FBIBot.Modules.Config
                 Verify.RemoveVerifiedAsync(user),
                 Verify.SendCaptchaAsync(user),
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unverify, Context.User as SocketGuildUser, user, null, reason)
+                UnverifyModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, reason)
             );
         }
 

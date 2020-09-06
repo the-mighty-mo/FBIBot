@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
 
@@ -36,7 +37,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.RemoveWarns, Context.User as SocketGuildUser, user, count),
+                RemoveWarningsModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, count),
                 RemoveWarningsAsync(user, count)
             );
         }

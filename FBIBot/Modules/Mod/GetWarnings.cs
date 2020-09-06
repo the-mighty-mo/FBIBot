@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace FBIBot.Modules.Mod
             List<ulong> idsPastHour = new List<ulong>();
             foreach (ulong id in ids)
             {
-                IUserMessage msg = await SendToModLog.GetModLogAsync(Context.Guild, id);
+                IUserMessage msg = await ModLogBase.GetModLogAsync(Context.Guild, id);
                 TimeSpan timeSinceLog = Context.Message.Timestamp - msg.Timestamp;
                 if (timeSinceLog <= TimeSpan.FromDays(1))
                 {

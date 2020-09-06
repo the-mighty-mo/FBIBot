@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace FBIBot.Modules.Mod
             cmds.AddRange(new List<Task>()
             {
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, user, null, reason)
+                BanModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, null, reason)
             });
             await Task.WhenAll(cmds);
         }
@@ -75,7 +76,7 @@ namespace FBIBot.Modules.Mod
                 cmds.AddRange(new List<Task>()
                 {
                     Context.Channel.SendMessageAsync("", false, embed.Build()),
-                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, null, reason)
+                    BanModLog.SendToModLogAsync(Context.User as SocketGuildUser, userID, null, reason)
                 });
                 await Task.WhenAll(cmds);
 

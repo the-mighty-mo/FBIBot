@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -41,7 +42,7 @@ namespace FBIBot.Modules.Mod
             cmds.AddRange(new List<Task>()
             {
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, user, length, reason)
+                BanModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, length, reason)
             });
             await Task.WhenAll(cmds);
 
@@ -49,7 +50,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Guild.RemoveBanAsync(user),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.Guild.CurrentUser, user)
+                UnbanModLog.SendToModLogAsync(Context.Guild.CurrentUser, user)
             );
         }
 
@@ -91,7 +92,7 @@ namespace FBIBot.Modules.Mod
                 cmds.AddRange(new List<Task>()
                 {
                     Context.Channel.SendMessageAsync("", false, embed.Build()),
-                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Ban, Context.User as SocketGuildUser, userID, length, reason)
+                    BanModLog.SendToModLogAsync(Context.User as SocketGuildUser, userID, length, reason)
                 });
                 await Task.WhenAll(cmds);
 
@@ -99,7 +100,7 @@ namespace FBIBot.Modules.Mod
                 await Task.WhenAll
                 (
                     Context.Guild.RemoveBanAsync(userID),
-                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.Guild.CurrentUser, userID)
+                    UnbanModLog.SendToModLogAsync(Context.Guild.CurrentUser, userID)
                 );
                 return;
             }

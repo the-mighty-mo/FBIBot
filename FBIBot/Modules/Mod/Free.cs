@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace FBIBot.Modules.Mod
             {
                 RemovePrisonerAsync(user),
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Free, Context.User as SocketGuildUser, user)
+                FreeModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)
             {

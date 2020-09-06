@@ -3,10 +3,10 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod;
+using FBIBot.Modules.Mod.ModLog;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Image = System.Drawing.Image;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
@@ -57,7 +57,7 @@ namespace FBIBot.Modules.AutoMod
                 }
                 SocketGuildUser user = g.GetUser(Context.User.Id);
                 cmds.Add(SendToCaptchaLog.SendToCaptchaLogAsync(SendToCaptchaLog.CaptchaType.Completed, user, captcha, response));
-                cmds.Add(SendToModLog.SendToModLogAsync(SendToModLog.LogType.Verify, g.CurrentUser, user));
+                cmds.Add(VerifyModLog.SendToModLogAsync(g.CurrentUser, user));
             }
             await Task.WhenAll(cmds);
         }

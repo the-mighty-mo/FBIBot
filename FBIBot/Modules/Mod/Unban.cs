@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
@@ -21,7 +22,7 @@ namespace FBIBot.Modules.Mod
             (
                 Context.Guild.RemoveBanAsync(user),
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
-                SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User as SocketGuildUser, user)
+                UnbanModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             );
         }
 
@@ -48,7 +49,7 @@ namespace FBIBot.Modules.Mod
                 (
                     Context.Guild.RemoveBanAsync(userID),
                     Context.Channel.SendMessageAsync($"", false, embed.Build()),
-                    SendToModLog.SendToModLogAsync(SendToModLog.LogType.Unban, Context.User as SocketGuildUser, userID)
+                    UnbanModLog.SendToModLogAsync(Context.User as SocketGuildUser, userID)
                 );
                 return;
             }
