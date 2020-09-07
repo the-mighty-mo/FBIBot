@@ -3,7 +3,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod;
 using FBIBot.Modules.Mod.ModLog;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +16,7 @@ namespace FBIBot.Modules.Config
         public async Task ClearModLogAsync(string clear = "false")
         {
             bool isClear = clear.ToLower() == "true";
-            if (await ModLogManager.GetNextModLogID(Context.Guild) == 1 && !isClear)
+            if (await ModLogBase.GetNextModLogID(Context.Guild) == 1 && !isClear)
             {
                 await Context.Channel.SendMessageAsync("Our security team has informed us that there are no moderation logs.");
                 return;
@@ -25,7 +24,7 @@ namespace FBIBot.Modules.Config
 
             Task[] cmds =
             {
-                ModLogManager.RemoveModLogsAsync(Context.Guild),
+                ModLogBase.RemoveModLogsAsync(Context.Guild),
                 RemoveWarnings.RemoveAllWarningsAsync(Context.Guild)
             };
 

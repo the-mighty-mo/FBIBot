@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using FBIBot.Modules.Config;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod.ModLog
