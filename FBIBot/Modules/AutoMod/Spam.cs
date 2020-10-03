@@ -34,34 +34,33 @@ namespace FBIBot.Modules.AutoMod
             int i = 0;
             int j = 0;
             string message = Context.Message.Content;
+            string secondary = null;
             foreach (IMessage msg in userMsgs)
             {
-                if (userMsgs[0].Timestamp - msg.Timestamp > TimeSpan.FromMinutes(2))
+                if (Context.Message.Timestamp - msg.Timestamp > TimeSpan.FromMinutes(2))
                 {
                     break;
                 }
                 else
                 {
-                    if (i >= 4 || (i >= 3 && j == 1) || (i >= 2 && j >= 3)) // Five duplicates OR two groups of three duplicates OR 3+ groups of two duplicates
+                    if (msg.Content == message)
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        secondary ??= msg.Content;
+                        if (msg.Content == secondary)
+                        {
+                            j++;
+                        }
+                    }
+
+                    if (i + j >= 5 && i != 1 && j != 1) // Spamming one message or alternating between two messages for five or more messages
                     {
                         isSpam = true;
                         break;
                     }
-                    else if (msg.Content != message)
-                    {
-                        if (i < 2)
-                        {
-                            break;
-                        }
-                        else if (i == 2)
-                        {
-                            j++; // Checking for three groups of two duplicates, else two groups of three duplicates
-                        }
-                        message = msg.Content;
-                        j++;
-                        i = 0;
-                    }
-                    i++;
                 }
             }
 
