@@ -76,7 +76,7 @@ namespace FBIBot.Modules.AutoMod
             {
                 await Task.Yield();
 
-                Regex regex = new Regex(@"(\W|^)(\S+)(\s*\2){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                Regex regex = new Regex(@"(\W|^)(.+)(\s*\2){2,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 MatchCollection matches = regex.Matches(message);
                 IEnumerable<Match> m = matches.Cast<Match>();
 
