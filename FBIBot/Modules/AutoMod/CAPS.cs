@@ -15,7 +15,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.WhenAll
             (
                 CONTEXT.Message.DeleteAsync(),
-                CONTEXT.Channel.SendMessageAsync($"\\warn {CONTEXT.User.Mention} 0.5 BIG CAPS\n" +
+                CONTEXT.Channel.SendMessageAsync($"\\tempwarn {CONTEXT.User.Mention} 0.5 BIG CAPS\n" +
                     $"Message: {CONTEXT.Message.Content}")
             );
         }

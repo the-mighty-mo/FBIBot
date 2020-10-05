@@ -19,7 +19,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
-                Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 Big spam\n" +
+                Context.Channel.SendMessageAsync($"\\tempwarn {Context.User.Mention} 0.5 Big spam\n" +
                     $"Message: {Context.Message.Content}")
             );
         }
@@ -86,9 +86,8 @@ namespace FBIBot.Modules.AutoMod
 
                 if (firstIndex != lastIndex)
                 {
-                    string msg = message.Substring(firstIndex, lastIndex - firstIndex);
-                    isSpam = (double)duplicate / msg.Length >= 0.80
-                        && (double)msg.Length / message.Replace(" ", string.Empty).Length > 0.4;
+                    isSpam = (double)duplicate / (lastIndex - firstIndex) >= 0.80 // length of the duplicates is at least 80% of the segment of the message containing them
+                        && (double)duplicate / message.Replace(" ", string.Empty).Length >= 0.67; // length of the duplicates is at least 67% of the message, excluding spaces
                 }
             }
 

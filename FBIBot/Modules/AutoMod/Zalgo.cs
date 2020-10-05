@@ -17,7 +17,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
-                Context.Channel.SendMessageAsync($"\\warn {Context.User.Mention} 0.5 HE COMES (Zalgo)\n")
+                Context.Channel.SendMessageAsync($"\\tempwarn {Context.User.Mention} 0.5 HE COMES (Zalgo)\n")
             );
         }
 
