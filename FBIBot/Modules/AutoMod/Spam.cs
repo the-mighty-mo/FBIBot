@@ -31,10 +31,11 @@ namespace FBIBot.Modules.AutoMod
             var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
             List<IMessage> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(10).ToList();
 
-            int i = 0;
-            int j = 0;
             string message = Context.Message.Content;
-            string secondary = null;
+            Dictionary<string, int> messages = new Dictionary<string, int>
+            {
+                [message] = 0
+            };
             foreach (IMessage msg in userMsgs)
             {
                 if (Context.Message.Timestamp - msg.Timestamp > TimeSpan.FromMinutes(2))
@@ -43,20 +44,13 @@ namespace FBIBot.Modules.AutoMod
                 }
                 else
                 {
-                    if (msg.Content == message)
+                    if (!messages.TryAdd(msg.Content, 1))
                     {
-                        i++;
-                    }
-                    else
-                    {
-                        secondary ??= msg.Content;
-                        if (msg.Content == secondary)
-                        {
-                            j++;
-                        }
+                        messages[msg.Content]++;
                     }
 
-                    if (i + j >= 5 && i != 1 && j != 1) // Spamming one message or alternating between two messages for five or more messages
+                    int totalDuplicates = messages.Where(x => x.Value != 1).Sum(x => x.Value); // total number of duplicate messages
+                    if (messages[message] > 1 && totalDuplicates >= 5)
                     {
                         isSpam = true;
                         break;
@@ -87,7 +81,7 @@ namespace FBIBot.Modules.AutoMod
                 if (firstIndex != lastIndex)
                 {
                     isSpam = (double)duplicate / (lastIndex - firstIndex) >= 0.80 // length of the duplicates is at least 80% of the segment of the message containing them
-                        && (double)duplicate / message.Replace(" ", string.Empty).Length >= 0.67; // length of the duplicates is at least 67% of the message, excluding spaces
+                        && (double)duplicate / message.Replace(" ", string.Empty).Length >= 0.60; // length of the duplicates is at least 60% of the message, excluding spaces
                 }
             }
 
