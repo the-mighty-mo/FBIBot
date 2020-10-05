@@ -50,7 +50,7 @@ namespace FBIBot.Modules.AutoMod
                     }
 
                     int totalDuplicates = messages.Where(x => x.Value != 1).Sum(x => x.Value); // total number of duplicate messages
-                    if (messages[message] > 3 || (messages[message] > 1 && totalDuplicates >= 5))
+                    if (messages[message] >= 4 || (messages[message] > 1 && totalDuplicates >= 5))
                     {
                         isSpam = true;
                         break;
