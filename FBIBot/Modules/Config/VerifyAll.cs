@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
@@ -14,7 +15,7 @@ namespace FBIBot.Modules.Config
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task VerifyAllAsync()
         {
-            SocketRole role = await SetVerify.GetVerificationRoleAsync(Context.Guild);
+            SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             if (role == null)
             {
                 await Context.Channel.SendMessageAsync("Our intelligence team has informed us that there is no role to give to verified citizens.");
@@ -26,7 +27,7 @@ namespace FBIBot.Modules.Config
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription("Please give us a minute or two to give out citizenship documents...");
 
-            ulong id = await ModLogBase.GetNextModLogID(Context.Guild);
+            ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync("", false, embed1.Build()),
@@ -38,7 +39,7 @@ namespace FBIBot.Modules.Config
                 if (!user.IsBot)
                 {
                     await user.AddRoleAsync(role);
-                    if (await SetVerify.GetVerificationRoleAsync(Context.Guild) != role)
+                    if (await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild) != role)
                     {
                         EmbedBuilder embed2 = new EmbedBuilder()
                             .WithColor(new Color(206, 15, 65))

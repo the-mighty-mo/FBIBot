@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod.ModLog
 {
@@ -34,7 +35,7 @@ namespace FBIBot.Modules.Mod.ModLog
 
         public static async Task<bool> SetStateAsync(StateInfo info)
         {
-            IUserMessage msg = await ModLogBase.GetModLogAsync(info.Guild, info.LogId);
+            IUserMessage msg = await modLogsDatabase.ModLogs.GetModLogAsync(info.Guild, info.LogId);
             if (msg == null || msg.Embeds.Count == 0)
             {
                 return false;

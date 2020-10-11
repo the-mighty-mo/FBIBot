@@ -1,7 +1,7 @@
 ﻿using Discord.WebSocket;
-using FBIBot.Modules.Config;
 using System.Linq;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot
 {
@@ -10,14 +10,14 @@ namespace FBIBot
         public static async Task<bool> IsAdmin(SocketGuildUser user)
         {
             bool isValidAdmin = user == user.Guild.Owner || user == user.Guild.CurrentUser ||
-                (await AddAdmin.GetAdminRolesAsync(user.Guild)).Select(r => user.Roles.Contains(r)).Contains(true);
+                (await modRolesDatabase.Admins.GetAdminRolesAsync(user.Guild)).Select(r => user.Roles.Contains(r)).Contains(true);
             return isValidAdmin;
         }
 
         public static async Task<bool> IsMod(SocketGuildUser user)
         {
             bool isValidMod = await IsAdmin(user) ||
-                (await AddMod.GetModRolesAsync(user.Guild)).Select(r => user.Roles.Contains(r)).Contains(true);
+                (await modRolesDatabase.Mods.GetModRolesAsync(user.Guild)).Select(r => user.Roles.Contains(r)).Contains(true);
             return isValidMod;
         }
 

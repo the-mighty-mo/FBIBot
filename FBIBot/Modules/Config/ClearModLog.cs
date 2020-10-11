@@ -1,10 +1,9 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using FBIBot.Modules.Mod;
-using FBIBot.Modules.Mod.ModLog;
 using System.Linq;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
@@ -16,7 +15,7 @@ namespace FBIBot.Modules.Config
         public async Task ClearModLogAsync(string clear = "false")
         {
             bool isClear = clear.ToLower() == "true";
-            if (await ModLogBase.GetNextModLogID(Context.Guild) == 1 && !isClear)
+            if (await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild) == 1 && !isClear)
             {
                 await Context.Channel.SendMessageAsync("Our security team has informed us that there are no moderation logs.");
                 return;
@@ -24,13 +23,13 @@ namespace FBIBot.Modules.Config
 
             Task[] cmds =
             {
-                ModLogBase.RemoveModLogsAsync(Context.Guild),
-                RemoveWarnings.RemoveAllWarningsAsync(Context.Guild)
+                modLogsDatabase.ModLogs.RemoveModLogsAsync(Context.Guild),
+                modLogsDatabase.Warnings.RemoveAllWarningsAsync(Context.Guild)
             };
 
             if (isClear)
             {
-                SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
+                SocketTextChannel channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
                 if (channel != null)
                 {
                     var msgs = (await channel.GetMessagesAsync(int.MaxValue).FlattenAsync()).Where(x => x.Author == Context.Guild.GetUser(Context.Client.CurrentUser.Id));

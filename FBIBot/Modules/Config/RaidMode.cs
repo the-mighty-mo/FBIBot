@@ -2,9 +2,9 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
-using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
@@ -16,12 +16,12 @@ namespace FBIBot.Modules.Config
         [RequireBotPermission(GuildPermission.ManageGuild)]
         public async Task RaidModeAsync()
         {
-            VerificationLevel? level = await GetVerificationLevelAsync(Context.Guild);
+            VerificationLevel? level = await raidModeDatabase.RaidMode.GetVerificationLevelAsync(Context.Guild);
             bool isDisabled = level == null;
 
             if (isDisabled)
             {
-                await SaveVerificationLevelAsync(Context.Guild);
+                await raidModeDatabase.RaidMode.SaveVerificationLevelAsync(Context.Guild);
 
                 EmbedBuilder embed2 = new EmbedBuilder()
                     .WithColor(new Color(206, 15, 65))
@@ -39,7 +39,7 @@ namespace FBIBot.Modules.Config
             Task[] cmds =
             {
                 Context.Guild.ModifyAsync(x => x.VerificationLevel = (VerificationLevel)level!),
-                RemoveVerificationLevelAsync(Context.Guild)
+                raidModeDatabase.RaidMode.RemoveVerificationLevelAsync(Context.Guild)
             };
 
             EmbedBuilder embed = new EmbedBuilder()
@@ -61,8 +61,8 @@ namespace FBIBot.Modules.Config
 
         async Task SendUsersAsync()
         {
-            List<string> blockedUsers = await GetBlockedUsersAsync(Context.Guild);
-            SocketTextChannel channel = await SetModLog.GetModLogChannelAsync(Context.Guild);
+            List<string> blockedUsers = await raidModeDatabase.UsersBlocked.GetBlockedUsersAsync(Context.Guild);
+            SocketTextChannel channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
             List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>();
             int messages = 1;
 
@@ -133,98 +133,7 @@ namespace FBIBot.Modules.Config
                 await channel.SendMessageAsync("", false, embed.Build());
             }
 
-            await RemoveBlockedUsersAsync(Context.Guild);
-        }
-
-        public static async Task<VerificationLevel?> GetVerificationLevelAsync(SocketGuild g)
-        {
-            VerificationLevel? level = null;
-
-            string getLevel = "SELECT level FROM RaidMode WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getLevel, Program.cnRaidMode))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
-                {
-                    if (int.TryParse(reader["level"].ToString(), out int levelInt))
-                    {
-                        level = (VerificationLevel)levelInt;
-                    }
-                }
-                reader.Close();
-            }
-
-            return level;
-        }
-
-        public static async Task SaveVerificationLevelAsync(SocketGuild g)
-        {
-            string update = "UPDATE RaidMode SET level = @level WHERE guild_id = @guild_id;";
-            string insert = "INSERT INTO RaidMode (guild_id, level) SELECT @guild_id, @level WHERE (SELECT Changes() = 0);";
-
-            using (SqliteCommand cmd = new SqliteCommand(update + insert, Program.cnRaidMode))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                cmd.Parameters.AddWithValue("@level", ((int)g.VerificationLevel).ToString());
-
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        public static async Task RemoveVerificationLevelAsync(SocketGuild g)
-        {
-            string delete = "DELETE FROM RaidMode WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnRaidMode))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        public static async Task AddBlockedUserAsync(SocketGuildUser u)
-        {
-            string insert = "INSERT INTO UsersBlocked (guild_id, user_id) SELECT @guild_id, @user_id\n" +
-                "WHERE NOT EXISTS (SELECT 1 FROM UsersBlocked WHERE guild_id = @guild_id AND user_id = @user_id);";
-
-            using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnRaidMode))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        public static async Task<List<string>> GetBlockedUsersAsync(SocketGuild g)
-        {
-            List<string> blockedUsers = new List<string>();
-
-            string getBlocked = "SELECT user_id FROM UsersBlocked WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getBlocked, Program.cnRaidMode))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    blockedUsers.Add((string)reader["user_id"]);
-                }
-                reader.Close();
-            }
-
-            return blockedUsers;
-        }
-
-        public static async Task RemoveBlockedUsersAsync(SocketGuild g)
-        {
-            string delete = "DELETE FROM UsersBlocked WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnRaidMode))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
+            await raidModeDatabase.UsersBlocked.RemoveBlockedUsersAsync(Context.Guild);
         }
     }
 }

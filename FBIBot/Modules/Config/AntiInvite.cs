@@ -1,9 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
@@ -16,7 +15,7 @@ namespace FBIBot.Modules.Config
         public async Task AntiInviteAsync(string enable)
         {
             bool isEnable = enable == "true" || enable == "enable";
-            bool isEnabled = await GetAntiInviteAsync(Context.Guild);
+            bool isEnabled = await configDatabase.AntiInvite.GetAntiInviteAsync(Context.Guild);
 
             if (isEnable == isEnabled)
             {
@@ -35,53 +34,14 @@ namespace FBIBot.Modules.Config
             };
             if (isEnable)
             {
-                cmds.Add(SetAntiInviteAsync(Context.Guild));
+                cmds.Add(configDatabase.AntiInvite.SetAntiInviteAsync(Context.Guild));
             }
             else
             {
-                cmds.Add(RemoveAntiInviteAsync(Context.Guild));
+                cmds.Add(configDatabase.AntiInvite.RemoveAntiInviteAsync(Context.Guild));
             }
 
             await Task.WhenAll(cmds);
-        }
-
-        public static async Task<bool> GetAntiInviteAsync(SocketGuild g)
-        {
-            bool isAntiInvite = false;
-
-            string getInvite = "SELECT guild_id FROM AntiInvite WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getInvite, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isAntiInvite = await reader.ReadAsync();
-                reader.Close();
-            }
-
-            return isAntiInvite;
-        }
-
-        public static async Task SetAntiInviteAsync(SocketGuild g)
-        {
-            string insert = "INSERT INTO AntiInvite (guild_id) SELECT @guild_id\n" +
-                "WHERE NOT EXISTS (SELECT 1 FROM AntiInvite WHERE guild_id = @guild_id);";
-
-            using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        public static async Task RemoveAntiInviteAsync(SocketGuild g)
-        {
-            string delete = "DELETE FROM AntiInvite WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
     }
 }

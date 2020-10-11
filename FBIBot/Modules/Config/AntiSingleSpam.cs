@@ -1,9 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
@@ -16,7 +15,7 @@ namespace FBIBot.Modules.Config
         public async Task AntiSingleSpamAsync(string enable)
         {
             bool isEnable = enable == "true" || enable == "enable";
-            bool isEnabled = await GetAntiSingleSpamAsync(Context.Guild);
+            bool isEnabled = await configDatabase.AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild);
 
             if (isEnable == isEnabled)
             {
@@ -35,53 +34,14 @@ namespace FBIBot.Modules.Config
             };
             if (isEnable)
             {
-                cmds.Add(SetAntiSingleSpamAsync(Context.Guild));
+                cmds.Add(configDatabase.AntiSingleSpam.SetAntiSingleSpamAsync(Context.Guild));
             }
             else
             {
-                cmds.Add(RemoveAntiSingleSpamAsync(Context.Guild));
+                cmds.Add(configDatabase.AntiSingleSpam.RemoveAntiSingleSpamAsync(Context.Guild));
             }
 
             await Task.WhenAll(cmds);
-        }
-
-        public static async Task<bool> GetAntiSingleSpamAsync(SocketGuild g)
-        {
-            bool isAntiSingleSpam = false;
-
-            string getSingleSpam = "SELECT guild_id FROM AntiSingleSpam WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getSingleSpam, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isAntiSingleSpam = await reader.ReadAsync();
-                reader.Close();
-            }
-
-            return isAntiSingleSpam;
-        }
-
-        public static async Task SetAntiSingleSpamAsync(SocketGuild g)
-        {
-            string insert = "INSERT INTO AntiSingleSpam (guild_id) SELECT @guild_id\n" +
-                "WHERE NOT EXISTS (SELECT 1 FROM AntiSingleSpam WHERE guild_id = @guild_id);";
-
-            using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        public static async Task RemoveAntiSingleSpamAsync(SocketGuild g)
-        {
-            string delete = "DELETE FROM AntiSingleSpam WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
     }
 }

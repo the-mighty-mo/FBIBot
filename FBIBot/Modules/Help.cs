@@ -2,6 +2,7 @@
 using Discord.Commands;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules
 {
@@ -117,7 +118,7 @@ namespace FBIBot.Modules
             string prefix = CommandHandler.prefix;
             if (Context.Guild != null)
             {
-                prefix = await Config.SetPrefix.GetPrefixAsync(Context.Guild);
+                prefix = await configDatabase.Prefixes.GetPrefixAsync(Context.Guild);
             }
             List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>
             {

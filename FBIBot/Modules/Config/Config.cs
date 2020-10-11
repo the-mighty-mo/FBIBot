@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
@@ -12,23 +13,23 @@ namespace FBIBot.Modules.Config
         [RequireAdmin]
         public async Task ConfigAsync()
         {
-            Task<string> prefix = SetPrefix.GetPrefixAsync(Context.Guild);
-            Task<SocketRole> verify = SetVerify.GetVerificationRoleAsync(Context.Guild);
-            Task<SocketRole> mute = SetMute.GetMuteRole(Context.Guild);
-            Task<bool> modifyMuted = ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);
-            Task<List<SocketRole>> modRoles = AddMod.GetModRolesAsync(Context.Guild);
-            Task<List<SocketRole>> adminRoles = AddAdmin.GetAdminRolesAsync(Context.Guild);
-            Task<SocketTextChannel> modlog = SetModLog.GetModLogChannelAsync(Context.Guild);
-            Task<SocketTextChannel> captchalog = SetCaptchaLog.GetCaptchaLogChannelAsync(Context.Guild);
-            Task<VerificationLevel?> raidMode = RaidMode.GetVerificationLevelAsync(Context.Guild);
-            Task<bool> autoSurveillance = AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
-            Task<bool> antiZalgo = AntiZalgo.GetAntiZalgoAsync(Context.Guild);
-            Task<bool> antiSpam = AntiSpam.GetAntiSpamAsync(Context.Guild);
-            Task<bool> antiSingleSpam = AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild);
-            Task<bool> antiMassMention = AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
-            Task<bool> antiCaps = AntiCaps.GetAntiCapsAsync(Context.Guild);
-            Task<bool> antiInvite = AntiInvite.GetAntiInviteAsync(Context.Guild);
-            Task<bool> antiLink = AntiLink.GetAntiLinkAsync(Context.Guild);
+            Task<string> prefix = configDatabase.Prefixes.GetPrefixAsync(Context.Guild);
+            Task<SocketRole> verify = verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
+            Task<SocketRole> mute = modRolesDatabase.Muted.GetMuteRole(Context.Guild);
+            Task<bool> modifyMuted = configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
+            Task<List<SocketRole>> modRoles = modRolesDatabase.Mods.GetModRolesAsync(Context.Guild);
+            Task<List<SocketRole>> adminRoles = modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild);
+            Task<SocketTextChannel> modlog = modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
+            Task<SocketTextChannel> captchalog = modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild);
+            Task<VerificationLevel?> raidMode = raidModeDatabase.RaidMode.GetVerificationLevelAsync(Context.Guild);
+            Task<bool> autoSurveillance = configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
+            Task<bool> antiZalgo = configDatabase.AntiZalgo.GetAntiZalgoAsync(Context.Guild);
+            Task<bool> antiSpam = configDatabase.AntiSpam.GetAntiSpamAsync(Context.Guild);
+            Task<bool> antiSingleSpam = configDatabase.AntiSingleSpam.GetAntiSingleSpamAsync(Context.Guild);
+            Task<bool> antiMassMention = configDatabase.AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
+            Task<bool> antiCaps = configDatabase.AntiCaps.GetAntiCapsAsync(Context.Guild);
+            Task<bool> antiInvite = configDatabase.AntiInvite.GetAntiInviteAsync(Context.Guild);
+            Task<bool> antiLink = configDatabase.AntiLink.GetAntiLinkAsync(Context.Guild);
 
             string config = $"Prefix: **{(await prefix == @"\" ? @"\\" : await prefix)}**\n" +
                 $"Verification Role: **{(await verify != null ? (await verify).Name : "(none)")}**\n" +

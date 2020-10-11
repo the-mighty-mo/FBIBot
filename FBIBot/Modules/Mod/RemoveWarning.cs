@@ -2,8 +2,8 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
-using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
@@ -20,7 +20,7 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
-            if (!await GetWarningAsync(user, ID))
+            if (!await modLogsDatabase.Warnings.GetWarningAsync(user, ID))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that the given warning does not exist.");
                 return;
@@ -34,7 +34,7 @@ namespace FBIBot.Modules.Mod
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
                 RemoveWarningModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, id),
-                RemoveWarningAsync(user, ID)
+                modLogsDatabase.Warnings.RemoveWarningAsync(user, ID)
             );
         }
 
@@ -50,38 +50,6 @@ namespace FBIBot.Modules.Mod
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
-        }
-
-        public static async Task<bool> GetWarningAsync(SocketGuildUser u, ulong id)
-        {
-            bool hasWarning = false;
-
-            string getWarning = "SELECT * FROM Warnings WHERE guild_id = @guild_id AND id = @id AND user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getWarning, Program.cnModLogs))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@id", id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                hasWarning = await reader.ReadAsync();
-                reader.Close();
-            }
-
-            return hasWarning;
-        }
-
-        public static async Task RemoveWarningAsync(SocketGuildUser u, ulong id)
-        {
-            string delete = "DELETE FROM Warnings WHERE guild_id = @guild_id AND id = @id AND user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModLogs))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@id", id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
     }
 }

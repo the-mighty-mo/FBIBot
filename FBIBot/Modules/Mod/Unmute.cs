@@ -2,10 +2,10 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
-using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
@@ -16,8 +16,8 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task UnmuteAsync([RequireInvokerHierarchy("unmute")] SocketGuildUser user)
         {
-            SocketRole role = await Config.SetMute.GetMuteRole(Context.Guild);
-            List<SocketRole> roles = await GetUserRolesAsync(user);
+            SocketRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild);
+            List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not muted.");
@@ -38,7 +38,7 @@ namespace FBIBot.Modules.Mod
                 cmds.AddRange(new List<Task>()
                 {
                     user.AddRolesAsync(roles),
-                    RemoveUserRolesAsync(user)
+                    modRolesDatabase.UserRoles.RemoveUserRolesAsync(user)
                 });
             }
             if (role != null)
@@ -61,44 +61,6 @@ namespace FBIBot.Modules.Mod
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
-        }
-
-        public static async Task<List<SocketRole>> GetUserRolesAsync(SocketGuildUser user)
-        {
-            List<SocketRole> roles = new List<SocketRole>();
-
-            string getRoles = "SELECT role_id FROM UserRoles WHERE guild_id = @guild_id AND user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getRoles, Program.cnModRoles))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    ulong.TryParse(reader["role_id"].ToString(), out ulong roleID);
-                    SocketRole role = user.Guild.GetRole(roleID);
-                    if (role != null)
-                    {
-                        roles.Add(role);
-                    }
-                }
-                reader.Close();
-            }
-
-            return roles;
-        }
-
-        public static async Task RemoveUserRolesAsync(SocketGuildUser user)
-        {
-            string delete = "DELETE FROM UserRoles WHERE guild_id = @guild_id AND user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
-
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
     }
 }

@@ -1,19 +1,19 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class RemoveModRole : ModuleBase<SocketCommandContext>
+    public class RemoveMod : ModuleBase<SocketCommandContext>
     {
         [Command("removemod")]
         [Alias("remove-mod", "remove-modrole")]
         [RequireAdmin]
         public async Task RemoveModRoleAsync(SocketRole role)
         {
-            if (!(await AddMod.GetModRolesAsync(Context.Guild)).Contains(role))
+            if (!(await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Our agents have informed us that members with the {role.Name} role aren't assistants.");
                 return;
@@ -26,7 +26,7 @@ namespace FBIBot.Modules.Config
 
             await Task.WhenAll
             (
-                RemoveModAsync(role),
+                modRolesDatabase.Mods.RemoveModAsync(role),
                 Context.Channel.SendMessageAsync("", false, embed.Build())
             );
         }
@@ -43,17 +43,6 @@ namespace FBIBot.Modules.Config
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given role does not exist.");
-        }
-
-        public static async Task RemoveModAsync(SocketRole role)
-        {
-            string delete = "DELETE FROM Mods WHERE guild_id = @guild_id AND role_id = @role_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnModRoles))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", role.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
     }
 }

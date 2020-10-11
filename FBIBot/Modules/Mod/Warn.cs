@@ -2,8 +2,8 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
-using Microsoft.Data.Sqlite;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
@@ -25,7 +25,7 @@ namespace FBIBot.Modules.Mod
         [RequireModLog]
         public async Task TempWarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length, [Remainder] string reason = null)
         {
-            ulong id = await ModLogBase.GetNextModLogID(Context.Guild);
+            ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 213, 31))
@@ -50,14 +50,14 @@ namespace FBIBot.Modules.Mod
             (
                 Context.Channel.SendMessageAsync("", false, embed.Build()),
                 WarnModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, length, reason),
-                AddWarningAsync(user, id)
+                modLogsDatabase.Warnings.AddWarningAsync(user, id)
             );
 
             if (double.TryParse(length, out double hours))
             {
                 await Task.Delay((int)(hours * 60 * 60 * 1000));
 
-                if (!await RemoveWarning.GetWarningAsync(user, id))
+                if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id))
                 {
                     return;
                 }
@@ -65,7 +65,7 @@ namespace FBIBot.Modules.Mod
                 await Task.WhenAll
                 (
                     RemoveWarningModLog.SendToModLogAsync(Context.Guild.CurrentUser, user, id.ToString()),
-                    RemoveWarning.RemoveWarningAsync(user, id)
+                    modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
                 );
             }
         }
@@ -83,20 +83,6 @@ namespace FBIBot.Modules.Mod
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
-        }
-
-        public static async Task AddWarningAsync(SocketGuildUser u, ulong id)
-        {
-            string addWarning = "INSERT INTO Warnings (guild_id, id, user_id) SELECT @guild_id, @id, @user_id\n" +
-                "WHERE NOT EXISTS (SELECT 1 FROM Warnings WHERE guild_id = @guild_id AND id = @id AND user_id = @user_id);";
-            using (SqliteCommand cmd = new SqliteCommand(addWarning, Program.cnModLogs))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@id", id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
     }
 }

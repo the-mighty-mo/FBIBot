@@ -1,9 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
@@ -16,7 +15,7 @@ namespace FBIBot.Modules.Config
         public async Task AntiMassMentionAsync(string enable)
         {
             bool isEnable = enable == "true" || enable == "enable";
-            bool isEnabled = await GetAntiMassMentionAsync(Context.Guild);
+            bool isEnabled = await configDatabase.AntiMassMention.GetAntiMassMentionAsync(Context.Guild);
 
             if (isEnable == isEnabled)
             {
@@ -35,53 +34,14 @@ namespace FBIBot.Modules.Config
             };
             if (isEnable)
             {
-                cmds.Add(SetAntiMassMentionAsync(Context.Guild));
+                cmds.Add(configDatabase.AntiMassMention.SetAntiMassMentionAsync(Context.Guild));
             }
             else
             {
-                cmds.Add(RemoveAntiMassMentionAsync(Context.Guild));
+                cmds.Add(configDatabase.AntiMassMention.RemoveAntiMassMentionAsync(Context.Guild));
             }
 
             await Task.WhenAll(cmds);
-        }
-
-        public static async Task<bool> GetAntiMassMentionAsync(SocketGuild g)
-        {
-            bool isAntiMassMention = false;
-
-            string getMassMention = "SELECT guild_id FROM AntiMassMention WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getMassMention, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isAntiMassMention = await reader.ReadAsync();
-                reader.Close();
-            }
-
-            return isAntiMassMention;
-        }
-
-        public static async Task SetAntiMassMentionAsync(SocketGuild g)
-        {
-            string insert = "INSERT INTO AntiMassMention (guild_id) SELECT @guild_id\n" +
-                "WHERE NOT EXISTS (SELECT 1 FROM AntiMassMention WHERE guild_id = @guild_id);";
-
-            using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        public static async Task RemoveAntiMassMentionAsync(SocketGuild g)
-        {
-            string delete = "DELETE FROM AntiMassMention WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, Program.cnConfig))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
         }
     }
 }

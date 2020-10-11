@@ -2,6 +2,7 @@
 using Discord.Commands;
 using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
@@ -13,7 +14,7 @@ namespace FBIBot.Modules.Mod
         [RequireModLog]
         public async Task ModifyReasonAsync(string id, [Remainder] string reason = null)
         {
-            if (!ulong.TryParse(id, out ulong ID) || ID >= await ModLogBase.GetNextModLogID(Context.Guild))
+            if (!ulong.TryParse(id, out ulong ID) || ID >= await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
                 return;

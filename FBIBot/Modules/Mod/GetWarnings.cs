@@ -1,11 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using FBIBot.Modules.Mod.ModLog;
-using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
@@ -16,7 +15,7 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         public async Task GetWarnsAsync(SocketGuildUser user)
         {
-            List<ulong> ids = await GetWarningsAsync(user);
+            List<ulong> ids = await modLogsDatabase.Warnings.GetWarningsAsync(user);
             if (ids.Count == 0)
             {
                 await Context.Channel.SendMessageAsync("Our security team has informed us that the given user does not have any warnings.");
@@ -27,7 +26,7 @@ namespace FBIBot.Modules.Mod
             List<ulong> idsPastHour = new List<ulong>();
             foreach (ulong id in ids)
             {
-                IUserMessage msg = await ModLogBase.GetModLogAsync(Context.Guild, id);
+                IUserMessage msg = await modLogsDatabase.ModLogs.GetModLogAsync(Context.Guild, id);
                 TimeSpan timeSinceLog = Context.Message.Timestamp - msg.Timestamp;
                 if (timeSinceLog <= TimeSpan.FromDays(1))
                 {
@@ -73,30 +72,6 @@ namespace FBIBot.Modules.Mod
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
-        }
-
-        public static async Task<List<ulong>> GetWarningsAsync(SocketGuildUser u)
-        {
-            List<ulong> ids = new List<ulong>();
-
-            string getWarns = "SELECT id FROM Warnings WHERE guild_id = @guild_id AND user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getWarns, Program.cnModLogs))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    if (ulong.TryParse(reader["id"].ToString(), out ulong id))
-                    {
-                        ids.Add(id);
-                    }
-                }
-                reader.Close();
-            }
-
-            return ids;
         }
     }
 }

@@ -2,10 +2,10 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
-using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
@@ -16,7 +16,7 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task MuteAsync([RequireBotHierarchy("mute")] [RequireInvokerHierarchy("mute")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
         {
-            IRole role = await Config.SetMute.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
+            IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))
             {
                 await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
@@ -27,12 +27,12 @@ namespace FBIBot.Modules.Mod
             roles.Remove(Context.Guild.EveryoneRole);
 
             List<Task> cmds = new List<Task>();
-            bool modifyRoles = await Config.ModifyMutedRoles.GetModifyMutedAsync(Context.Guild);
+            bool modifyRoles = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
             if (modifyRoles)
             {
                 cmds.AddRange(new List<Task>()
                 {
-                    SaveUserRolesAsync(roles, user),
+                    modRolesDatabase.UserRoles.SaveUserRolesAsync(roles, user),
                     user.RemoveRolesAsync(roles)
                 });
             }
@@ -69,7 +69,7 @@ namespace FBIBot.Modules.Mod
                 cmds = new List<Task>()
                 {
                     user.RemoveRoleAsync(role),
-                    Unmute.RemoveUserRolesAsync(user),
+                    modRolesDatabase.UserRoles.RemoveUserRolesAsync(user),
                     UnmuteModLog.SendToModLogAsync(Context.Guild.CurrentUser, user)
                 };
                 if (modifyRoles)
@@ -101,28 +101,8 @@ namespace FBIBot.Modules.Mod
             Color color = new Color(54, 57, 63);
             var role = await Context.Guild.CreateRoleAsync("Muted", perms, color, false, false);
 
-            await Config.SetMute.SetMuteRoleAsync(role, Context.Guild);
+            await modRolesDatabase.Muted.SetMuteRoleAsync(role, Context.Guild);
             return role;
-        }
-
-        public static async Task SaveUserRolesAsync(List<SocketRole> roles, SocketGuildUser user)
-        {
-            List<Task> cmds = new List<Task>();
-            string insert = "INSERT INTO UserRoles (guild_id, user_id, role_id) SELECT @guild_id, @user_id, @role_id\n" +
-                "WHERE NOT EXISTS (SELECT 1 FROM UserRoles WHERE guild_id = @guild_id AND user_id = @user_id AND role_id = @role_id);";
-
-            foreach (SocketRole role in roles)
-            {
-                using (SqliteCommand cmd = new SqliteCommand(insert, Program.cnModRoles))
-                {
-                    cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
-                    cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
-                    cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
-                    cmds.Add(cmd.ExecuteNonQueryAsync());
-                }
-            }
-
-            await Task.WhenAll(cmds);
         }
     }
 }

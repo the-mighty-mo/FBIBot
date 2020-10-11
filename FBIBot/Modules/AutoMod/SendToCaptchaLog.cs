@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using FBIBot.Modules.Config;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.AutoMod
 {
@@ -46,7 +46,7 @@ namespace FBIBot.Modules.AutoMod
 
         private static async Task SendToCaptchaLogAsync(CaptchaLogInfo info)
         {
-            SocketTextChannel channel = await SetCaptchaLog.GetCaptchaLogChannelAsync(info.user.Guild);
+            SocketTextChannel channel = await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(info.user.Guild);
             if (channel == null)
             {
                 return;
