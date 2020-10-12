@@ -25,7 +25,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.Yield();
 
             string message = Context.Message.Content;
-            Regex regex = new Regex(@"\b(discord\.gg\/|discordapp\.com\/invite\/)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex regex = new Regex(@"\b(discord\.gg\/|discord\.com\/invite\/)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             bool hasInvite = regex.IsMatch(message);
 
             return hasInvite;
