@@ -66,11 +66,11 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             string message = context.Message.Content;
-            if (message.Length > 40)
+            if (message.Length > 50)
             {
                 await Task.Yield();
 
-                Regex regex = new Regex(@"(\W|^)(.+\S+)(\s*\2){2,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                Regex regex = new Regex(@"(\W|^)(.+\S+)(\s*\2){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 MatchCollection matches = regex.Matches(message);
                 IEnumerable<Match> m = matches.Cast<Match>();
 
