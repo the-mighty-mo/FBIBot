@@ -79,20 +79,23 @@ namespace FBIBot
                 return;
             }
 
-            SocketTextChannel channel = u.Guild.DefaultChannel;
-            List<string> messages = new List<string>()
+            SocketTextChannel channel = await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(u.Guild);
+            if (channel != null)
             {
-                "Don't even think about it.",
-                "**FBI OPEN U**...wait...we'll be back shortly with a warrant.",
-                "Where do you think you're going?",
-                "Ladies and gentlemen, we got 'em.",
-                "Give us a moment while we send a representative into your camera...",
-                "You thought it was a normal server, but it was me! THE FBI!",
-                "Walk out slowly with your arms i...wait, wrong person.",
-                "You want to know how we figured it out?"
-            };
-            int index = Program.rng.Next(messages.Count);
-            await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
+                List<string> messages = new List<string>()
+                {
+                    "Don't even think about it.",
+                    "**FBI OPEN U**...wait...we'll be back shortly with a warrant.",
+                    "Where do you think you're going?",
+                    "Ladies and gentlemen, we got 'em.",
+                    "Give us a moment while we send a representative into your camera...",
+                    "You thought it was a normal server, but it was me! THE FBI!",
+                    "Walk out slowly with your arms i...wait, wrong person.",
+                    "You want to know how we figured it out?"
+                };
+                int index = Program.rng.Next(messages.Count);
+                await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
+            }
 
             if (await verificationDatabase.Verified.GetVerifiedAsync(u))
             {

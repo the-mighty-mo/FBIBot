@@ -62,15 +62,17 @@ namespace FBIBot.Modules
             "setprefix [prefix]\n" +
             $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
             "setverify [role mention / role ID] [true / **false** (default)]\n" +
-            "  - Sets the verification role and, if true, slowly gives out the role to (and removes the old verification role from) democracy-loving citizens; *Unsets if no role is given*\n\n" +
+            "  - Sets the verification role and, if true, slowly gives out the role to (and removes the old role from) democracy-loving citizens; *Unsets if no role is given*\n\n" +
             "verifyall\n" +
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
             "unverify [user mention / user ID] [reason (optional)]\n" +
-            "  - Removes the server's verification role from the user and removes the user from the list of verified users\n\n" +
+            "  - Removes the verification role from the user and removes the user from the list of verified users\n\n" +
             "setmute [role mention / role ID]\n" +
             "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
             "modify-muted-roles [true/enable / false/disable]\n" +
-            "  - When enabled, allows the bot to remove and save the roles of muted members; we recommend you enable thus unless you have manually configured the server's muted role";
+            "  - When enabled, allows the bot to remove and save the roles of muted members; enable this unless you have manually configured the server's muted role\n\n" +
+            "raidmode\n" +
+            "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
 
         private const string config2 = "addmod [role mention / role ID]\n" +
             "  - Adds the role to a list of assistants of the bureau\n\n" +
@@ -84,10 +86,10 @@ namespace FBIBot.Modules
             "  - Sets the channel for the Mod Log; *Unsets if no channel is given*\n\n" +
             "setcaptchalog [channel mention / channel ID]\n" +
             "  - Sets the channel for the CAPTCHA Log; *Unsets if no channel is given*\n\n" +
+            "setwelcome [channel mention / channel ID]\n" +
+            "  - Sets the channel for welcome messages; *Unsets if no channel is given*\n\n" +
             "clearmodlog [clear messages (true / **false** [default])]\n" +
-            "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**\n\n" +
-            "raidmode\n" +
-            "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
+            "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**";
 
         private const string automod = "auto-surveillance [true/enable / false/disable]\n" +
             "  - Permits the FBI to perform surveillance operations on server members ~~(we recommend you enable this)~~\n\n" +

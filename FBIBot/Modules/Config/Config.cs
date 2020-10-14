@@ -21,6 +21,7 @@ namespace FBIBot.Modules.Config
             Task<List<SocketRole>> adminRoles = modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild);
             Task<SocketTextChannel> modlog = modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
             Task<SocketTextChannel> captchalog = modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild);
+            Task<SocketTextChannel> welcome = modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(Context.Guild);
             Task<VerificationLevel?> raidMode = raidModeDatabase.RaidMode.GetVerificationLevelAsync(Context.Guild);
             Task<bool> autoSurveillance = configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
             Task<bool> antiZalgo = configDatabase.AntiZalgo.GetAntiZalgoAsync(Context.Guild);
@@ -39,6 +40,7 @@ namespace FBIBot.Modules.Config
                 $"Admin Roles: **{string.Join(", ", await adminRoles)}**\n" +
                 $"Mod Log: **{(await modlog != null ? (await modlog).Mention : "(none)")}**\n" +
                 $"CAPTCHA Log: **{(await captchalog != null ? (await captchalog).Mention : "(none)")}**\n" +
+                $"Welcome Channel: **{(await welcome != null ? (await welcome).Mention : "(none)")}**\n" +
                 $"FBI RAID MODE: **{(await raidMode != null ? "ENABLED" : "Disabled")}**\n" +
                 $"\n" +
                 $"__AutoMod:__\n" +
