@@ -9,7 +9,7 @@ Built using .NET Core 3.1, Discord.Net v2.2.0, Microsoft.Data.Sqlite v3.1.8, and
 
 **Someone has to keep the server in check, and who better than the FBI?**
 
-This bot requires permissions: 289533110
+This bot requires permissions: 424275126
 
 ## Build instructions
 
