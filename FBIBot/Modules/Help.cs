@@ -8,6 +8,9 @@ namespace FBIBot.Modules
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
+        private const string ping = "ping\n" +
+            "  - Returns the bot's Server and API latencies\n\u200b";
+
         private const string help = "mod\n" +
             "  - Displays page 1 of moderation commands\n\n" +
             "mod2\n" +
@@ -161,6 +164,12 @@ namespace FBIBot.Modules
                     .WithValue(automod2);
                 break;
             default:
+                fields.Add(
+                    new EmbedFieldBuilder()
+                        .WithIsInline(false)
+                        .WithName("Ping Command")
+                        .WithValue(ping)
+                );
                 field.WithName("`help` Parameters")
                     .WithValue(help);
                 break;
