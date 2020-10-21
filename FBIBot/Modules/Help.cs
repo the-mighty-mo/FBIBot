@@ -117,8 +117,7 @@ namespace FBIBot.Modules
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
-                .WithTitle("The FBI")
-                .WithCurrentTimestamp();
+                .WithTitle(SecurityInfo.botName);
 
             string prefix = CommandHandler.prefix;
             if (Context.Guild != null)
