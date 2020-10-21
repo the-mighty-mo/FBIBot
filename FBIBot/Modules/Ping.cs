@@ -12,7 +12,6 @@ namespace FBIBot.Modules
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
-                .WithTitle("The FBI")
                 .WithDescription(":ping_pong:**Pong!**")
                 .WithCurrentTimestamp();
             RestUserMessage msg = await Context.Channel.SendMessageAsync(embed: embed.Build());
