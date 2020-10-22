@@ -92,7 +92,7 @@ namespace FBIBot.Modules.Mod.ModLog
                 embed.AddField(field);
             }
 
-            var msg = await channel.SendMessageAsync("", false, embed.Build());
+            var msg = await channel.SendMessageAsync(embed: embed.Build());
             if (msg != null)
             {
                 await modLogsDatabase.ModLogs.SaveModLogAsync(msg, info.Invoker.Guild, id);

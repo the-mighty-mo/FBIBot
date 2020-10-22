@@ -41,7 +41,7 @@ namespace FBIBot.Modules.Mod
 
             cmds.AddRange(new List<Task>()
             {
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 BanModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, length, reason)
             });
             await Task.WhenAll(cmds);
@@ -91,7 +91,7 @@ namespace FBIBot.Modules.Mod
 
                 cmds.AddRange(new List<Task>()
                 {
-                    Context.Channel.SendMessageAsync("", false, embed.Build()),
+                    Context.Channel.SendMessageAsync(embed: embed.Build()),
                     BanModLog.SendToModLogAsync(Context.User as SocketGuildUser, userID, length, reason)
                 });
                 await Task.WhenAll(cmds);

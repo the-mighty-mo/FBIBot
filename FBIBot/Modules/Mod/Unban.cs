@@ -21,7 +21,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Guild.RemoveBanAsync(user),
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 UnbanModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             );
         }
@@ -48,7 +48,7 @@ namespace FBIBot.Modules.Mod
                 await Task.WhenAll
                 (
                     Context.Guild.RemoveBanAsync(userID),
-                    Context.Channel.SendMessageAsync($"", false, embed.Build()),
+                    Context.Channel.SendMessageAsync(embed: embed.Build()),
                     UnbanModLog.SendToModLogAsync(Context.User as SocketGuildUser, userID)
                 );
                 return;

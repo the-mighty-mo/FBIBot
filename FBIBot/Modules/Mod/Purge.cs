@@ -42,7 +42,7 @@ namespace FBIBot.Modules.Mod
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription($"We have successfully shredded, burned, and disposed of {num} messages. Encrypt them better next time.");
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Context.Channel.SendMessageAsync(embed: embed.Build());
         }
 
         [Command("purge")]

@@ -32,7 +32,7 @@ namespace FBIBot.Modules.Mod
             List<Task> cmds = new List<Task>()
             {
                 modRolesDatabase.Prisoners.RemovePrisonerAsync(user),
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 FreeModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)

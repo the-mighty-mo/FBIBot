@@ -39,7 +39,7 @@ namespace FBIBot.Modules.Config
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription(description);
-            cmds.Add(Context.Channel.SendMessageAsync("", false, embed.Build()));
+            cmds.Add(Context.Channel.SendMessageAsync(embed: embed.Build()));
 
             await Task.WhenAll(cmds);
         }

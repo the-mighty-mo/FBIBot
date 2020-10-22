@@ -26,7 +26,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 user.KickAsync(reason),
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 KickModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, reason)
             );
         }

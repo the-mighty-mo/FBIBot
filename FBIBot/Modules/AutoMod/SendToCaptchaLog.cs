@@ -87,7 +87,7 @@ namespace FBIBot.Modules.AutoMod
                 embed.AddField(resultGiven);
             }
 
-            await channel.SendMessageAsync("", false, embed.Build());
+            await channel.SendMessageAsync(embed: embed.Build());
         }
 
         private static void CAPTCHATypeSwitch(ref CaptchaLogInfo info)

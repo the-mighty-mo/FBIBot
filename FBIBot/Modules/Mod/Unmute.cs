@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Mod
 
             List<Task> cmds = new List<Task>()
             {
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 UnmuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)

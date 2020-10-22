@@ -57,7 +57,7 @@ namespace FBIBot.Modules.Mod
                                $"- Past hour: {string.Join(", ", idsPastHour)}");
             embed.AddField(modLogs);
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Context.Channel.SendMessageAsync(embed: embed.Build());
         }
 
         [Command("getwarnings")]

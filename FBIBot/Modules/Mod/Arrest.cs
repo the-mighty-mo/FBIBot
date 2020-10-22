@@ -45,7 +45,7 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 ArrestModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout)
             );
 

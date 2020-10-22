@@ -32,7 +32,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 configDatabase.Prefixes.SetPrefixAsync(Context.Guild, prefix),
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             );
         }
     }

@@ -27,7 +27,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 modRolesDatabase.Mods.RemoveModAsync(role),
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             );
         }
 

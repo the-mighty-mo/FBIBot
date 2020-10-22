@@ -51,7 +51,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 Task.WhenAll(cmds),
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             );
         }
     }

@@ -75,7 +75,7 @@ namespace FBIBot.Modules.Config
                 .WithValue(@default);
             embed.AddField(orig);
 
-            await Context.Channel.SendMessageAsync("This isn't going to help you keep my power in check.", false, embed.Build());
+            await Context.Channel.SendMessageAsync("This isn't going to help you keep my power in check.", embed: embed.Build());
         }
     }
 }

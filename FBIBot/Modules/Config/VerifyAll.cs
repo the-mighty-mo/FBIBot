@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Config
             ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync("", false, embed1.Build()),
+                Context.Channel.SendMessageAsync(embed: embed1.Build()),
                 VerifyAllModLog.SendToModLogAsync(Context.User as SocketGuildUser)
             );
 
@@ -41,7 +41,7 @@ namespace FBIBot.Modules.Config
                     await user.AddRoleAsync(role);
                     if (await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild) != role)
                     {
-                        EmbedBuilder embed2 = new EmbedBuilder()
+                        EmbedBuilder emb = new EmbedBuilder()
                             .WithColor(new Color(206, 15, 65))
                             .WithTitle("Federal Bureau of Investigation")
                             .WithDescription("The citizenship process has been canceled due to a change in the verification role.");
@@ -49,7 +49,7 @@ namespace FBIBot.Modules.Config
                         await Task.WhenAll
                         (
                             user.RemoveRoleAsync(role),
-                            Context.Channel.SendMessageAsync("", false, embed2.Build()),
+                            Context.Channel.SendMessageAsync(embed: emb.Build()),
                             VerifyAllModLog.SetStateAsync(Context.Guild, id, "Canceled (change in verification role)")
                         );
                         return;
@@ -64,7 +64,7 @@ namespace FBIBot.Modules.Config
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 VerifyAllModLog.SetStateAsync(Context.Guild, id, "Completed")
             );
         }

@@ -28,7 +28,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 verificationDatabase.Roles.RemoveVerificationRoleAsync(Context.Guild),
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             );
         }
 
@@ -59,7 +59,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 verificationDatabase.Roles.SetVerificationRoleAsync(role),
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             );
 
             if (changeRole.Equals("true"))

@@ -38,7 +38,7 @@ namespace FBIBot.Modules.Config
                 user.RemoveRoleAsync(role),
                 verificationDatabase.Verified.RemoveVerifiedAsync(user),
                 Verify.SendCaptchaAsync(user),
-                Context.Channel.SendMessageAsync("", false, embed.Build()),
+                Context.Channel.SendMessageAsync(embed: embed.Build()),
                 UnverifyModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, reason)
             );
         }

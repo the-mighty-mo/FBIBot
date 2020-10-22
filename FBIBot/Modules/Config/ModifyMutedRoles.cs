@@ -29,7 +29,7 @@ namespace FBIBot.Modules.Config
 
             List<Task> cmds = new List<Task>()
             {
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             };
             if (isModify)
             {

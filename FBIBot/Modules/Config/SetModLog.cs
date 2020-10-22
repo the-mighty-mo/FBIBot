@@ -27,7 +27,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 modLogsDatabase.ModLogChannel.RemoveModLogChannelAsync(Context.Guild),
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             );
         }
 
@@ -50,7 +50,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 modLogsDatabase.ModLogChannel.SetModLogChannelAsync(channel),
-                Context.Channel.SendMessageAsync("", false, embed.Build())
+                Context.Channel.SendMessageAsync(embed: embed.Build())
             );
         }
 

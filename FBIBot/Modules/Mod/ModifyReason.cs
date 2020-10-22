@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Mod
                 .WithColor(SecurityInfo.botColor)
                 .WithDescription("The mod log's reason has been updated. Probably.");
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            await Context.Channel.SendMessageAsync(embed: embed.Build());
         }
     }
 }

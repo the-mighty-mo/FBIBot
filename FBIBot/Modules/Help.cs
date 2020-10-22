@@ -176,7 +176,7 @@ namespace FBIBot.Modules
             fields.Add(field);
             embed.WithFields(fields);
 
-            await Context.Channel.SendMessageAsync("Need a little democracy, freedom, and justice?", false, embed.Build());
+            await Context.Channel.SendMessageAsync("Need a little democracy, freedom, and justice?", embed: embed.Build());
         }
     }
 }
