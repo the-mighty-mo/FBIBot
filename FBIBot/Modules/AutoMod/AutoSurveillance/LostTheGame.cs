@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
-    public static class Pedophile
+    public static class LostTheGame
     {
-        public static async Task<bool> IsPedophileAsync(SocketCommandContext Context)
+        public static async Task<bool> HasLostTheGameAsync(SocketCommandContext Context)
         {
             await Task.Yield();
 
             string message = Context.Message.Content;
-            Regex regex = new Regex(@"\bI\s+(like|love)\s+(?!(no(?!\w+)|none\s*of))(\w*\s)+(children|kids)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex regex = new Regex(@"\blost\s+the\s+game\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             return regex.IsMatch(message);
         }
     }

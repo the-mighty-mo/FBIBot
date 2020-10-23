@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
-    public class KillThePresident
+    public static class KillThePresident
     {
         public static async Task<bool> IsGoingToKillThePresidentAsync(SocketCommandContext Context)
         {

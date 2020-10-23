@@ -261,7 +261,8 @@ namespace FBIBot
             Task<bool>[] shouldArrest =
             {
                 Pedophile.IsPedophileAsync(Context),
-                KillThePresident.IsGoingToKillThePresidentAsync(Context)
+                KillThePresident.IsGoingToKillThePresidentAsync(Context),
+                LostTheGame.HasLostTheGameAsync(Context)
             };
 
             if ((await Task.WhenAll(shouldArrest)).Contains(true))
