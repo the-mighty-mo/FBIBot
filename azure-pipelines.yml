@@ -21,13 +21,21 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
+- task: UseDotNet@2
+  displayName: 'Install .NET 5'
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
+    packageType: 'sdk'
+    version: '5.x'
+    performMultiLevelLookup: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
     configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
   inputs:
-    platform: '$(buildPlatform)'
+    command: 'test'
     configuration: '$(buildConfiguration)'
