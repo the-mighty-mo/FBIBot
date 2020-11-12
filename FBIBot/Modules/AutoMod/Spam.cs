@@ -29,7 +29,7 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
-            List<IMessage> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(10).ToList();
+            List<IMessage> userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id).Take(20).ToList();
 
             string message = Context.Message.Content;
             Dictionary<string, int> messages = new Dictionary<string, int>
@@ -49,7 +49,7 @@ namespace FBIBot.Modules.AutoMod
                         messages[msg.Content]++;
                     }
 
-                    int totalDuplicates = messages.Where(x => x.Value != 1).Sum(x => x.Value); // total number of duplicate messages
+                    int totalDuplicates = messages.Where(x => x.Value > 2).Sum(x => x.Value); // total number of duplicate messages
                     if (messages[message] >= 4 || (messages[message] > 1 && totalDuplicates >= 5))
                     {
                         isSpam = true;
