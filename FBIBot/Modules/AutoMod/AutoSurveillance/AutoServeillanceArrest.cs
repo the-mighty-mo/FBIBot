@@ -7,7 +7,7 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
     public class AutoSurveillanceArrest
     {
-        readonly SocketCommandContext Context;
+        private readonly SocketCommandContext Context;
 
         public AutoSurveillanceArrest(SocketCommandContext context) => Context = context;
 

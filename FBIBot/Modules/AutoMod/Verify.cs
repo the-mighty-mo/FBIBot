@@ -6,9 +6,9 @@ using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using static FBIBot.DatabaseManager;
 using Image = System.Drawing.Image;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
-using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.AutoMod
 {
@@ -61,7 +61,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.WhenAll(cmds);
         }
 
-        async Task BadAttemptAsync(string captcha, string response)
+        private async Task BadAttemptAsync(string captcha, string response)
         {
             const int maxAttempts = 5;
             int attempts = await verificationDatabase.Attempts.GetAttemptsAsync(Context.User);
@@ -109,7 +109,7 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.User);
+        private async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.User);
 
         public static async Task SendCaptchaAsync(SocketUser u)
         {
@@ -146,7 +146,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.WhenAll(commands);
         }
 
-        async Task GiveVerificationAsync()
+        private async Task GiveVerificationAsync()
         {
             List<Task> cmds = new List<Task>();
             foreach (SocketGuild g in Context.User.MutualGuilds)

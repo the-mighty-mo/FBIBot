@@ -7,7 +7,8 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Invite
     {
-        readonly SocketCommandContext Context;
+        private readonly SocketCommandContext Context;
+
         public Invite(SocketCommandContext context) => Context = context;
 
         public async Task RemoveAsync()

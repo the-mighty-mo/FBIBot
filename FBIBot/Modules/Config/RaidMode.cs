@@ -59,7 +59,7 @@ namespace FBIBot.Modules.Config
             );
         }
 
-        async Task SendUsersAsync()
+        private async Task SendUsersAsync()
         {
             List<string> blockedUsers = await raidModeDatabase.UsersBlocked.GetBlockedUsersAsync(Context.Guild);
             SocketTextChannel channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);

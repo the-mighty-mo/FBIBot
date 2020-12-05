@@ -10,7 +10,7 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Spam
     {
-        readonly SocketCommandContext Context;
+        private readonly SocketCommandContext Context;
 
         public Spam(SocketCommandContext context) => Context = context;
 

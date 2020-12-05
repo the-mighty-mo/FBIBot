@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using FBIBot.Databases;
+﻿using FBIBot.Databases;
+using System.Threading.Tasks;
 
 namespace FBIBot
 {

@@ -108,7 +108,7 @@ namespace FBIBot.Databases
                 }
             }
 
-            public  async Task RemoveMuteRoleAsync(SocketGuild g)
+            public async Task RemoveMuteRoleAsync(SocketGuild g)
             {
                 string delete = "DELETE FROM Muted WHERE guild_id = @guild_id;";
                 using (SqliteCommand cmd = new SqliteCommand(delete, connection))

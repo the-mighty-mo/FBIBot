@@ -81,7 +81,7 @@ namespace FBIBot.Modules.Mod
                 await Task.WhenAll(cmds);
             }
         }
-        
+
         [Command("arrest")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
@@ -96,8 +96,8 @@ namespace FBIBot.Modules.Mod
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
-        
-        async Task<IRole> CreatePrisonerRoleAsync()
+
+        private async Task<IRole> CreatePrisonerRoleAsync()
         {
             IRole role;
             GuildPermissions perms = new GuildPermissions(viewChannel: false);
@@ -108,7 +108,7 @@ namespace FBIBot.Modules.Mod
             return role;
         }
 
-        async Task<ITextChannel> CreateGuantanamoAsync(IRole role)
+        private async Task<ITextChannel> CreateGuantanamoAsync(IRole role)
         {
             ITextChannel channel = await Context.Guild.CreateTextChannelAsync("guantanamo");
             OverwritePermissions perms = new OverwritePermissions(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);

@@ -5,7 +5,7 @@ namespace FBIBot.Modules.AutoMod
 {
     public class MassMention
     {
-        readonly SocketCommandContext Context;
+        private readonly SocketCommandContext Context;
 
         public MassMention(SocketCommandContext context) => Context = context;
 

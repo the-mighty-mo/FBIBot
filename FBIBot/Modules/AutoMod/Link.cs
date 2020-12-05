@@ -6,7 +6,7 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Link
     {
-        readonly SocketCommandContext Context;
+        private readonly SocketCommandContext Context;
 
         public Link(SocketCommandContext context) => Context = context;
 

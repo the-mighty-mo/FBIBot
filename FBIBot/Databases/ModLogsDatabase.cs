@@ -74,7 +74,7 @@ namespace FBIBot.Databases
                     SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
                     {
-                        ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
+                        _ = ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                         channel = g.GetTextChannel(channelID);
                     }
                     reader.Close();
@@ -125,7 +125,7 @@ namespace FBIBot.Databases
                     SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
                     {
-                        ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
+                        _ = ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                         channel = g.GetTextChannel(channelID);
                     }
                     reader.Close();
@@ -176,7 +176,7 @@ namespace FBIBot.Databases
                     SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
                     {
-                        ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
+                        _ = ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                         channel = g.GetTextChannel(channelID);
                     }
                     reader.Close();
@@ -227,7 +227,7 @@ namespace FBIBot.Databases
                     SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
                     {
-                        ulong.TryParse(reader["id"].ToString(), out id);
+                        _ = ulong.TryParse(reader["id"].ToString(), out id);
                     }
                     reader.Close();
                 }
@@ -248,8 +248,8 @@ namespace FBIBot.Databases
                     SqliteDataReader reader = await cmd.ExecuteReaderAsync();
                     if (await reader.ReadAsync())
                     {
-                        ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
-                        ulong.TryParse(reader["message_id"].ToString(), out ulong messageID);
+                        _ = ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
+                        _ = ulong.TryParse(reader["message_id"].ToString(), out ulong messageID);
 
                         msg = await g.GetTextChannel(channelID)?.GetMessageAsync(messageID) as IUserMessage;
                     }

@@ -8,7 +8,7 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Zalgo
     {
-        readonly SocketCommandContext Context;
+        private readonly SocketCommandContext Context;
 
         public Zalgo(SocketCommandContext context) => Context = context;
 

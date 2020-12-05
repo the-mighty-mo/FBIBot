@@ -16,7 +16,7 @@ namespace CaptchaGen.NetCore
     /// </summary>
     public static class ImageFactory
     {
-        const string FONTFAMILY = "Arial";
+        private const string FONTFAMILY = "Arial";
 
         /// <summary>
         /// Create a random string that consits of 'digitCount' characters

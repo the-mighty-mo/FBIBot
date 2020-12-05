@@ -15,7 +15,7 @@ namespace FBIBot.Modules.AutoMod
             OutOfAttempts
         }
 
-        class CaptchaLogInfo
+        private class CaptchaLogInfo
         {
             public CaptchaType t;
             public SocketGuildUser user;

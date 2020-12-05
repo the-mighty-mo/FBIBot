@@ -95,7 +95,7 @@ namespace FBIBot.Modules.Mod
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
 
-        async Task<IRole> CreateMuteRoleAsync()
+        private async Task<IRole> CreateMuteRoleAsync()
         {
             GuildPermissions perms = new GuildPermissions(viewChannel: true, sendMessages: false, addReactions: false, connect: true, speak: false);
             Color color = new Color(54, 57, 63);
