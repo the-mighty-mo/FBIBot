@@ -71,12 +71,21 @@ namespace FBIBot.Modules.AutoMod
                 await Task.Yield();
 
                 Regex regex = new Regex(@"(\W|^)(.+?\S+)(\s*\2){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                MatchCollection matches = regex.Matches(message);
-                IEnumerable<Match> m = matches.Cast<Match>();
+                IEnumerable<Match> matches = regex.Matches(message).Cast<Match>();
 
-                int duplicate = m.Select(x => x.Length).Sum();
-                int firstIndex = m.Select(x => x.Index).OrderBy(x => x).DefaultIfEmpty(0).First();
-                int lastIndex = m.Select(x => x.Index + x.Length).OrderByDescending(x => x).DefaultIfEmpty(0).First();
+                Regex emojiRegex = new Regex(@"<:\S+:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                int duplicate = matches.Select(x => {
+                    string str = x.Value;
+                    IEnumerable<Match> emojis = emojiRegex.Matches(message).Cast<Match>();
+                    foreach (string emoji in emojis.Select(e => e.Value))
+                    {
+                        str = x.Value.Replace(emoji, "emj");
+                    }
+                    return str.Length;
+                }).Sum();
+
+                int firstIndex = matches.Select(x => x.Index).OrderBy(x => x).DefaultIfEmpty(0).First();
+                int lastIndex = matches.Select(x => x.Index + x.Length).OrderByDescending(x => x).DefaultIfEmpty(0).First();
 
                 if (firstIndex != lastIndex)
                 {
