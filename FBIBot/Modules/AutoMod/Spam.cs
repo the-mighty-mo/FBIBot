@@ -73,7 +73,7 @@ namespace FBIBot.Modules.AutoMod
                 Regex regex = new Regex(@"(\W|^)(.+?\S+)(\s*\2){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 IEnumerable<Match> matches = regex.Matches(message).Cast<Match>();
 
-                Regex emojiRegex = new Regex(@"<:\S+:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                Regex emojiRegex = new Regex(@"<a?:\S+:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 int duplicate = matches.Select(x => {
                     string str = x.Value;
                     IEnumerable<Match> emojis = emojiRegex.Matches(message).Cast<Match>();
