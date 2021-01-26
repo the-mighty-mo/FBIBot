@@ -70,7 +70,7 @@ namespace FBIBot.Modules.AutoMod
             {
                 await Task.Yield();
 
-                Regex regex = new Regex(@"(\W|^)(.+?\S+)(\s*\2){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                Regex regex = new Regex(@"(.+?\S+)(\s*\1){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 IEnumerable<Match> matches = regex.Matches(message).Cast<Match>();
 
                 Regex emojiRegex = new Regex(@"<a?:\S+:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
