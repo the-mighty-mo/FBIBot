@@ -66,7 +66,7 @@ namespace FBIBot.Modules.AutoMod
             bool isSpam = false;
 
             string message = context.Message.Content;
-            if (message.Length > 50)
+            if (message.Length > 60)
             {
                 await Task.Yield();
 
