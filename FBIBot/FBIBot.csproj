@@ -10,7 +10,7 @@
     <Description>Someone has to keep the server in check, and who better than the FBI?</Description>
     <Company>Josedolf Staller Enterprises</Company>
     <Product>The FBI</Product>
-    <Copyright>Copyright © The Mighty Mi® 2019-2020</Copyright>
+    <Copyright>Copyright © The Mighty Mi® 2021</Copyright>
     <Authors>Josedolf Staller</Authors>
   </PropertyGroup>
 
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="Discord.Net" Version="2.3.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
