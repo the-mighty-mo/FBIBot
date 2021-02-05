@@ -63,26 +63,28 @@ namespace FBIBot.Modules.AutoMod
 
         public static async Task<bool> IsSingleSpamAsync(SocketCommandContext context)
         {
+            static string ReplaceEmoji(string str)
+            {
+                Regex emojiRegex = new Regex(@"<a?:\S+:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                IEnumerable<Match> emojis = emojiRegex.Matches(str).Cast<Match>();
+                foreach (string emoji in emojis.Select(e => e.Value))
+                {
+                    str = str.Replace(emoji, "emj");
+                }
+                return str;
+            }
+
             bool isSpam = false;
 
             string message = context.Message.Content;
-            if (message.Length > 60)
+            if (ReplaceEmoji(message).Length > 60)
             {
                 await Task.Yield();
 
                 Regex regex = new Regex(@"(.+?\S+)(\s*\1){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 IEnumerable<Match> matches = regex.Matches(message).Cast<Match>();
 
-                Regex emojiRegex = new Regex(@"<a?:\S+:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                int duplicate = matches.Select(x => {
-                    string str = x.Value;
-                    IEnumerable<Match> emojis = emojiRegex.Matches(message).Cast<Match>();
-                    foreach (string emoji in emojis.Select(e => e.Value))
-                    {
-                        str = x.Value.Replace(emoji, "emj");
-                    }
-                    return str.Length;
-                }).Sum();
+                int duplicate = matches.Select(x => ReplaceEmoji(x.Value).Length).Sum();
 
                 int firstIndex = matches.Select(x => x.Index).OrderBy(x => x).DefaultIfEmpty(0).First();
                 int lastIndex = matches.Select(x => x.Index + x.Length).OrderByDescending(x => x).DefaultIfEmpty(0).First();
