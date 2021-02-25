@@ -14,7 +14,18 @@ namespace FBIBot.Modules.Mod
         [Command("mute")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync([RequireBotHierarchy("mute")] [RequireInvokerHierarchy("mute")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
+        public async Task MuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Remainder] string reason = null) => await TempMuteAsync(user, null, reason);
+
+        [Command("mute")]
+        [RequireMod]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        public async Task MuteAsync(string user, [Remainder] string reason = null) => await TempMuteAsync(user, null, reason);
+
+        [Command("tempmute")]
+        [Alias("temp-mute")]
+        [RequireMod]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        public async Task TempMuteAsync([RequireBotHierarchy("mute")] [RequireInvokerHierarchy("mute")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
         {
             IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))
@@ -81,15 +92,16 @@ namespace FBIBot.Modules.Mod
             }
         }
 
-        [Command("mute")]
+        [Command("tempmute")]
+        [Alias("temp-mute")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(string user, string timeout = null, [Remainder] string reason = null)
+        public async Task TempMuteAsync(string user, string timeout = null, [Remainder] string reason = null)
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
             {
-                await MuteAsync(u, timeout, reason);
+                await TempMuteAsync(u, timeout, reason);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");

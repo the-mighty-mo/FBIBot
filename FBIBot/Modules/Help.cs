@@ -15,6 +15,8 @@ namespace FBIBot.Modules
             "  - Displays page 1 of moderation commands\n\n" +
             "mod2\n" +
             "  - Displays page 2 of moderation commands\n\n" +
+            "mod3\n" +
+            "  - Displays page 3 of moderation commands\n\n" +
             "config\n" +
             "  - Displays page 1 of bot configuration commands\n\n" +
             "config2\n" +
@@ -24,11 +26,7 @@ namespace FBIBot.Modules
             "automod2\n" +
             "  - Displays page 2 of automod configuration commands";
 
-        private const string mod = "slowmode [seconds]\n" +
-            "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*\n\n" +
-            "modifyreason [mod log ID] [reason (optional)]\n" +
-            "  - Modifies the reason for the given mod log\n\n" +
-            "warn [user mention / user ID] [reason (optional)]\n" +
+        private const string mod = "warn [user mention / user ID] [reason (optional)]\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
             "tempwarn [user mention / user ID] [hours] [reason (optional)]\n" +
             "  - Gives the user a temporary warning to stop protesting capitalism\n\n" +
@@ -38,8 +36,10 @@ namespace FBIBot.Modules
             "  - Removes the given warning from the user\n\n" +
             "removewarnings [user mention / user ID] [count (optional)]\n" +
             "  - Removes a number of warnings from the user; removes the oldest first\n\n" +
-            "mute [user mention / user ID] [minutes (optional)] [reason (optional)]\n" +
+            "mute [user mention / user ID] [reason (optional)]\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
+            "tempmute [user mention / user ID] [minutes] [reason (optional)]\n" +
+            "  - Temporarily puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention / user ID]\n" +
             "  - Frees the house-arrested user";
 
@@ -55,10 +55,15 @@ namespace FBIBot.Modules
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
             "unban [user mention / user ID]\n" +
             "  - Permits the now-ex-KGB spy to reenter the server\n\n" +
-            "purge [count (default: 100, max: 1000)]\n" +
+            "modifyreason [mod log ID] [reason (optional)]\n" +
+            "  - Modifies the reason for the given mod log";
+
+        private const string mod3 = "purge [count (default: 100, max: 1000)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from the channel\n\n" +
             "purge [user mention] [count (default: 10, max: 100)]\n" +
-            "  - Shreds, burns, and disposes of a number of messages from a user in the channel";
+            "  - Shreds, burns, and disposes of a number of messages from a user in the channel\n\n" +
+            "slowmode [seconds]\n" +
+            "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*";
 
         private static readonly string config = "config\n" +
             "  - Displays the current bot configuration\n\n" +
@@ -145,6 +150,10 @@ namespace FBIBot.Modules
             case "mod2":
                 field.WithName("Moderator Commands - Page 2")
                     .WithValue(mod2);
+                break;
+            case "mod3":
+                field.WithName("Moderator Commands - Page 3")
+                    .WithValue(mod3);
                 break;
             case "config":
                 field.WithName("Configuration Commands - Page 1")
