@@ -26,36 +26,36 @@ namespace FBIBot.Modules
             "automod2\n" +
             "  - Displays page 2 of automod configuration commands";
 
-        private const string mod = "warn [user mention / user ID] [reason (optional)]\n" +
+        private const string mod = "warn [user mention / user ID] (reason)\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
-            "tempwarn [user mention / user ID] [hours] [reason (optional)]\n" +
+            "tempwarn [user mention / user ID] [hours] (reason)\n" +
             "  - Gives the user a temporary warning to stop protesting capitalism\n\n" +
             "getwarnings [user mention / user ID]\n" +
             "  - Gets the number of warnings and mod logs for the warnings for the given user\n\n" +
             "removewarning [user mention / user ID] [mod log ID]\n" +
             "  - Removes the given warning from the user\n\n" +
-            "removewarnings [user mention / user ID] [count (optional)]\n" +
+            "removewarnings [user mention / user ID] (count)\n" +
             "  - Removes a number of warnings from the user; removes the oldest first\n\n" +
-            "mute [user mention / user ID] [reason (optional)]\n" +
+            "mute [user mention / user ID] (reason)\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
-            "tempmute [user mention / user ID] [minutes] [reason (optional)]\n" +
+            "tempmute [user mention / user ID] [minutes] (reason)\n" +
             "  - Temporarily puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention / user ID]\n" +
             "  - Frees the house-arrested user";
 
-        private const string mod2 = "arrest [user mention / user ID] [minutes (optional)]\n" +
+        private const string mod2 = "arrest [user mention / user ID] (minutes)\n" +
             "  - Sends the user to Guantanamo Bay for a bit; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
             "free [user mention / user ID]\n" +
             "  - Frees the user from Guantanamo Bay because the Constitution exists\n\n" +
-            "kick [user mention / user ID] [reason (optional)]\n" +
+            "kick [user mention / user ID] (reason)\n" +
             "  - Deports the criminal to probably Europe\n\n" +
-            "tempban [user mention / user ID] [days] [prune days (optional)] [reason (optional)]\n" +
+            "tempban [user mention / user ID] [days] (prune days / \"\") (reason)\n" +
             "  - Temporarily exiles the user to Mexico\n\n" +
-            "ban [user mention / user ID] [prune days (optional)] [reason (optional)]\n" +
+            "ban [user mention / user ID] (prune days / \"\") (reason)\n" +
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
             "unban [user mention / user ID]\n" +
             "  - Permits the now-ex-KGB spy to reenter the server\n\n" +
-            "modifyreason [mod log ID] [reason (optional)]\n" +
+            "modifyreason [mod log ID] (reason)\n" +
             "  - Modifies the reason for the given mod log";
 
         private const string mod3 = "purge [count (default: 100, max: 1000)]\n" +
@@ -73,7 +73,7 @@ namespace FBIBot.Modules
             "  - Sets the verification role and, if true, slowly gives out the role to (and removes the old role from) democracy-loving citizens; *Unsets if no role is given*\n\n" +
             "verifyall\n" +
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
-            "unverify [user mention / user ID] [reason (optional)]\n" +
+            "unverify [user mention / user ID] (reason)\n" +
             "  - Removes the verification role from the user and removes the user from the list of verified users\n\n" +
             "setmute [role mention / role ID]\n" +
             "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
