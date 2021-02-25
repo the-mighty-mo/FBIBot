@@ -26,34 +26,34 @@ namespace FBIBot.Modules
             "automod2\n" +
             "  - Displays page 2 of automod configuration commands";
 
-        private const string mod = "warn [user mention / user ID] (reason)\n" +
+        private const string mod = "warn [user mention/ID] (reason)\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
-            "tempwarn [user mention / user ID] [hours] (reason)\n" +
+            "tempwarn [user mention/ID] [hours] (reason)\n" +
             "  - Gives the user a temporary warning to stop protesting capitalism\n\n" +
-            "getwarnings [user mention / user ID]\n" +
+            "getwarnings [user mention/ID]\n" +
             "  - Gets the number of warnings and mod logs for the warnings for the given user\n\n" +
-            "removewarning [user mention / user ID] [mod log ID]\n" +
+            "removewarning [user mention/ID] [mod log ID]\n" +
             "  - Removes the given warning from the user\n\n" +
-            "removewarnings [user mention / user ID] (count)\n" +
+            "removewarnings [user mention/ID] (count)\n" +
             "  - Removes a number of warnings from the user; removes the oldest first\n\n" +
-            "mute [user mention / user ID] (reason)\n" +
+            "mute [user mention/ID] (reason)\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
-            "tempmute [user mention / user ID] [minutes] (reason)\n" +
+            "tempmute [user mention/ID] [minutes] (reason)\n" +
             "  - Temporarily puts the user under house arrest so they can't type or speak in chats\n\n" +
-            "unmute [user mention / user ID]\n" +
+            "unmute [user mention/ID]\n" +
             "  - Frees the house-arrested user";
 
-        private const string mod2 = "arrest [user mention / user ID] (minutes)\n" +
+        private const string mod2 = "arrest [user mention/ID] (minutes)\n" +
             "  - Sends the user to Guantanamo Bay for a bit; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
-            "free [user mention / user ID]\n" +
+            "free [user mention/ID]\n" +
             "  - Frees the user from Guantanamo Bay because the Constitution exists\n\n" +
-            "kick [user mention / user ID] (reason)\n" +
+            "kick [user mention/ID] (reason)\n" +
             "  - Deports the criminal to probably Europe\n\n" +
-            "tempban [user mention / user ID] [days] (prune days / \"\") (reason)\n" +
+            "tempban [user mention/ID] [days] (prune days / \"\") (reason)\n" +
             "  - Temporarily exiles the user to Mexico\n\n" +
-            "ban [user mention / user ID] (prune days / \"\") (reason)\n" +
+            "ban [user mention/ID] (prune days / \"\") (reason)\n" +
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
-            "unban [user mention / user ID]\n" +
+            "unban [user mention/ID]\n" +
             "  - Permits the now-ex-KGB spy to reenter the server\n\n" +
             "modifyreason [mod log ID] (reason)\n" +
             "  - Modifies the reason for the given mod log";
@@ -69,32 +69,32 @@ namespace FBIBot.Modules
             "  - Displays the current bot configuration\n\n" +
             "setprefix [prefix]\n" +
             $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
-            "setverify [role mention / role ID] [true / **false** (default)]\n" +
+            "setverify [role mention/ID] [true / **false** (default)]\n" +
             "  - Sets the verification role and, if true, slowly gives out the role to (and removes the old role from) democracy-loving citizens; *Unsets if no role is given*\n\n" +
             "verifyall\n" +
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
-            "unverify [user mention / user ID] (reason)\n" +
+            "unverify [user mention/ID] (reason)\n" +
             "  - Removes the verification role from the user and removes the user from the list of verified users\n\n" +
-            "setmute [role mention / role ID]\n" +
+            "setmute [role mention/ID]\n" +
             "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
             "modify-muted-roles [true/enable / false/disable]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; enable this unless you have manually configured the server's muted role\n\n" +
             "raidmode\n" +
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
 
-        private const string config2 = "addmod [role mention / role ID]\n" +
+        private const string config2 = "addmod [role mention/ID]\n" +
             "  - Adds the role to a list of assistants of the bureau\n\n" +
-            "removemod [role mention / role ID]\n" +
+            "removemod [role mention/ID]\n" +
             "  - Removes the role from the list of assistants of the bureau out of suspicion\n\n" +
-            "addadmin [role mention / role ID]\n" +
+            "addadmin [role mention/ID]\n" +
             "  - Adds the role to a list of local directors of the bureau\n\n" +
-            "removeadmin [role mention / role ID]\n" +
+            "removeadmin [role mention/ID]\n" +
             "  - Removes the role from the list of local directors of the bureau due to presidential disapproval\n\n" +
-            "setmodlog [channel mention / channel ID]\n" +
+            "setmodlog [channel mention/ID]\n" +
             "  - Sets the channel for the Mod Log; *Unsets if no channel is given*\n\n" +
-            "setcaptchalog [channel mention / channel ID]\n" +
+            "setcaptchalog [channel mention/ID]\n" +
             "  - Sets the channel for the CAPTCHA Log; *Unsets if no channel is given*\n\n" +
-            "setwelcome [channel mention / channel ID]\n" +
+            "setwelcome [channel mention/ID]\n" +
             "  - Sets the channel for welcome messages; *Unsets if no channel is given*\n\n" +
             "clearmodlog [clear messages (true / **false** [default])]\n" +
             "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**";
