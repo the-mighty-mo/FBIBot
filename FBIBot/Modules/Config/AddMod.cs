@@ -16,7 +16,7 @@ namespace FBIBot.Modules.Config
         {
             if ((await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))
             {
-                await Context.Channel.SendMessageAsync($"Members with the {role.Name} role are already assisting the FBI.");
+                await Context.Channel.SendMessageAsync($"Members with the {role.Mention} role are already assisting the FBI.");
                 return;
             }
 
@@ -27,12 +27,12 @@ namespace FBIBot.Modules.Config
             string description;
             if ((await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
-                description = $"Members with the {role.Name} role have been demoted to assistants of the agency.";
+                description = $"Members with the {role.Mention} role have been demoted to assistants of the agency.";
                 cmds.Add(modRolesDatabase.Admins.RemoveAdminAsync(role));
             }
             else
             {
-                description = $"Members with the {role.Name} role may now assist our agents in ensuring freedom, democracy, and justice for all.";
+                description = $"Members with the {role.Mention} role may now assist our agents in ensuring freedom, democracy, and justice for all.";
             }
 
             EmbedBuilder embed = new EmbedBuilder()

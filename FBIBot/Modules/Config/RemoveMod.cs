@@ -15,14 +15,14 @@ namespace FBIBot.Modules.Config
         {
             if (!(await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))
             {
-                await Context.Channel.SendMessageAsync($"Our agents have informed us that members with the {role.Name} role aren't assistants.");
+                await Context.Channel.SendMessageAsync($"Our agents have informed us that members with the {role.Mention} role aren't assistants.");
                 return;
             }
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("Federal Bureau of Investigation")
-                .WithDescription($"Members with the {role.Name} role are no longer assistants of the agency. They were getting kind of suspicious, anyways.");
+                .WithDescription($"Members with the {role.Mention} role are no longer assistants of the agency. They were getting kind of suspicious, anyways.");
 
             await Task.WhenAll
             (

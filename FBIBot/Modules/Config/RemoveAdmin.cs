@@ -15,14 +15,14 @@ namespace FBIBot.Modules.Config
         {
             if (!(await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
-                await Context.Channel.SendMessageAsync($"Our agents have informed us that members with the {role.Name} role aren't local directors.");
+                await Context.Channel.SendMessageAsync($"Our agents have informed us that members with the {role.Mention} role aren't local directors.");
                 return;
             }
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("Federal Bureau of Investigation")
-                .WithDescription($"Members with the {role.Name} role are no longer local directors of the agency. The president was displeased with their performance.");
+                .WithDescription($"Members with the {role.Mention} role are no longer local directors of the agency. The president was displeased with their performance.");
 
             await Task.WhenAll
             (

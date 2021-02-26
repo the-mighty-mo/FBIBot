@@ -41,7 +41,7 @@ namespace FBIBot.Modules.Config
             SocketRole currentRole = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             if (currentRole == role)
             {
-                await Context.Channel.SendMessageAsync($"Our customs team has informed us that all patriotic citizens already receive the {role.Name} role.");
+                await Context.Channel.SendMessageAsync($"Our customs team has informed us that all patriotic citizens already receive the {role.Mention} role.");
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace FBIBot.Modules.Config
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("Federal Bureau of Investigation")
-                .WithDescription($"All proud Americans will now receive the {role.Name} role.");
+                .WithDescription($"All proud Americans will now receive the {role.Mention} role.");
 
             await Task.WhenAll
             (

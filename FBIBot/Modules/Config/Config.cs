@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static FBIBot.DatabaseManager;
 
@@ -33,11 +34,11 @@ namespace FBIBot.Modules.Config
             Task<bool> antiLink = configDatabase.AntiLink.GetAntiLinkAsync(Context.Guild);
 
             string config = $"Prefix: **{(await prefix == @"\" ? @"\\" : await prefix)}**\n" +
-                $"Verification Role: **{(await verify != null ? (await verify).Name : "(none)")}**\n" +
-                $"Mute Role: **{(await mute != null ? (await mute).Name : "(none)")}**\n" +
+                $"Verification Role: **{(await verify != null ? (await verify).Mention : "(none)")}**\n" +
+                $"Mute Role: **{(await mute != null ? (await mute).Mention : "(none)")}**\n" +
                 $"Modify Muted Member's Roles: **{(await modifyMuted ? "Enabled" : "Disabled")}**\n" +
-                $"Mod Roles: **{string.Join(", ", await modRoles)}**\n" +
-                $"Admin Roles: **{string.Join(", ", await adminRoles)}**\n" +
+                $"Mod Roles: **{string.Join(", ", (await modRoles).Select(x => x.Mention))}**\n" +
+                $"Admin Roles: **{string.Join(", ", (await adminRoles).Select(x => x.Mention))}**\n" +
                 $"Mod Log: **{(await modlog != null ? (await modlog).Mention : "(none)")}**\n" +
                 $"CAPTCHA Log: **{(await captchalog != null ? (await captchalog).Mention : "(none)")}**\n" +
                 $"Welcome Channel: **{(await welcome != null ? (await welcome).Mention : "(none)")}**\n" +

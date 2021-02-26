@@ -24,7 +24,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.Yield();
 
             int count = Context.Message.MentionedRoles.Count + Context.Message.MentionedUsers.Count;
-            bool hasMassMention = count >= 5;
+            bool hasMassMention = count > 5;
 
             return hasMassMention;
         }

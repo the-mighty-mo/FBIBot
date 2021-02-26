@@ -39,14 +39,14 @@ namespace FBIBot.Modules.Config
         {
             if (await modRolesDatabase.Muted.GetMuteRole(Context.Guild) == role)
             {
-                await Context.Channel.SendMessageAsync($"All who commit treason already receive the {role.Name} role.");
+                await Context.Channel.SendMessageAsync($"All who commit treason already receive the {role.Mention} role.");
                 return;
             }
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle("Federal Bureau of Investigation")
-                .WithDescription($"All who commit treason will now receive the {role.Name} role.");
+                .WithDescription($"All who commit treason will now receive the {role.Mention} role.");
 
             await Task.WhenAll
             (

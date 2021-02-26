@@ -16,7 +16,7 @@ namespace FBIBot.Modules.Config
         {
             if ((await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
             {
-                await Context.Channel.SendMessageAsync($"Members with the {role.Name} role are already local directors of the FBI.");
+                await Context.Channel.SendMessageAsync($"Members with the {role.Mention} role are already local directors of the FBI.");
                 return;
             }
 
@@ -27,12 +27,12 @@ namespace FBIBot.Modules.Config
             string description;
             if ((await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))
             {
-                description = $"Members with the {role.Name} role have been promoted to local directors of the FBI.";
+                description = $"Members with the {role.Mention} role have been promoted to local directors of the FBI.";
                 cmds.Add(modRolesDatabase.Mods.RemoveModAsync(role));
             }
             else
             {
-                description = $"Members with the {role.Name} role are now local directors of the FBI.";
+                description = $"Members with the {role.Mention} role are now local directors of the FBI.";
             }
 
             EmbedBuilder embed = new EmbedBuilder()
