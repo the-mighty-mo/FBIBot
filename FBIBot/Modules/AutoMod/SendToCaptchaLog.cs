@@ -58,7 +58,7 @@ namespace FBIBot.Modules.AutoMod
                 .WithCurrentTimestamp();
 
             EmbedFieldBuilder captchaResult = new EmbedFieldBuilder()
-                .WithIsInline(false)
+                .WithIsInline(true)
                 .WithName("User")
                 .WithValue(info.user.Mention);
             embed.AddField(captchaResult);

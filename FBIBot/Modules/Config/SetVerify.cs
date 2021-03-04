@@ -83,32 +83,28 @@ namespace FBIBot.Modules.Config
             await Context.Channel.SendMessageAsync("Our intelligence tells us the given role does not exist.");
         }
 
-        private async Task ManageRolesAsync(SocketRole role, SocketRole currentRole)
+        private async Task ManageRolesAsync(SocketRole role, SocketRole oldRole)
         {
             SocketRole newRole;
             foreach (SocketGuildUser user in Context.Guild.Users)
             {
-                if (await verificationDatabase.Verified.GetVerifiedAsync(user) || (currentRole != null && user.Roles.Contains(currentRole)))
+                if (await verificationDatabase.Verified.GetVerifiedAsync(user) || (oldRole != null && user.Roles.Contains(oldRole)))
                 {
                     await user.AddRoleAsync(role);
-                    if ((newRole = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild)) != role)
+                    // If the verification role was changed while adding the role, return
+                    if (await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild) != role)
                     {
                         await user.RemoveRoleAsync(role);
                         return;
                     }
-                }
-            }
 
-            if (currentRole != null)
-            {
-                foreach (SocketGuildUser user in Context.Guild.Users)
-                {
-                    if (await verificationDatabase.Verified.GetVerifiedAsync(user) || (currentRole != null && user.Roles.Contains(currentRole)))
+                    if (oldRole != null)
                     {
-                        await user.RemoveRoleAsync(currentRole);
-                        if ((newRole = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild)) != role && newRole == currentRole)
+                        await user.RemoveRoleAsync(oldRole);
+                        // If the verification role was changed while removing the old role, and the new role is the old role, return
+                        if ((newRole = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild)) != role && newRole == oldRole)
                         {
-                            await user.AddRoleAsync(currentRole);
+                            await user.AddRoleAsync(oldRole);
                             return;
                         }
                     }

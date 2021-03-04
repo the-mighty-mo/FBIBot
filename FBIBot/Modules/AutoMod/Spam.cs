@@ -42,19 +42,17 @@ namespace FBIBot.Modules.AutoMod
                 {
                     break;
                 }
-                else
-                {
-                    if (!messages.TryAdd(msg.Content, 1))
-                    {
-                        messages[msg.Content]++;
-                    }
 
-                    int totalDuplicates = messages.Where(x => x.Value > 2).Sum(x => x.Value); // total number of duplicate messages
-                    if (messages[message] >= 4 || (messages[message] > 1 && totalDuplicates >= 5))
-                    {
-                        isSpam = true;
-                        break;
-                    }
+                if (!messages.TryAdd(msg.Content, 1))
+                {
+                    messages[msg.Content]++;
+                }
+
+                int totalDuplicates = messages.Where(x => x.Value > 2).Sum(x => x.Value); // total number of duplicate messages
+                if (messages[message] >= 4 || (messages[message] > 1 && totalDuplicates >= 5))
+                {
+                    isSpam = true;
+                    break;
                 }
             }
 
