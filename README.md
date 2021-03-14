@@ -18,13 +18,12 @@ This bot requires permissions: 424275126
 **NOTE:** This project was created in Visual Studio 2019 and may not be backwards compatible with older versions of Visual Studio.
 3. Add your Client ID, Token, and Discriminator to `SecurityInfo.cs` so the bot can come online and respond to commands.  
 **NOTE:** It is recommended that you set your bot's profile picture to FBIBot/FBI.png and its name to "The FBI" for maximum effect.
-4. Restore NuGet packages (if necessary before build).
-5. Build the project in Release mode (Any CPU) and run `FBIBot.exe` in `FBIBot\bin\Release\netcoreapp3.1`.
+4. Build the project in Release mode (Any CPU) and run `FBIBot.exe` in `FBIBot\bin\Release\net5.0`.
 
 ### Some notes
 
-Currently, warnings don't do anything automatically due to running out of time after setting up all the regex and automod stuff. Additionally, the regex stuff is not perfect, and not all messages send "useful" error messages. Lastly, commands with a given length of time will only work if the bot stays open since I have not figured out how to log data in such a way that the bot would be able to repeal mod actions after a restart. However, these will all be added/fixed as soon as possible after Discord selects the winners of Discord Hack Week.  
+Currently, warnings don't do anything automatically. Additionally, not all messages send "useful" error messages. Lastly, commands with a given length of time will only work if the bot keeps running (this will be fixed in a future release).  
 Also, we'll install more surveillance systems soon.
 
-Thank you for your cooperation. ~~Because you don't have a choice but to cooperate.~~  
+Thank you for your cooperation. ~~Not that you had a choice.~~  
 \- The FBI, under the direction of Supreme Leader Josedolf Staller
