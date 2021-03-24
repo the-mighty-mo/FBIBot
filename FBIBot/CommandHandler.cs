@@ -72,7 +72,7 @@ namespace FBIBot
             {
                 await Task.WhenAll
                 (
-                    u.SendMessageAsync($":rotating_light: :rotating_light: The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time.:rotating_light: :rotating_light:"),
+                    u.SendMessageAsync($":rotating_light: :rotating_light: The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time. :rotating_light: :rotating_light:"),
                     raidModeDatabase.UsersBlocked.AddBlockedUserAsync(u)
                 );
                 await u.KickAsync("FBI RAID MODE");
