@@ -49,14 +49,6 @@ namespace FBIBot.Modules.Mod.ModLog
                 .WithCurrentTimestamp();
 
             EmbedFieldBuilder field = e.Fields.FirstOrDefault(x => x.Name.Contains(info.StateName));
-            if (info is ReasonInfo)
-            {
-                EmbedFieldBuilder f = e.Fields.FirstOrDefault(x => x.Name.Contains("Arrest User"));
-                if (f != null)
-                {
-                    return false;
-                }
-            }
             if (field == null)
             {
                 return false;

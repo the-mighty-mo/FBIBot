@@ -6,7 +6,7 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class ArrestModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string timeout)
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string timeout, string reason)
         {
             bool isTime = double.TryParse(timeout, out double time);
             await ModLogBase.SendToModLogAsync(
@@ -18,7 +18,7 @@ namespace FBIBot.Modules.Mod.ModLog
                         $"{target.Mention}"
                     ),
                     new ModLogBase.ModLogInfo.ReasonInfo(
-                        "*No reason necessary*"
+                        reason ?? "*No reason necessary*"
                     )
                 )
             );

@@ -27,9 +27,8 @@ namespace FBIBot.Modules
             "  - Displays page 2 of automod configuration commands";
 
         private const string mod = "warn [user mention/ID] (reason)\n" +
-            "  - Gives the user a warning to stop protesting capitalism\n\n" +
             "tempwarn [user mention/ID] [hours] (reason)\n" +
-            "  - Gives the user a temporary warning to stop protesting capitalism\n\n" +
+            "  - Gives the user a warning to stop protesting capitalism\n\n" +
             "getwarnings [user mention/ID]\n" +
             "  - Gets the number of warnings and mod logs for the warnings for the given user\n\n" +
             "removewarning [user mention/ID] [mod log ID]\n" +
@@ -37,13 +36,13 @@ namespace FBIBot.Modules
             "removewarnings [user mention/ID] (count)\n" +
             "  - Removes a number of warnings from the user; removes the oldest first\n\n" +
             "mute [user mention/ID] (reason)\n" +
-            "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
             "tempmute [user mention/ID] [minutes] (reason)\n" +
-            "  - Temporarily puts the user under house arrest so they can't type or speak in chats\n\n" +
+            "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention/ID]\n" +
             "  - Frees the house-arrested user";
 
-        private const string mod2 = "arrest [user mention/ID] (minutes)\n" +
+        private const string mod2 = "arrest [user mention/ID] (reason)\n" +
+            "tempArrest [user mention/ID] [minutes] (reason)\n" +
             "  - Sends the user to Guantanamo Bay for a bit; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
             "free [user mention/ID]\n" +
             "  - Frees the user from Guantanamo Bay because the Constitution exists\n\n" +
@@ -54,11 +53,11 @@ namespace FBIBot.Modules
             "ban [user mention/ID] (prune days / \"\") (reason)\n" +
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
             "unban [user mention/ID]\n" +
-            "  - Permits the now-ex-KGB spy to reenter the server\n\n" +
-            "modifyreason [mod log ID] (reason)\n" +
-            "  - Modifies the reason for the given mod log";
+            "  - Permits the now-ex-KGB spy to reenter the server";
 
-        private const string mod3 = "purge [count (default: 100, max: 1000)]\n" +
+        private const string mod3 = "modifyreason [mod log ID] (reason)\n" +
+            "  - Modifies the reason for the given mod log\n\n" +
+            "purge [count (default: 100, max: 1000)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from the channel\n\n" +
             "purge [user mention] [count (default: 10, max: 100)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from a user in the channel\n\n" +

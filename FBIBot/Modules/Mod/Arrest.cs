@@ -16,7 +16,20 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, string timeout = null)
+        public async Task ArrestAsync([RequireBotHierarchy("arrest")][RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Remainder] string reason = null) => await TempArrestAsync(user, null, reason);
+
+        [Command("arrest")]
+        [RequireMod]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
+        public async Task ArrestAsync(string user, [Remainder] string reason = null) => await TempArrestAsync(user, null, reason);
+
+        [Command("temparrest")]
+        [Alias("temp-arrest")]
+        [RequireMod]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
+        public async Task TempArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
         {
             IRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
@@ -43,10 +56,16 @@ namespace FBIBot.Modules.Mod
                 .WithColor(new Color(255, 61, 24))
                 .WithDescription($"{user.Mention} has been sent to Guantanamo Bay{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}.");
 
+            EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
+                    .WithIsInline(false)
+                    .WithName("Reason")
+                    .WithValue($"{reason ?? "*No reason necessary*"}");
+            embed.AddField(reasonField);
+
             await Task.WhenAll
             (
                 Context.Channel.SendMessageAsync(embed: embed.Build()),
-                ArrestModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout)
+                ArrestModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
             );
 
             if (isTimeout)
@@ -82,16 +101,17 @@ namespace FBIBot.Modules.Mod
             }
         }
 
-        [Command("arrest")]
+        [Command("temparrest")]
+        [Alias("temp-arrest")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync(string user, string timeout = null)
+        public async Task TempArrestAsync(string user, string timeout = null, [Remainder] string reason = null)
         {
             SocketGuildUser u;
             if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
             {
-                await ArrestAsync(u, timeout);
+                await TempArrestAsync(u, timeout, reason);
                 return;
             }
             await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
