@@ -36,6 +36,7 @@ namespace FBIBot.Modules.Mod
 
             List<SocketRole> roles = user.Roles.ToList();
             roles.Remove(Context.Guild.EveryoneRole);
+            roles.RemoveAll(x => x.IsManaged);
 
             List<Task> cmds = new List<Task>();
             bool modifyRoles = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
