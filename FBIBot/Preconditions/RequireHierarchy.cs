@@ -14,13 +14,18 @@ namespace FBIBot
 
         public sealed override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, ParameterInfo parameter, object value, IServiceProvider services)
         {
-            SocketCommandContext Context = context as SocketCommandContext;
-
-            return value is SocketGuildUser user
-                ? await CheckPermissionsAsync(Context, user)
-                : value is string userId && ulong.TryParse(userId, out ulong userID) && (user = Context.Guild.GetUser(userID)) != null
-                    ? await CheckPermissionsAsync(Context, user)
-                    : PreconditionResult.FromError("Our intelligence team has informed us that the given user does not exist.");
+            if (context is SocketCommandContext Context)
+            {
+                if (value is SocketGuildUser user)
+                {
+                    return await CheckPermissionsAsync(Context, user);
+                }
+                else if (value is string userId && ulong.TryParse(userId, out ulong userID) && (user = Context.Guild.GetUser(userID)) != null)
+                {
+                    return await CheckPermissionsAsync(Context, user);
+                }
+            }
+            return PreconditionResult.FromError("Our intelligence team has informed us that the given user does not exist.");
         }
 
         protected abstract Task<PreconditionResult> CheckPermissionsAsync(SocketCommandContext Context, SocketGuildUser target);

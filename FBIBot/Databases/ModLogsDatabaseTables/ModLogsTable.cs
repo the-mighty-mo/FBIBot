@@ -53,7 +53,10 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
                     _ = ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                     _ = ulong.TryParse(reader["message_id"].ToString(), out ulong messageID);
 
-                    msg = await g.GetTextChannel(channelID)?.GetMessageAsync(messageID) as IUserMessage;
+                    if (g.GetTextChannel(channelID) is var channel)
+                    {
+                        msg = await channel.GetMessageAsync(messageID) as IUserMessage;
+                    }
                 }
                 reader.Close();
             }
@@ -65,25 +68,23 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
         {
             string insert = "INSERT INTO ModLogs (guild_id, id, channel_id, message_id) SELECT @guild_id, @id, @channel_id, @message_id\n" +
                 "WHERE NOT EXISTS (SELECT 1 FROM ModLogs WHERE guild_id = @guild_id AND id = @id);";
-            using (SqliteCommand cmd = new SqliteCommand(insert, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                cmd.Parameters.AddWithValue("@id", id.ToString());
-                cmd.Parameters.AddWithValue("@channel_id", msg.Channel.Id.ToString());
-                cmd.Parameters.AddWithValue("@message_id", msg.Id.ToString());
 
-                await cmd.ExecuteNonQueryAsync();
-            }
+            using SqliteCommand cmd = new SqliteCommand(insert, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+            cmd.Parameters.AddWithValue("@id", id.ToString());
+            cmd.Parameters.AddWithValue("@channel_id", msg.Channel.Id.ToString());
+            cmd.Parameters.AddWithValue("@message_id", msg.Id.ToString());
+
+            await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task RemoveModLogsAsync(SocketGuild g)
         {
             string delete = "DELETE FROM ModLogs WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
+
+            using SqliteCommand cmd = new SqliteCommand(delete, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+            await cmd.ExecuteNonQueryAsync();
         }
     }
 }

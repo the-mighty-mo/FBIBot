@@ -53,13 +53,20 @@ namespace FBIBot.Modules.Mod
             {
                 SocketTextChannel channel = await modRolesDatabase.PrisonerChannel.GetPrisonerChannelAsync(Context.Guild);
 
-                await Task.WhenAll
-                (
-                    channel?.DeleteAsync(),
-                    role?.DeleteAsync(),
+                cmds = new()
+                {
                     modRolesDatabase.PrisonerChannel.RemovePrisonerChannelAsync(Context.Guild),
                     modRolesDatabase.PrisonerRole.RemovePrisonerRoleAsync(Context.Guild)
-                );
+                };
+                if (channel != null)
+                {
+                    cmds.Add(channel.DeleteAsync());
+                }
+                if (role != null)
+                {
+                    cmds.Add(role.DeleteAsync());
+                }
+                await Task.WhenAll(cmds);
             }
         }
 
