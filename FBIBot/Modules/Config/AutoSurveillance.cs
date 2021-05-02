@@ -14,7 +14,7 @@ namespace FBIBot.Modules.Config
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AutoSurveillanceAsync(string enable)
         {
-            bool isEnable = enable == "true" || enable == "enable";
+            bool isEnable = enable is "true" or "enable";
             bool isEnabled = await configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
 
             if (isEnable == isEnabled)
@@ -28,7 +28,7 @@ namespace FBIBot.Modules.Config
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription($"We are now {(isEnable ? "permitted to perform" : "prohibited from performing")} surveillance on server members.");
 
-            List<Task> cmds = new List<Task>()
+            List<Task> cmds = new()
             {
                 Context.Channel.SendMessageAsync(embed: embed.Build())
             };

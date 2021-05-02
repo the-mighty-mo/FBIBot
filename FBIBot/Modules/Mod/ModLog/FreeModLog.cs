@@ -6,8 +6,7 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class FreeModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target)
-        {
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target) =>
             await ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
@@ -18,6 +17,5 @@ namespace FBIBot.Modules.Mod.ModLog
                     )
                 )
             );
-        }
     }
 }

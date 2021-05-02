@@ -20,7 +20,7 @@ namespace FBIBot.Modules.Config
                 return;
             }
 
-            List<Task> cmds = new List<Task>()
+            List<Task> cmds = new()
             {
                 modRolesDatabase.Mods.AddModRoleAsync(role)
             };

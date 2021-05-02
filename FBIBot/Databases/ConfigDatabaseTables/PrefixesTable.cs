@@ -12,7 +12,7 @@ namespace FBIBot.Databases.ConfigDatabaseTables
 
         public Task InitAsync()
         {
-            using SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Prefixes (guild_id TEXT PRIMARY KEY, prefix TEXT NOT NULL);", connection);
+            using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS Prefixes (guild_id TEXT PRIMARY KEY, prefix TEXT NOT NULL);", connection);
             return cmd.ExecuteNonQueryAsync();
         }
 
@@ -21,17 +21,16 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             string prefix = CommandHandler.prefix;
 
             string getPrefix = "SELECT prefix FROM Prefixes WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getPrefix, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
-                {
-                    prefix = (string)reader["prefix"];
-                }
-                reader.Close();
+            using SqliteCommand cmd = new(getPrefix, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                prefix = (string)reader["prefix"];
             }
+            reader.Close();
 
             return prefix;
         }
@@ -41,13 +40,11 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             string update = "UPDATE Prefixes SET prefix = @prefix WHERE guild_id = @guild_id;";
             string insert = "INSERT INTO Prefixes (guild_id, prefix) SELECT @guild_id, @prefix WHERE (SELECT Changes() = 0);";
 
-            using (SqliteCommand cmd = new SqliteCommand(update + insert, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                cmd.Parameters.AddWithValue("@prefix", prefix);
+            using SqliteCommand cmd = new(update + insert, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+            cmd.Parameters.AddWithValue("@prefix", prefix);
 
-                await cmd.ExecuteNonQueryAsync();
-            }
+            await cmd.ExecuteNonQueryAsync();
         }
     }
 }

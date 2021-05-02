@@ -5,14 +5,13 @@ namespace FBIBot
 {
     public static class DatabaseManager
     {
-        public static readonly VerificationDatabase verificationDatabase = new VerificationDatabase();
-        public static readonly ModRolesDatabase modRolesDatabase = new ModRolesDatabase();
-        public static readonly ModLogsDatabase modLogsDatabase = new ModLogsDatabase();
-        public static readonly ConfigDatabase configDatabase = new ConfigDatabase();
-        public static readonly RaidModeDatabase raidModeDatabase = new RaidModeDatabase();
+        public static readonly VerificationDatabase verificationDatabase = new();
+        public static readonly ModRolesDatabase modRolesDatabase = new();
+        public static readonly ModLogsDatabase modLogsDatabase = new();
+        public static readonly ConfigDatabase configDatabase = new();
+        public static readonly RaidModeDatabase raidModeDatabase = new();
 
-        public static async Task InitAsync()
-        {
+        public static async Task InitAsync() =>
             await Task.WhenAll(
                 verificationDatabase.InitAsync(),
                 modRolesDatabase.InitAsync(),
@@ -20,10 +19,8 @@ namespace FBIBot
                 configDatabase.InitAsync(),
                 raidModeDatabase.InitAsync()
             );
-        }
 
-        public static async Task CloseAsync()
-        {
+        public static async Task CloseAsync() =>
             await Task.WhenAll(
                 verificationDatabase.CloseAsync(),
                 modRolesDatabase.CloseAsync(),
@@ -31,6 +28,5 @@ namespace FBIBot
                 configDatabase.CloseAsync(),
                 raidModeDatabase.CloseAsync()
             );
-        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Rest;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
@@ -14,12 +15,14 @@ namespace FBIBot.Modules.Mod
         [Command("mute")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Remainder] string reason = null) => await TempMuteAsync(user, null, reason);
+        public async Task MuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Remainder] string reason = null) =>
+            await TempMuteAsync(user, null, reason);
 
         [Command("mute")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(string user, [Remainder] string reason = null) => await TempMuteAsync(user, null, reason);
+        public async Task MuteAsync(string user, [Remainder] string reason = null) =>
+            await TempMuteAsync(user, null, reason);
 
         [Command("tempmute")]
         [Alias("temp-mute")]
@@ -38,7 +41,7 @@ namespace FBIBot.Modules.Mod
             roles.Remove(Context.Guild.EveryoneRole);
             roles.RemoveAll(x => x.IsManaged);
 
-            List<Task> cmds = new List<Task>();
+            List<Task> cmds = new();
             bool modifyRoles = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
             if (modifyRoles)
             {
@@ -110,9 +113,9 @@ namespace FBIBot.Modules.Mod
 
         private async Task<IRole> CreateMuteRoleAsync()
         {
-            GuildPermissions perms = new GuildPermissions(viewChannel: true, sendMessages: false, addReactions: false, connect: true, speak: false);
-            Color color = new Color(54, 57, 63);
-            var role = await Context.Guild.CreateRoleAsync("Muted", perms, color, false, false);
+            GuildPermissions perms = new(viewChannel: true, sendMessages: false, addReactions: false, connect: true, speak: false);
+            Color color = new(54, 57, 63);
+            RestRole role = await Context.Guild.CreateRoleAsync("Muted", perms, color, false, false);
 
             await modRolesDatabase.Muted.SetMuteRoleAsync(role, Context.Guild);
             return role;

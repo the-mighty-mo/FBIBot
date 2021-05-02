@@ -12,7 +12,7 @@ namespace FBIBot.Modules.Config
         [RequireAdmin]
         public async Task ModifyMutedRolesAsync(string modify)
         {
-            bool isModify = modify.ToLower() == "true" || modify.ToLower() == "enable";
+            bool isModify = modify.ToLower() is "true" or "enable";
             bool isModifying = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
             string state = isModify ? "permitted to modify" : "prohibited from modifying";
 
@@ -27,7 +27,7 @@ namespace FBIBot.Modules.Config
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription($"We are now {state} muted member's roles.");
 
-            List<Task> cmds = new List<Task>()
+            List<Task> cmds = new()
             {
                 Context.Channel.SendMessageAsync(embed: embed.Build())
             };

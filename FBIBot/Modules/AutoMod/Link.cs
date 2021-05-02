@@ -10,15 +10,13 @@ namespace FBIBot.Modules.AutoMod
 
         public Link(SocketCommandContext context) => Context = context;
 
-        public async Task RemoveAsync()
-        {
+        public async Task RemoveAsync() =>
             await Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
                 Context.User.SendMessageAsync($"You cannot send links in the server {Context.Guild.Name}.\n" +
                     $"Message removed: {Context.Message.Content}")
             );
-        }
 
         public static async Task<bool> IsLinkAsync(SocketCommandContext Context)
         {

@@ -28,7 +28,7 @@ namespace FBIBot.Modules.Mod
                 .WithColor(new Color(12, 156, 24))
                 .WithDescription($"{user.Mention} has been freed from house arrest after a good amount of ~~brainwashing~~ self-reflection.");
 
-            List<Task> cmds = new List<Task>()
+            List<Task> cmds = new()
             {
                 Context.Channel.SendMessageAsync(embed: embed.Build()),
                 UnmuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)

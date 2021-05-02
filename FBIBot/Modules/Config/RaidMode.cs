@@ -63,7 +63,7 @@ namespace FBIBot.Modules.Config
         {
             List<string> blockedUsers = await raidModeDatabase.UsersBlocked.GetBlockedUsersAsync(Context.Guild);
             SocketTextChannel channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
-            List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>();
+            List<EmbedFieldBuilder> fields = new();
             int messages = 1;
 
             if (blockedUsers.Count == 0)
@@ -115,7 +115,7 @@ namespace FBIBot.Modules.Config
                         blocked = "";
                     }
                 }
-                if (i <= 20 && i > 1)
+                if (i is <= 20 and > 1)
                 {
                     EmbedFieldBuilder field = new EmbedFieldBuilder()
                         .WithIsInline(false)

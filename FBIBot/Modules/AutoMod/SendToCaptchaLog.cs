@@ -38,7 +38,7 @@ namespace FBIBot.Modules.AutoMod
 
         public static async Task SendToCaptchaLogAsync(CaptchaType t, SocketGuildUser user, string code, string given = null, int attempts = 0)
         {
-            CaptchaLogInfo info = new CaptchaLogInfo(t, user, code, given, attempts);
+            CaptchaLogInfo info = new(t, user, code, given, attempts);
             CAPTCHATypeSwitch(ref info);
 
             await SendToCaptchaLogAsync(info);

@@ -47,7 +47,7 @@ namespace FBIBot.Modules.AutoMod
                 Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.")
             );
 
-            List<Task> cmds = new List<Task>();
+            List<Task> cmds = new();
             foreach (SocketGuild g in Context.User.MutualGuilds)
             {
                 if (await verificationDatabase.Roles.GetVerificationRoleAsync(g) == null)
@@ -69,7 +69,7 @@ namespace FBIBot.Modules.AutoMod
 
             if (attempts >= maxAttempts)
             {
-                List<Task> commands = new List<Task>()
+                List<Task> commands = new()
                 {
                     verificationDatabase.Captcha.RemoveCaptchaAsync(Context.User),
                     verificationDatabase.Attempts.RemoveAttemptsAsync(Context.User),
@@ -90,7 +90,7 @@ namespace FBIBot.Modules.AutoMod
             }
             else
             {
-                List<Task> commands = new List<Task>()
+                List<Task> commands = new()
                 {
                     verificationDatabase.Attempts.SetAttemptsAsync(Context.User, attempts),
                     Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.")
@@ -118,7 +118,7 @@ namespace FBIBot.Modules.AutoMod
             await Task.Yield();
 
             Task save = verificationDatabase.Captcha.SetCaptchaAsync(captchaCode, u);
-            var imageStream = ImageFactory.BuildImage(captchaCode, 60, 160, 24, 14);
+            MemoryStream imageStream = ImageFactory.BuildImage(captchaCode, 60, 160, 24, 14);
             imageStream.Position = 0;
 
             Image image = Image.FromStream(imageStream);
@@ -133,7 +133,7 @@ namespace FBIBot.Modules.AutoMod
             image.Dispose();
             File.Delete($"{u.Id}.png");
 
-            List<Task> commands = new List<Task>();
+            List<Task> commands = new();
             foreach (SocketGuild g in u.MutualGuilds)
             {
                 if (await verificationDatabase.Roles.GetVerificationRoleAsync(g) == null)
@@ -148,7 +148,7 @@ namespace FBIBot.Modules.AutoMod
 
         private async Task GiveVerificationAsync()
         {
-            List<Task> cmds = new List<Task>();
+            List<Task> cmds = new();
             foreach (SocketGuild g in Context.User.MutualGuilds)
             {
                 SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(g);

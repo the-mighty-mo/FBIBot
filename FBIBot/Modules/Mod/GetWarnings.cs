@@ -22,8 +22,8 @@ namespace FBIBot.Modules.Mod
                 return;
             }
 
-            List<ulong> idsPastDay = new List<ulong>();
-            List<ulong> idsPastHour = new List<ulong>();
+            List<ulong> idsPastDay = new();
+            List<ulong> idsPastHour = new();
             foreach (ulong id in ids)
             {
                 IUserMessage msg = await modLogsDatabase.ModLogs.GetModLogAsync(Context.Guild, id);

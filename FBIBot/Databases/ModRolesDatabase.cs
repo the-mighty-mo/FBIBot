@@ -7,8 +7,8 @@ namespace FBIBot.Databases
 {
     public class ModRolesDatabase
     {
-        private readonly SqliteConnection connection = new SqliteConnection("Filename=ModRoles.db");
-        private readonly Dictionary<System.Type, ITable> tables = new Dictionary<System.Type, ITable>();
+        private readonly SqliteConnection connection = new("Filename=ModRoles.db");
+        private readonly Dictionary<System.Type, ITable> tables = new();
 
         public MutedTable Muted => tables[typeof(MutedTable)] as MutedTable;
         public PrisonerRoleTable PrisonerRole => tables[typeof(PrisonerRoleTable)] as PrisonerRoleTable;

@@ -12,16 +12,14 @@ namespace FBIBot.Modules.AutoMod
 
         public Zalgo(SocketCommandContext context) => Context = context;
 
-        public async Task WarnAsync()
-        {
-            await Task.WhenAll
+        public async Task WarnAsync() => await Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
                 Context.Channel.SendMessageAsync($"\\tempwarn {Context.User.Mention} 0.5 HE COMES (Zalgo)\n")
             );
-        }
 
-        public static async Task<bool> IsZalgoAsync(SocketCommandContext Context) => await IsZalgoAsync(Context.Message.Content);
+        public static async Task<bool> IsZalgoAsync(SocketCommandContext Context) =>
+            await IsZalgoAsync(Context.Message.Content);
 
         public static async Task<bool> IsZalgoAsync(string msg)
         {

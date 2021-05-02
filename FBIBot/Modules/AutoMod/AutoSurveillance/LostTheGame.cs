@@ -11,7 +11,7 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
             await Task.Yield();
 
             string message = Context.Message.Content;
-            Regex regex = new Regex(@"l(o|0)s(t|e)\s+the(\w*\s+)+?game", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex regex = new(@"l(o|0)s(t|e)\s+the(\w*\s+)+?game", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             return regex.IsMatch(message);
         }
     }

@@ -29,10 +29,8 @@ namespace FBIBot.Modules.Mod.ModLog
             {
                 public readonly string reason;
 
-                public ReasonInfo(string reason = null)
-                {
+                public ReasonInfo(string reason = null) =>
                     this.reason = reason;
-                }
             }
 
             public SocketGuildUser Invoker { get; }

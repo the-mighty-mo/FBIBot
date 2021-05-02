@@ -11,7 +11,7 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
             await Task.Yield();
 
             string message = Context.Message.Content;
-            Regex regex = new Regex(@"I\s+(like|love)\s+(?!(no(?!\w+)|none\s*of))(\w*\s+)*?(children|kids)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex regex = new(@"I\s+(like|love)\s+(?!(no(?!\w+)|none\s*of))(\w*\s+)*?(children|kids)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             return regex.IsMatch(message);
         }
     }

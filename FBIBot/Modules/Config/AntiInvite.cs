@@ -14,7 +14,7 @@ namespace FBIBot.Modules.Config
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiInviteAsync(string enable)
         {
-            bool isEnable = enable == "true" || enable == "enable";
+            bool isEnable = enable is "true" or "enable";
             bool isEnabled = await configDatabase.AntiInvite.GetAntiInviteAsync(Context.Guild);
 
             if (isEnable == isEnabled)
@@ -28,7 +28,7 @@ namespace FBIBot.Modules.Config
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} invitations to the socialist party.");
 
-            List<Task> cmds = new List<Task>()
+            List<Task> cmds = new()
             {
                 Context.Channel.SendMessageAsync(embed: embed.Build())
             };

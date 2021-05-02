@@ -13,7 +13,7 @@ namespace FBIBot.Databases.RaidModeDatabaseTables
 
         public Task InitAsync()
         {
-            using SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS UsersBlocked (guild_id TEXT NOT NULL, user_id TEXT NOT NULL UNIQUE);", connection);
+            using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS UsersBlocked (guild_id TEXT NOT NULL, user_id TEXT NOT NULL UNIQUE);", connection);
             return cmd.ExecuteNonQueryAsync();
         }
 
@@ -22,31 +22,28 @@ namespace FBIBot.Databases.RaidModeDatabaseTables
             string insert = "INSERT INTO UsersBlocked (guild_id, user_id) SELECT @guild_id, @user_id\n" +
                 "WHERE NOT EXISTS (SELECT 1 FROM UsersBlocked WHERE guild_id = @guild_id AND user_id = @user_id);";
 
-            using (SqliteCommand cmd = new SqliteCommand(insert, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+            using SqliteCommand cmd = new(insert, connection);
+            cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
+            cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-                await cmd.ExecuteNonQueryAsync();
-            }
+            await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task<List<string>> GetBlockedUsersAsync(SocketGuild g)
         {
-            List<string> blockedUsers = new List<string>();
+            List<string> blockedUsers = new();
 
             string getBlocked = "SELECT user_id FROM UsersBlocked WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getBlocked, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    blockedUsers.Add((string)reader["user_id"]);
-                }
-                reader.Close();
+            using SqliteCommand cmd = new(getBlocked, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                blockedUsers.Add((string)reader["user_id"]);
             }
+            reader.Close();
 
             return blockedUsers;
         }
@@ -54,11 +51,11 @@ namespace FBIBot.Databases.RaidModeDatabaseTables
         public async Task RemoveBlockedUsersAsync(SocketGuild g)
         {
             string delete = "DELETE FROM UsersBlocked WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
+
+            using SqliteCommand cmd = new(delete, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+            await cmd.ExecuteNonQueryAsync();
         }
     }
 }

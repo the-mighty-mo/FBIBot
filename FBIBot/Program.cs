@@ -13,7 +13,7 @@ namespace FBIBot
         private static DiscordSocketClient client;
         private static CommandHandler handler;
 
-        public static readonly Random rng = new Random();
+        public static readonly Random rng = new();
 
         public static async Task Main()
         {

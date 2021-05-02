@@ -13,7 +13,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
 
         public Task InitAsync()
         {
-            using SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS ModLogs (guild_id TEXT NOT NULL, id TEXT NOT NULL, channel_id TEXT NOT NULL, message_id TEXT NOT NULL, UNIQUE (guild_id, id));", connection);
+            using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS ModLogs (guild_id TEXT NOT NULL, id TEXT NOT NULL, channel_id TEXT NOT NULL, message_id TEXT NOT NULL, UNIQUE (guild_id, id));", connection);
             return cmd.ExecuteNonQueryAsync();
         }
 
@@ -22,7 +22,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             ulong id = 0;
 
             string getID = "SELECT MAX(CAST(id AS INTEGER)) AS id FROM ModLogs WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getID, connection))
+            using (SqliteCommand cmd = new(getID, connection))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
@@ -42,7 +42,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             IUserMessage msg = null;
 
             string getMessage = "SELECT channel_id, message_id FROM ModLogs WHERE guild_id = @guild_id AND id = @id;";
-            using (SqliteCommand cmd = new SqliteCommand(getMessage, connection))
+            using (SqliteCommand cmd = new(getMessage, connection))
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 cmd.Parameters.AddWithValue("@id", id.ToString());
@@ -69,7 +69,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             string insert = "INSERT INTO ModLogs (guild_id, id, channel_id, message_id) SELECT @guild_id, @id, @channel_id, @message_id\n" +
                 "WHERE NOT EXISTS (SELECT 1 FROM ModLogs WHERE guild_id = @guild_id AND id = @id);";
 
-            using SqliteCommand cmd = new SqliteCommand(insert, connection);
+            using SqliteCommand cmd = new(insert, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
             cmd.Parameters.AddWithValue("@id", id.ToString());
             cmd.Parameters.AddWithValue("@channel_id", msg.Channel.Id.ToString());
@@ -82,7 +82,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
         {
             string delete = "DELETE FROM ModLogs WHERE guild_id = @guild_id;";
 
-            using SqliteCommand cmd = new SqliteCommand(delete, connection);
+            using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
             await cmd.ExecuteNonQueryAsync();
         }

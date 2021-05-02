@@ -9,15 +9,13 @@ namespace FBIBot.Modules.AutoMod
 
         public MassMention(SocketCommandContext context) => Context = context;
 
-        public async Task WarnAsync()
-        {
+        public async Task WarnAsync() =>
             await Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
                 Context.Channel.SendMessageAsync($"\\tempwarn {Context.User.Mention} 0.5 Big mass mention\n" +
                     $"Message: {Context.Message.Content}")
             );
-        }
 
         public static async Task<bool> IsMassMentionAsync(SocketCommandContext Context)
         {

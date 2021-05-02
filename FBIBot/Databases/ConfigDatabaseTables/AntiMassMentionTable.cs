@@ -12,23 +12,22 @@ namespace FBIBot.Databases.ConfigDatabaseTables
 
         public Task InitAsync()
         {
-            using SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS AntiMassMention (guild_id TEXT PRIMARY KEY);", connection);
+            using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS AntiMassMention (guild_id TEXT PRIMARY KEY);", connection);
             return cmd.ExecuteNonQueryAsync();
         }
 
         public async Task<bool> GetAntiMassMentionAsync(SocketGuild g)
         {
-            bool isAntiMassMention = false;
+            bool isAntiMassMention;
 
             string getMassMention = "SELECT guild_id FROM AntiMassMention WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(getMassMention, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                isAntiMassMention = await reader.ReadAsync();
-                reader.Close();
-            }
+            using SqliteCommand cmd = new(getMassMention, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+            isAntiMassMention = await reader.ReadAsync();
+            reader.Close();
 
             return isAntiMassMention;
         }
@@ -38,21 +37,20 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             string insert = "INSERT INTO AntiMassMention (guild_id) SELECT @guild_id\n" +
                 "WHERE NOT EXISTS (SELECT 1 FROM AntiMassMention WHERE guild_id = @guild_id);";
 
-            using (SqliteCommand cmd = new SqliteCommand(insert, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
+            using SqliteCommand cmd = new(insert, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+            await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task RemoveAntiMassMentionAsync(SocketGuild g)
         {
             string delete = "DELETE FROM AntiMassMention WHERE guild_id = @guild_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, connection))
-            {
-                cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
+
+            using SqliteCommand cmd = new(delete, connection);
+            cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
+
+            await cmd.ExecuteNonQueryAsync();
         }
     }
 }

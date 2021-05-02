@@ -16,13 +16,15 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync([RequireBotHierarchy("arrest")][RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Remainder] string reason = null) => await TempArrestAsync(user, null, reason);
+        public async Task ArrestAsync([RequireBotHierarchy("arrest")][RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Remainder] string reason = null) =>
+            await TempArrestAsync(user, null, reason);
 
         [Command("arrest")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync(string user, [Remainder] string reason = null) => await TempArrestAsync(user, null, reason);
+        public async Task ArrestAsync(string user, [Remainder] string reason = null) =>
+            await TempArrestAsync(user, null, reason);
 
         [Command("temparrest")]
         [Alias("temp-arrest")]
@@ -121,8 +123,8 @@ namespace FBIBot.Modules.Mod
         private async Task<IRole> CreatePrisonerRoleAsync()
         {
             IRole role;
-            GuildPermissions perms = new GuildPermissions(viewChannel: false);
-            Color color = new Color(127, 127, 127);
+            GuildPermissions perms = new(viewChannel: false);
+            Color color = new(127, 127, 127);
             role = await Context.Guild.CreateRoleAsync("Prisoner", perms, color, false, true);
 
             await modRolesDatabase.PrisonerRole.SetPrisonerRoleAsync(role);
@@ -132,7 +134,7 @@ namespace FBIBot.Modules.Mod
         private async Task<ITextChannel> CreateGuantanamoAsync(IRole role)
         {
             ITextChannel channel = await Context.Guild.CreateTextChannelAsync("guantanamo");
-            OverwritePermissions perms = new OverwritePermissions(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);
+            OverwritePermissions perms = new(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);
 
             await Task.WhenAll
             (

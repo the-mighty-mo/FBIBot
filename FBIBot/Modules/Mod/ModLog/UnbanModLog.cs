@@ -9,8 +9,7 @@ namespace FBIBot.Modules.Mod.ModLog
         public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target)
             => await SendToModLogAsync(invoker, target.Id);
 
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, ulong? target)
-        {
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, ulong? target) =>
             await ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
@@ -21,6 +20,5 @@ namespace FBIBot.Modules.Mod.ModLog
                     )
                 )
             );
-        }
     }
 }

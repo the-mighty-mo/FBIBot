@@ -7,8 +7,8 @@ namespace FBIBot.Databases
 {
     public class ConfigDatabase
     {
-        private readonly SqliteConnection connection = new SqliteConnection("Filename=Config.db");
-        private readonly Dictionary<System.Type, ITable> tables = new Dictionary<System.Type, ITable>();
+        private readonly SqliteConnection connection = new("Filename=Config.db");
+        private readonly Dictionary<System.Type, ITable> tables = new();
 
         public PrefixesTable Prefixes => tables[typeof(PrefixesTable)] as PrefixesTable;
         public ModifyMutedTable ModifyMuted => tables[typeof(ModifyMutedTable)] as ModifyMutedTable;
@@ -40,7 +40,7 @@ namespace FBIBot.Databases
             await connection.OpenAsync();
             IEnumerable<Task> GetTableInits()
             {
-                foreach (var table in tables.Values)
+                foreach (ITable table in tables.Values)
                 {
                     yield return table.InitAsync();
                 }

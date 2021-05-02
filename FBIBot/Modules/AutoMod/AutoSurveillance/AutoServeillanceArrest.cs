@@ -13,7 +13,7 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
 
         public async Task ArrestAsync()
         {
-            List<string> messages = new List<string>()
+            List<string> messages = new()
             {
                 "You want to explain yourself?",
                 "Why don't you take a seat over there?",

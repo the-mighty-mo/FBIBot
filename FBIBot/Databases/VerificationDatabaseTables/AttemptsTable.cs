@@ -12,7 +12,7 @@ namespace FBIBot.Databases.VerificationDatabaseTables
 
         public Task InitAsync()
         {
-            using SqliteCommand cmd = new SqliteCommand("CREATE TABLE IF NOT EXISTS Attempts (user_id TEXT PRIMARY KEY, attempts INTEGER NOT NULL);", connection);
+            using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS Attempts (user_id TEXT PRIMARY KEY, attempts INTEGER NOT NULL);", connection);
             return cmd.ExecuteNonQueryAsync();
         }
 
@@ -21,17 +21,16 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             int attempts = 0;
 
             string read = "SELECT attempts FROM Attempts WHERE user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(read, connection))
-            {
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
-                {
-                    attempts = int.Parse(reader["attempts"].ToString()!);
-                }
-                reader.Close();
+            using SqliteCommand cmd = new(read, connection);
+            cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                attempts = int.Parse(reader["attempts"].ToString()!);
             }
+            reader.Close();
 
             return attempts;
         }
@@ -41,22 +40,21 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             string update = "UPDATE Attempts SET attempts = @attempts WHERE user_id = @user_id;";
             string insert = "INSERT INTO Attempts (user_id, attempts) SELECT @user_id, @attempts WHERE (SELECT Changes() = 0);\n";
 
-            using (SqliteCommand cmd = new SqliteCommand(update + insert, connection))
-            {
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-                cmd.Parameters.AddWithValue("@attempts", attempts);
-                await cmd.ExecuteNonQueryAsync();
-            }
+            using SqliteCommand cmd = new(update + insert, connection);
+            cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+            cmd.Parameters.AddWithValue("@attempts", attempts);
+
+            await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task RemoveAttemptsAsync(SocketUser u)
         {
             string delete = "DELETE FROM Attempts WHERE user_id = @user_id;";
-            using (SqliteCommand cmd = new SqliteCommand(delete, connection))
-            {
-                cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-                await cmd.ExecuteNonQueryAsync();
-            }
+
+            using SqliteCommand cmd = new(delete, connection);
+            cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
+
+            await cmd.ExecuteNonQueryAsync();
         }
     }
 }

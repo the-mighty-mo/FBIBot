@@ -128,7 +128,7 @@ namespace FBIBot.Modules
             {
                 prefix = await configDatabase.Prefixes.GetPrefixAsync(Context.Guild);
             }
-            List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>
+            List<EmbedFieldBuilder> fields = new()
             {
                 new EmbedFieldBuilder()
                     .WithIsInline(false)

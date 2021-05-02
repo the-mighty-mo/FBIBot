@@ -7,8 +7,8 @@ namespace FBIBot.Databases
 {
     public class RaidModeDatabase
     {
-        private readonly SqliteConnection connection = new SqliteConnection("Filename=Raid-Mode.db");
-        private readonly Dictionary<System.Type, ITable> tables = new Dictionary<System.Type, ITable>();
+        private readonly SqliteConnection connection = new("Filename=Raid-Mode.db");
+        private readonly Dictionary<System.Type, ITable> tables = new();
 
         public RaidModeTable RaidMode => tables[typeof(RaidModeTable)] as RaidModeTable;
         public UsersBlockedTable UsersBlocked => tables[typeof(UsersBlockedTable)] as UsersBlockedTable;

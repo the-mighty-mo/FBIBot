@@ -12,12 +12,14 @@ namespace FBIBot.Modules.Mod
         [Command("warn")]
         [RequireMod]
         [RequireModLog]
-        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Remainder] string reason = null) => await TempWarnAsync(user, null, reason);
+        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Remainder] string reason = null) =>
+            await TempWarnAsync(user, null, reason);
 
         [Command("warn")]
         [RequireMod]
         [RequireModLog]
-        public async Task WarnAsync(string user, [Remainder] string reason = null) => await TempWarnAsync(user, null, reason);
+        public async Task WarnAsync(string user, [Remainder] string reason = null) =>
+            await TempWarnAsync(user, null, reason);
 
         [Command("tempwarn")]
         [Alias("temp-warn")]

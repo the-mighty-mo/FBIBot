@@ -14,7 +14,7 @@ namespace FBIBot.Modules.Config
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiSpamAsync(string enable)
         {
-            bool isEnable = enable == "true" || enable == "enable";
+            bool isEnable = enable is "true" or "enable";
             bool isEnabled = await configDatabase.AntiSpam.GetAntiSpamAsync(Context.Guild);
 
             if (isEnable == isEnabled)
@@ -28,7 +28,7 @@ namespace FBIBot.Modules.Config
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription($"We are now {(isEnable ? "permitted to remove" : "prohibited from removing")} spammy, anti-American messages.");
 
-            List<Task> cmds = new List<Task>()
+            List<Task> cmds = new()
             {
                 Context.Channel.SendMessageAsync(embed: embed.Build())
             };

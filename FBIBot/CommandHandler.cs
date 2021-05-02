@@ -26,7 +26,7 @@ namespace FBIBot
             this.client = client;
             this.services = services;
 
-            CommandServiceConfig config = new CommandServiceConfig()
+            CommandServiceConfig config = new()
             {
                 DefaultRunMode = RunMode.Async
             };
@@ -54,17 +54,14 @@ namespace FBIBot
             }
         }
 
-        private async Task SendConnectMessage()
-        {
+        private async Task SendConnectMessage() =>
             await Console.Out.WriteLineAsync($"{SecurityInfo.botName} is online");
-        }
 
-        private async Task SendDisconnectError(Exception e)
-        {
+        private async Task SendDisconnectError(Exception e) =>
             await Console.Out.WriteLineAsync(e.Message);
-        }
 
-        private async Task SendJoinMessage(SocketGuild g) => await g.DefaultChannel.SendMessageAsync("Someone called for some democracy and justice?");
+        private async Task SendJoinMessage(SocketGuild g) =>
+            await g.DefaultChannel.SendMessageAsync("Someone called for some democracy and justice?");
 
         private async Task SendWelcomeMessage(SocketGuildUser u)
         {
@@ -82,7 +79,7 @@ namespace FBIBot
             SocketTextChannel channel = await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(u.Guild);
             if (channel != null)
             {
-                List<string> messages = new List<string>()
+                List<string> messages = new()
                 {
                     "Don't even think about it.",
                     "**FBI OPEN U**...wait...we'll be back shortly with a warrant.",
@@ -148,9 +145,11 @@ namespace FBIBot
             }
         }
 
-        private async Task<bool> CanBotRunCommandsAsync(SocketUserMessage msg) => await Task.Run(() => msg.Author.Id == client.CurrentUser.Id);
+        private async Task<bool> CanBotRunCommandsAsync(SocketUserMessage msg) =>
+            await Task.Run(() => msg.Author.Id == client.CurrentUser.Id);
 
-        private async Task<bool> ShouldDeleteBotCommands() => await Task.Run(() => true);
+        private async Task<bool> ShouldDeleteBotCommands() =>
+            await Task.Run(() => true);
 
         private async Task HandleCommandAsync(SocketMessage m)
         {
@@ -159,15 +158,15 @@ namespace FBIBot
                 return;
             }
 
-            SocketCommandContext Context = new SocketCommandContext(client, msg);
+            SocketCommandContext Context = new(client, msg);
             string _prefix = Context.Guild != null ? await configDatabase.Prefixes.GetPrefixAsync(Context.Guild) : prefix;
             bool isCommand = msg.HasMentionPrefix(client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos);
 
             if (isCommand)
             {
-                var result = await commands.ExecuteAsync(Context, argPos, services);
+                IResult result = await commands.ExecuteAsync(Context, argPos, services);
 
-                List<Task> cmds = new List<Task>();
+                List<Task> cmds = new();
                 if (msg.Author.IsBot && await ShouldDeleteBotCommands())
                 {
                     cmds.Add(msg.DeleteAsync());
@@ -266,10 +265,16 @@ namespace FBIBot
                 KillThePresident.IsGoingToKillThePresidentAsync(Context),
                 LostTheGame.HasLostTheGameAsync(Context)
             };
+            Task<bool> noRedSam = NoRedSam.IsRedSamAsync(Context);
 
             if ((await Task.WhenAll(shouldArrest)).Contains(true))
             {
                 await new AutoSurveillanceArrest(Context).ArrestAsync();
+                return true;
+            }
+            else if (await noRedSam)
+            {
+                await new NoRedSam(Context).CleanseSamAsync();
                 return true;
             }
             return false;

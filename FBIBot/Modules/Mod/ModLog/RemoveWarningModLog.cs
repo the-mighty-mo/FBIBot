@@ -6,8 +6,7 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class RemoveWarningModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string warning)
-        {
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string warning) =>
             await ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
@@ -18,6 +17,5 @@ namespace FBIBot.Modules.Mod.ModLog
                     )
                 )
             );
-        }
     }
 }

@@ -14,15 +14,13 @@ namespace FBIBot.Modules.AutoMod
 
         public Spam(SocketCommandContext context) => Context = context;
 
-        public async Task WarnAsync()
-        {
+        public async Task WarnAsync() =>
             await Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
                 Context.Channel.SendMessageAsync($"\\tempwarn {Context.User.Mention} 0.5 Big spam\n" +
                     $"Message: {Context.Message.Content}")
             );
-        }
 
         public static async Task<bool> IsSpamAsync(SocketCommandContext Context)
         {
@@ -63,9 +61,9 @@ namespace FBIBot.Modules.AutoMod
         {
             static string ReplaceEmoji(string str)
             {
-                Regex emojiRegex = new Regex(@"<a?:\S+?:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                IEnumerable<Match> emojis = emojiRegex.Matches(str).Cast<Match>();
-                foreach (string emoji in emojis.Select(e => e.Value))
+                Regex emojiRegex = new(@"<a?:\S+?:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var emojis = emojiRegex.Matches(str).Cast<Match>().Select(e => e.Value);
+                foreach (string emoji in emojis)
                 {
                     str = str.Replace(emoji, "emj");
                 }
@@ -79,8 +77,8 @@ namespace FBIBot.Modules.AutoMod
             {
                 await Task.Yield();
 
-                Regex regex = new Regex(@"(.+?\S+)(\s*\1){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                IEnumerable<Match> matches = regex.Matches(message).Cast<Match>();
+                Regex regex = new(@"(.+?\S+)(\s*\1){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var matches = regex.Matches(message).Cast<Match>();
 
                 int duplicate = matches.Select(x => x.Length).Sum();
 
