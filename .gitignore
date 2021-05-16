@@ -1,4 +1,4 @@
-FBIBot/bin/
-FBIBot/obj/
+**/bin/
+**/obj/
 .vs/
-*.user
+**.user
