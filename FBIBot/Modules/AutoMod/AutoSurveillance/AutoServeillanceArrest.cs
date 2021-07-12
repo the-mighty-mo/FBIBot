@@ -24,7 +24,7 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
             await Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
-                Context.Channel.SendMessageAsync($"\\arrest {Context.User.Mention} 5"),
+                Context.Channel.SendMessageAsync($"\\temp-arrest {Context.User.Mention} 5"),
                 Context.User.SendMessageAsync(messages[Program.rng.Next(messages.Count)])
             );
         }
