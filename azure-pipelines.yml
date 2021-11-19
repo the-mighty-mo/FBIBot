@@ -1,7 +1,7 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# .NET Core
+# Build and run tests for .NET Core cross-platform solutions.
 # Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+# https://docs.microsoft.com/azure/devops/pipelines/ecosystems/dotnet-core
 
 trigger:
 - master
@@ -15,17 +15,11 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
 - task: UseDotNet@2
-  displayName: 'Install .NET 5'
+  displayName: 'Install .NET 6'
   inputs:
     packageType: 'sdk'
-    version: '5.x'
+    version: '6.x'
     performMultiLevelLookup: true
 
 - task: DotNetCoreCLI@2
