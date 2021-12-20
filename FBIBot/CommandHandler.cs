@@ -37,7 +37,6 @@ namespace FBIBot
         {
             client.Connected += SendConnectMessage;
             client.Disconnected += SendDisconnectError;
-            client.JoinedGuild += SendJoinMessage;
             client.UserJoined += SendWelcomeMessage;
             client.GuildMemberUpdated += CheckUsernameAsync;
             client.MessageReceived += HandleCommandAsync;
@@ -60,16 +59,13 @@ namespace FBIBot
         private async Task SendDisconnectError(Exception e) =>
             await Console.Out.WriteLineAsync(e.Message);
 
-        private async Task SendJoinMessage(SocketGuild g) =>
-            await g.DefaultChannel.SendMessageAsync("Someone called for some democracy and justice?");
-
         private async Task SendWelcomeMessage(SocketGuildUser u)
         {
             if (await raidModeDatabase.RaidMode.GetVerificationLevelAsync(u.Guild) != null && !u.IsBot)
             {
                 await Task.WhenAll
                 (
-                    u.SendMessageAsync($":rotating_light: :rotating_light: The FBI of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time. :rotating_light: :rotating_light:"),
+                    u.SendMessageAsync($":rotating_light: :rotating_light: The FBI Office of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time. :rotating_light: :rotating_light:"),
                     raidModeDatabase.UsersBlocked.AddBlockedUserAsync(u)
                 );
                 await u.KickAsync("FBI RAID MODE");
