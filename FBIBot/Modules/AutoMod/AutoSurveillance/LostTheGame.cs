@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
@@ -11,8 +12,12 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
             await Task.Yield();
 
             string message = Context.Message.Content;
-            Regex regex = new(@"l(o|0)s(t|e)\s+the(\w*\s+)+?game", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            return regex.IsMatch(message);
+            var regexes = new Regex[]
+            {
+                new(@"l(?:o|0)s(?:s|t|e|ing)\s+(?:in\s+)?the(?:\w*\s+)+?game", RegexOptions.IgnoreCase | RegexOptions.Compiled),
+                new(@"the(?:\w*\s+)+?game(?:\w*\s+)+?(?:is|has been|was)(?:\w*\s+)+?l(?:o|0)s(?:t|e)", RegexOptions.IgnoreCase | RegexOptions.Compiled)
+            };
+            return regexes.Any(r => r.IsMatch(message));
         }
     }
 }
