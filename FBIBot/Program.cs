@@ -45,11 +45,12 @@ namespace FBIBot
 
         private static async Task SetupCommandHandlerAsync()
         {
-            config = new DiscordSocketConfig
+            config = new()
             {
-                AlwaysDownloadUsers = false
+                AlwaysDownloadUsers = false,
+                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences
             };
-            client = new DiscordSocketClient(config);
+            client = new(config);
 
             await client.LoginAsync(TokenType.Bot, SecurityInfo.token);
             await client.StartAsync();

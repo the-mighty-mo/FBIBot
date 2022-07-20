@@ -1,7 +1,7 @@
 ﻿using Discord.Commands;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
