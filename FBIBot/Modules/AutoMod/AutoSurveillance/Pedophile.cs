@@ -6,13 +6,12 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
     public static class Pedophile
     {
-        public static async Task<bool> IsPedophileAsync(SocketCommandContext Context)
-        {
-            await Task.Yield();
+        private static readonly Regex regex = new(@"I\s+(?:like|love)\s+(?:children|kids)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-            string message = Context.Message.Content;
-            Regex regex = new(@"I\s+(?:like|love)\s+(?:children|kids)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            return regex.IsMatch(message);
+        public static Task<bool> IsPedophileAsync(SocketCommandContext Context)
+        {
+            var message = Context.Message.Content;
+            return Task.Run(() => regex.IsMatch(message));
         }
     }
 }

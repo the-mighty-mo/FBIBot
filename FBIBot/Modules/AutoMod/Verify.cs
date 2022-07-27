@@ -65,7 +65,7 @@ namespace FBIBot.Modules.AutoMod
         {
             const int maxAttempts = 5;
             int attempts = await verificationDatabase.Attempts.GetAttemptsAsync(Context.User);
-            attempts++;
+            ++attempts;
 
             if (attempts >= maxAttempts)
             {
@@ -109,28 +109,33 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        private async Task SendCaptchaAsync() => await SendCaptchaAsync(Context.User);
+        private Task SendCaptchaAsync() => SendCaptchaAsync(Context.User);
 
         public static async Task SendCaptchaAsync(SocketUser u)
         {
             string captchaCode = ImageFactory.CreateCode(6);
 
-            await Task.Yield();
-
             Task save = verificationDatabase.Captcha.SetCaptchaAsync(captchaCode, u);
-            MemoryStream imageStream = ImageFactory.BuildImage(captchaCode, 60, 160, 24, 14);
-            imageStream.Position = 0;
+#pragma warning disable CA1416 // Validate platform compatibility
+            using (Image image = await Task.Run(() =>
+                {
+                    MemoryStream imageStream = ImageFactory.BuildImage(captchaCode, 60, 160, 24, 14);
+                    imageStream.Position = 0;
 
-            Image image = Image.FromStream(imageStream);
-            image.Save($"{u.Id}.png", ImageFormat.Png);
+                    var image = Image.FromStream(imageStream);
+                    image.Save($"{u.Id}.png", ImageFormat.Png);
 
-            await Task.WhenAll
-            (
-                save,
-                u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{((u as SocketGuildUser) != null ? $" to {(u as SocketGuildUser)!.Guild.Name}" : "")}.\n")
-            );
+                    return image;
+                }))
+#pragma warning restore CA1416 // Validate platform compatibility
+            {
+                await Task.WhenAll
+                (
+                    save,
+                    u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{((u as SocketGuildUser) != null ? $" to {(u as SocketGuildUser)!.Guild.Name}" : "")}.\n")
+                );
+            }
 
-            image.Dispose();
             File.Delete($"{u.Id}.png");
 
             List<Task> commands = new();

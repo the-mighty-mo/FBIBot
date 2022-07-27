@@ -12,43 +12,46 @@ namespace FBIBot.Modules.AutoMod
 
         public Zalgo(SocketCommandContext context) => Context = context;
 
-        public async Task WarnAsync() => await Task.WhenAll
+        public Task WarnAsync() =>
+            Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
                 Context.Channel.SendMessageAsync($"\\tempwarn {Context.User.Mention} 0.5 HE COMES (Zalgo)\n")
             );
 
-        public static async Task<bool> IsZalgoAsync(SocketCommandContext Context) =>
-            await IsZalgoAsync(Context.Message.Content);
+        public static Task<bool> IsZalgoAsync(SocketCommandContext Context) =>
+            IsZalgoAsync(Context.Message.Content);
 
-        public static async Task<bool> IsZalgoAsync(string msg)
-        {
-            int i = 0;
-
-            IEnumerable<bool> zalgoList = await Task.Run(() => msg.ToCharArray().Select(c => char.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark));
-            foreach (bool isZalgo in zalgoList)
+        public static Task<bool> IsZalgoAsync(string msg) =>
+            Task.Run(() =>
             {
-                if (!isZalgo)
+                int i = 0;
+
+                var zalgoList = msg.ToCharArray().Select(c => char.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark);
+                foreach (var isZalgo in zalgoList)
                 {
-                    if (i >= 3)
+                    if (!isZalgo)
                     {
-                        return true;
+                        if (i >= 3)
+                        {
+                            return true;
+                        }
+                        i = 0;
                     }
-                    i = 0;
+                    else
+                    {
+                        i++;
+                    }
                 }
-                else
-                {
-                    i++;
-                }
-            }
 
-            return false;
-        }
+                return false;
+            });
 
-        public static async Task<string> RemoveZalgoAsync(string msg)
-        {
-            IEnumerable<string> msgList = await Task.Run(() => msg.Where(c => char.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).Select(c => c.ToString()));
-            return string.Join("", msgList);
-        }
+        public static Task<string> RemoveZalgoAsync(string msg) =>
+            Task.Run(() =>
+            {
+                var msgList = msg.Where(c => char.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).Select(c => c.ToString());
+                return string.Join("", msgList);
+            });
     }
 }

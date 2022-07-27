@@ -10,28 +10,29 @@ namespace FBIBot.Modules.AutoMod
 
         public CAPS(SocketCommandContext context) => CONTEXT = context;
 
-        public async Task WARNASYNC() =>
-            await Task.WhenAll
+        public Task WARNASYNC() =>
+            Task.WhenAll
             (
                 CONTEXT.Message.DeleteAsync(),
                 CONTEXT.Channel.SendMessageAsync($"\\tempwarn {CONTEXT.User.Mention} 0.5 BIG CAPS\n" +
                     $"Message: {CONTEXT.Message.Content}")
             );
 
-        public static async Task<bool> ISCAPSASYNC(SocketCommandContext Context)
+        public static Task<bool> ISCAPSASYNC(SocketCommandContext Context)
         {
-            bool isCaps = false;
-
-            string message = Context.Message.Content.Replace(" ", string.Empty);
-            if (message.Length >= 40)
+            var message = Context.Message.Content.Replace(" ", string.Empty);
+            return Task.Run(() =>
             {
-                await Task.Yield();
+                bool isCaps = false;
 
-                int caps = message.Where(x => char.IsUpper(x)).Count();
-                isCaps = (double)caps / message.Length >= 0.80;
-            }
+                if (message.Length >= 40)
+                {
+                    int caps = message.Where(x => char.IsUpper(x)).Count();
+                    isCaps = (double)caps / message.Length >= 0.80;
+                }
 
-            return isCaps;
+                return isCaps;
+            });
         }
     }
 }

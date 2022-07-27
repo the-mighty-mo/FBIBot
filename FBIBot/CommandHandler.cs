@@ -86,7 +86,7 @@ namespace FBIBot
                     "Walk out slowly with your arms i...wait, wrong person.",
                     "You want to know how we figured it out?"
                 };
-                int index = Program.rng.Next(messages.Count);
+                int index = Program.Rng.Next(messages.Count);
                 await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
             }
 

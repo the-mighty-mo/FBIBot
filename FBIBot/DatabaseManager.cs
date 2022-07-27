@@ -11,8 +11,8 @@ namespace FBIBot
         public static readonly ConfigDatabase configDatabase = new();
         public static readonly RaidModeDatabase raidModeDatabase = new();
 
-        public static async Task InitAsync() =>
-            await Task.WhenAll(
+        public static Task InitAsync() =>
+            Task.WhenAll(
                 verificationDatabase.InitAsync(),
                 modRolesDatabase.InitAsync(),
                 modLogsDatabase.InitAsync(),
@@ -20,8 +20,8 @@ namespace FBIBot
                 raidModeDatabase.InitAsync()
             );
 
-        public static async Task CloseAsync() =>
-            await Task.WhenAll(
+        public static Task CloseAsync() =>
+            Task.WhenAll(
                 verificationDatabase.CloseAsync(),
                 modRolesDatabase.CloseAsync(),
                 modLogsDatabase.CloseAsync(),

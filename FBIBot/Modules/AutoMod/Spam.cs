@@ -10,12 +10,15 @@ namespace FBIBot.Modules.AutoMod
 {
     public class Spam
     {
+        private static readonly Regex emojiRegex = new(@"<a?:\S+?:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regex = new(@"(.+?\S+)(\s*\1){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private readonly SocketCommandContext Context;
 
         public Spam(SocketCommandContext context) => Context = context;
 
-        public async Task WarnAsync() =>
-            await Task.WhenAll
+        public Task WarnAsync() =>
+            Task.WhenAll
             (
                 Context.Message.DeleteAsync(),
                 Context.Channel.SendMessageAsync($"\\tempwarn {Context.User.Mention} 0.5 Big spam\n" +
@@ -29,7 +32,7 @@ namespace FBIBot.Modules.AutoMod
             var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
             var userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id && x.Content.Length > 0).Take(20);
 
-            string message = Context.Message.Content;
+            var message = Context.Message.Content;
             Dictionary<string, int> messages = new()
             {
                 [message] = 0
@@ -57,11 +60,10 @@ namespace FBIBot.Modules.AutoMod
             return isSpam;
         }
 
-        public static async Task<bool> IsSingleSpamAsync(SocketCommandContext context)
+        public static Task<bool> IsSingleSpamAsync(SocketCommandContext context)
         {
             static string ReplaceEmoji(string str)
             {
-                Regex emojiRegex = new(@"<a?:\S+?:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 var emojis = emojiRegex.Matches(str).Cast<Match>().Select(e => e.Value);
                 foreach (string emoji in emojis)
                 {
@@ -70,29 +72,29 @@ namespace FBIBot.Modules.AutoMod
                 return str;
             }
 
-            bool isSpam = false;
-
-            string message = context.Message.Content;
-            if ((message = ReplaceEmoji(message)).Length > 60)
+            var message = context.Message.Content;
+            return Task.Run(() =>
             {
-                await Task.Yield();
+                bool isSpam = false;
 
-                Regex regex = new(@"(.+?\S+)(\s*\1){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                var matches = regex.Matches(message).Cast<Match>();
-
-                int duplicate = matches.Select(x => x.Length).Sum();
-
-                int firstIndex = matches.Select(x => x.Index).OrderBy(x => x).DefaultIfEmpty(0).First();
-                int lastIndex = matches.Select(x => x.Index + x.Length).OrderByDescending(x => x).DefaultIfEmpty(0).First();
-
-                if (firstIndex != lastIndex)
+                if ((message = ReplaceEmoji(message)).Length > 60)
                 {
-                    isSpam = (double)duplicate / (lastIndex - firstIndex) >= 0.80 // length of the duplicates is at least 80% of the segment of the message containing them
-                        && (double)duplicate / message.Replace(" ", string.Empty).Length >= 0.60; // length of the duplicates is at least 60% of the message, excluding spaces
-                }
-            }
+                    var matches = regex.Matches(message).Cast<Match>();
 
-            return isSpam;
+                    int duplicate = matches.Select(x => x.Length).Sum();
+
+                    int firstIndex = matches.Select(x => x.Index).OrderBy(x => x).DefaultIfEmpty(0).First();
+                    int lastIndex = matches.Select(x => x.Index + x.Length).OrderByDescending(x => x).DefaultIfEmpty(0).First();
+
+                    if (firstIndex != lastIndex)
+                    {
+                        isSpam = (double)duplicate / (lastIndex - firstIndex) >= 0.80 // length of the duplicates is at least 80% of the segment of the message containing them
+                            && (double)duplicate / message.Replace(" ", string.Empty).Length >= 0.60; // length of the duplicates is at least 60% of the message, excluding spaces
+                    }
+                }
+
+                return isSpam;
+            });
         }
     }
 }

@@ -24,12 +24,10 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
             }
         }
 
-        public static async Task<bool> IsRedSamAsync(SocketCommandContext Context)
+        public static Task<bool> IsRedSamAsync(SocketCommandContext Context)
         {
-            await Task.Yield();
-
-            string message = Context.Message.Content;
-            return message.Trim().ToLower() == "?rank red";
+            var message = Context.Message.Content;
+            return Task.Run(() => message.Trim().ToLower() == "?rank red");
         }
     }
 }
