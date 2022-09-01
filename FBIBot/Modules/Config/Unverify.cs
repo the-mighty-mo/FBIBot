@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.AutoMod;
 using FBIBot.Modules.Mod.ModLog;
@@ -9,22 +9,22 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class Unverify : ModuleBase<SocketCommandContext>
+    public class Unverify : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("unverify")]
+        [SlashCommand("unverify", "Removes the verification role from the user and removes the user from the list of verified users")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task UnverifyAsync([RequireInvokerHierarchy("unverify")] SocketGuildUser user, [Remainder] string reason = null)
+        public async Task UnverifyAsync([RequireInvokerHierarchy("unverify")] SocketGuildUser user, string reason = null)
         {
             SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             if (role == null)
             {
-                await Context.Channel.SendMessageAsync("Our intelligence team has informed us that there is no role to give to verified members.");
+                await Context.Interaction.RespondAsync("Our intelligence team has informed us that there is no role to give to verified members.");
                 return;
             }
             if (!user.Roles.Contains(role) && !await verificationDatabase.Verified.GetVerifiedAsync(user))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not verified.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not verified.");
                 return;
             }
 
@@ -38,23 +38,9 @@ namespace FBIBot.Modules.Config
                 user.RemoveRoleAsync(role),
                 verificationDatabase.Verified.RemoveVerifiedAsync(user),
                 Verify.SendCaptchaAsync(user),
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 UnverifyModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, reason)
             );
-        }
-
-        [Command("unverify")]
-        [RequireAdmin]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task UnverifyAsync([RequireBotHierarchy("unverify")] [RequireInvokerHierarchy("unverify")] string user, [Remainder] string reason = null)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await UnverifyAsync(u, reason);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
     }
 }

@@ -1,23 +1,23 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
+using FBIBot.ParamEnums;
 using System.Linq;
 using System.Threading.Tasks;
 using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class ClearModLog : ModuleBase<SocketCommandContext>
+    public class ClearModLog : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("clearmodlog")]
-        [Alias("clearmodlogs")]
+        [SlashCommand("clear-mod-log", "Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**")]
         [RequireAdmin]
-        public async Task ClearModLogAsync(string clear = "false")
+        public async Task ClearModLogAsync(BoolChoice clearMsg = BoolChoice.False)
         {
-            bool isClear = clear.ToLower() == "true";
+            bool isClear = clearMsg == BoolChoice.True;
             if (await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild) == 1 && !isClear)
             {
-                await Context.Channel.SendMessageAsync("Our security team has informed us that there are no moderation logs.");
+                await Context.Interaction.RespondAsync("Our security team has informed us that there are no moderation logs.");
                 return;
             }
 
@@ -51,7 +51,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 Task.WhenAll(cmds),
-                Context.Channel.SendMessageAsync(embed: embed.Build())
+                Context.Interaction.RespondAsync(embed: embed.Build())
             );
         }
     }

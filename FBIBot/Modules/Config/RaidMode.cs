@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
@@ -8,10 +8,9 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class RaidMode : ModuleBase<SocketCommandContext>
+    public class RaidMode : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("raidmode")]
-        [Alias("raid-mode")]
+        [SlashCommand("raid-mode", "Toggle enable; Sets the server verification level to High (Tableflip) and kicks any joining members")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageGuild)]
         public async Task RaidModeAsync()
@@ -30,7 +29,7 @@ namespace FBIBot.Modules.Config
                 await Task.WhenAll
                 (
                     Context.Guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High),
-                    Context.Channel.SendMessageAsync(embed: emb.Build()),
+                    Context.Interaction.RespondAsync(embed: emb.Build()),
                     RaidModeModLog.SendToModLogAsync(Context.User as SocketGuildUser, true)
                 );
                 return;
@@ -48,7 +47,7 @@ namespace FBIBot.Modules.Config
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 RaidModeModLog.SendToModLogAsync(Context.User as SocketGuildUser, false)
             );
             await Task.WhenAll

@@ -1,25 +1,25 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
+using FBIBot.ParamEnums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class AutoSurveillance : ModuleBase<SocketCommandContext>
+    public class AutoSurveillance : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("auto-surveillance")]
-        [Alias("autosurveillance")]
+        [SlashCommand("auto-surveillance", "Permits the FBI to perform surveillance operations on server members")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
-        public async Task AutoSurveillanceAsync(string enable)
+        public async Task AutoSurveillanceAsync(EnableChoice state)
         {
-            bool isEnable = enable is "true" or "enable";
+            bool isEnable = state == EnableChoice.Enable;
             bool isEnabled = await configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
 
             if (isEnable == isEnabled)
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that Auto Surveillance is already {(isEnabled ? "enabled" : "disabled")}.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that Auto Surveillance is already {(isEnabled ? "enabled" : "disabled")}.");
                 return;
             }
 
@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Config
 
             List<Task> cmds = new()
             {
-                Context.Channel.SendMessageAsync(embed: embed.Build())
+                Context.Interaction.RespondAsync(embed: embed.Build())
             };
             if (isEnable)
             {

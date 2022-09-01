@@ -1,24 +1,25 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
+using FBIBot.ParamEnums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class ModifyMutedRoles : ModuleBase<SocketCommandContext>
+    public class ModifyMutedRoles : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("modify-muted-roles")]
+        [SlashCommand("modify-muted-roles", "Allows the bot to remove and save the roles of muted members")]
         [RequireAdmin]
-        public async Task ModifyMutedRolesAsync(string modify)
+        public async Task ModifyMutedRolesAsync(EnableChoice modify)
         {
-            bool isModify = modify.ToLower() is "true" or "enable";
+            bool isModify = modify == EnableChoice.Enable;
             bool isModifying = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
             string state = isModify ? "permitted to modify" : "prohibited from modifying";
 
             if (isModify == isModifying)
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that we are already {state} muted member's roles.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that we are already {state} muted member's roles.");
                 return;
             }
 
@@ -29,7 +30,7 @@ namespace FBIBot.Modules.Config
 
             List<Task> cmds = new()
             {
-                Context.Channel.SendMessageAsync(embed: embed.Build())
+                Context.Interaction.RespondAsync(embed: embed.Build())
             };
             if (isModify)
             {

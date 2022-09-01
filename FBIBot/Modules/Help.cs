@@ -1,32 +1,20 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules
 {
-    public class Help : ModuleBase<SocketCommandContext>
+    public class Help : InteractionModuleBase<SocketInteractionContext>
     {
-        private const string ping = "ping\n" +
+        private const string ping =
+            "ping\n" +
             "  - Returns the bot's Server and API latencies\n\u200b";
 
-        private const string help = "mod\n" +
-            "  - Displays page 1 of moderation commands\n\n" +
-            "mod2\n" +
-            "  - Displays page 2 of moderation commands\n\n" +
-            "mod3\n" +
-            "  - Displays page 3 of moderation commands\n\n" +
-            "config\n" +
-            "  - Displays page 1 of bot configuration commands\n\n" +
-            "config2\n" +
-            "  - Displays page 2 of bot configuration commands\n\n" +
-            "automod\n" +
-            "  - Displays page 1 of automod configuration commands\n\n" +
-            "automod2\n" +
-            "  - Displays page 2 of automod configuration commands";
+        private const string help = "Pass in a parameter to the help command to get info about a group of commands.";
 
-        private const string mod = "warn [user mention/ID] (reason)\n" +
+        private const string mod1 =
+            "warn [user mention/ID] (reason)\n" +
             "tempwarn [user mention/ID] [hours] (reason)\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
             "getwarnings [user mention/ID]\n" +
@@ -41,7 +29,8 @@ namespace FBIBot.Modules
             "unmute [user mention/ID]\n" +
             "  - Frees the house-arrested user";
 
-        private const string mod2 = "arrest [user mention/ID] (reason)\n" +
+        private const string mod2 =
+            "arrest [user mention/ID] (reason)\n" +
             "tempArrest [user mention/ID] [minutes] (reason)\n" +
             "  - Sends the user to Guantanamo Bay for a bit; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
             "free [user mention/ID]\n" +
@@ -55,7 +44,8 @@ namespace FBIBot.Modules
             "unban [user mention/ID]\n" +
             "  - Permits the now-ex-KGB spy to reenter the server";
 
-        private const string mod3 = "modifyreason [mod log ID] (reason)\n" +
+        private const string mod3 =
+            "modifyreason [mod log ID] (reason)\n" +
             "  - Modifies the reason for the given mod log\n\n" +
             "purge [count (default: 100, max: 1000)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from the channel\n\n" +
@@ -64,109 +54,116 @@ namespace FBIBot.Modules
             "slowmode [seconds]\n" +
             "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*";
 
-        private static readonly string config = "config\n" +
+        private static readonly string config1 =
+            "config\n" +
             "  - Displays the current bot configuration\n\n" +
-            "setprefix [prefix]\n" +
-            $"  - Sets the bot prefix; default is {CommandHandler.prefix}\n\n" +
-            "setverify [role mention/ID] [true / **false** (default)]\n" +
+            "set-role verify [role mention/ID] [true / **false** (default)]\n" +
             "  - Sets the verification role and, if true, slowly gives out the role to (and removes the old role from) democracy-loving citizens; *Unsets if no role is given*\n\n" +
-            "verifyall\n" +
+            "verify-all\n" +
             "  - Grants citizenship all current freedom-loving Americans\n\n" +
             "unverify [user mention/ID] (reason)\n" +
             "  - Removes the verification role from the user and removes the user from the list of verified users\n\n" +
-            "setmute [role mention/ID]\n" +
+            "set-role mute [role mention/ID]\n" +
             "  - Sets the role for members under house arrest (muted); *Unsets if no role is given*\n\n" +
             "modify-muted-roles [true/enable / false/disable]\n" +
             "  - When enabled, allows the bot to remove and save the roles of muted members; enable this unless you have manually configured the server's muted role\n\n" +
-            "raidmode\n" +
+            "raid-mode\n" +
             "  - When enabled, sets the server verification level to High (Tableflip) and kicks any joining members; **Toggle enable/disable**";
 
-        private const string config2 = "addmod [role mention/ID]\n" +
+        private const string config2 =
+            "add-role mod [role mention/ID]\n" +
             "  - Adds the role to a list of assistants of the bureau\n\n" +
-            "removemod [role mention/ID]\n" +
+            "remove-role mod [role mention/ID]\n" +
             "  - Removes the role from the list of assistants of the bureau out of suspicion\n\n" +
-            "addadmin [role mention/ID]\n" +
+            "add-role admin [role mention/ID]\n" +
             "  - Adds the role to a list of local directors of the bureau\n\n" +
-            "removeadmin [role mention/ID]\n" +
+            "remove-role admin [role mention/ID]\n" +
             "  - Removes the role from the list of local directors of the bureau due to presidential disapproval\n\n" +
-            "setmodlog [channel mention/ID]\n" +
+            "set-log mod [channel mention/ID]\n" +
             "  - Sets the channel for the Mod Log; *Unsets if no channel is given*\n\n" +
-            "setcaptchalog [channel mention/ID]\n" +
+            "set-log captcha [channel mention/ID]\n" +
             "  - Sets the channel for the CAPTCHA Log; *Unsets if no channel is given*\n\n" +
-            "setwelcome [channel mention/ID]\n" +
+            "set-log welcome [channel mention/ID]\n" +
             "  - Sets the channel for welcome messages; *Unsets if no channel is given*\n\n" +
-            "clearmodlog [clear messages (true / **false** [default])]\n" +
+            "clear-mod-log [clear messages (true / **false** [default])]\n" +
             "  - Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**";
 
-        private const string automod = "auto-surveillance [true/enable / false/disable]\n" +
-            "  - Permits the FBI to perform surveillance operations on server members ~~(we recommend you enable this)~~\n\n" +
-            "anti-zalgo [true/enable / false/disable]\n" +
+        private const string automod1 =
+            "auto-surveillance [true/enable / false/disable]\n" +
+            "  - Permits the FBI to perform surveillance operations on server members ~~(we recommend you enable this for maximum LARP)~~\n\n" +
+            "automod zalgo [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if a message was leaked from Area 51 and take it down with a warning\n\n" +
-            "anti-spam [true/enable / false/disable]\n" +
+            "automod spam [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect if users send multiple identical messages and take them down with a warning\n\n" +
-            "anti-singlespam [true/enable / false/disable]\n" +
-            "  - When enabled, the FBI will detect if the user sends one big, spammy message and takes it down with a warning";
+            "automod single-spam [true/enable / false/disable]\n" +
+            "  - When enabled, the FBI will detect if the user sends one big, spammy message and take it down with a warning";
 
-        private const string automod2 = "anti-massmention [true/enable / false/disable]\n" +
+        private const string automod2 =
+            "automod mass-mention [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down, with a warning, messages mentioning all the rich people the user wants to eat (5+)\n\n" +
-            "anti-caps [true/enable / false/disable]\n" +
+            "automod caps [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will take down, with a warning, VERY LOUD PROTESTS\n\n" +
-            "anti-invite [true/enable / false/disable]\n" +
+            "automod invite [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will detect invites to the socialist party and *kindly* remove them\n\n" +
-            "anti-link [true/enable / false/disable]\n" +
+            "automod link [true/enable / false/disable]\n" +
             "  - When enabled, the FBI will dispose of all messages containing links to communist propaganda websites";
 
-        [Command("help")]
-        public async Task HelpAsync(string param = null)
+        public enum HelpParam
+        {
+            [ChoiceDisplay("Mod - Page 1")]
+            Mod1,
+            [ChoiceDisplay("Mod - Page 2")]
+            Mod2,
+            [ChoiceDisplay("Mod - Page 3")]
+            Mod3,
+            [ChoiceDisplay("Config - Page 1")]
+            Config1,
+            [ChoiceDisplay("Config - Page 2")]
+            Config2,
+            [ChoiceDisplay("AutoMod - Page 1")]
+            AutoMod1,
+            [ChoiceDisplay("AutoMod - Page 2")]
+            AutoMod2,
+        }
+
+        [SlashCommand("help", "List of commands")]
+        public async Task HelpAsync(HelpParam? param = null)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithTitle(SecurityInfo.botName);
 
-            string prefix = CommandHandler.prefix;
-            if (Context.Guild != null)
-            {
-                prefix = await configDatabase.Prefixes.GetPrefixAsync(Context.Guild);
-            }
-            List<EmbedFieldBuilder> fields = new()
-            {
-                new EmbedFieldBuilder()
-                    .WithIsInline(false)
-                    .WithName("Prefix")
-                    .WithValue(prefix +
-                        "\n**or**\n" +
-                        Context.Client.CurrentUser.Mention + "\n\u200b")
-            };
+            List<EmbedFieldBuilder> fields = new();
 
             EmbedFieldBuilder field = new EmbedFieldBuilder()
                 .WithIsInline(true);
             switch (param)
             {
-            case "mod":
+            case HelpParam.Mod1:
                 field.WithName("Moderator Commands - Page 1")
-                    .WithValue(mod);
+                    .WithValue(mod1);
                 break;
-            case "mod2":
+            case HelpParam.Mod2:
                 field.WithName("Moderator Commands - Page 2")
                     .WithValue(mod2);
                 break;
-            case "mod3":
+            case HelpParam.Mod3:
                 field.WithName("Moderator Commands - Page 3")
                     .WithValue(mod3);
                 break;
-            case "config":
+            case HelpParam.Config1:
                 field.WithName("Configuration Commands - Page 1")
-                    .WithValue(config);
+                    .WithValue(config1);
                 break;
-            case "config2":
+            case HelpParam.Config2:
                 field.WithName("Configuration Commands - Page 2")
                     .WithValue(config2);
                 break;
-            case "automod":
+            case HelpParam.AutoMod1:
                 field.WithName("AutoMod Commands - Page 1")
-                    .WithValue(automod);
+                    .WithValue(automod1);
                 break;
-            case "automod2":
+            case HelpParam.AutoMod2:
                 field.WithName("Automod Commands - Page 2")
                     .WithValue(automod2);
                 break;
@@ -177,14 +174,14 @@ namespace FBIBot.Modules
                         .WithName("Ping Command")
                         .WithValue(ping)
                 );
-                field.WithName("`help` Parameters")
+                field.WithName("`help` Information")
                     .WithValue(help);
                 break;
             }
             fields.Add(field);
             embed.WithFields(fields);
 
-            await Context.Channel.SendMessageAsync("Need a little democracy, freedom, and justice?", embed: embed.Build());
+            await Context.Interaction.RespondAsync("Need a little democracy, freedom, and justice?", embed: embed.Build());
         }
     }
 }

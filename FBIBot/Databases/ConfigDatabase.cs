@@ -10,7 +10,6 @@ namespace FBIBot.Databases
         private readonly SqliteConnection connection = new("Filename=Config.db");
         private readonly Dictionary<System.Type, ITable> tables = new();
 
-        public PrefixesTable Prefixes => tables[typeof(PrefixesTable)] as PrefixesTable;
         public ModifyMutedTable ModifyMuted => tables[typeof(ModifyMutedTable)] as ModifyMutedTable;
         public AutoSurveillanceTable AutoSurveillance => tables[typeof(AutoSurveillanceTable)] as AutoSurveillanceTable;
         public AntiZalgoTable AntiZalgo => tables[typeof(AntiZalgoTable)] as AntiZalgoTable;
@@ -23,7 +22,6 @@ namespace FBIBot.Databases
 
         public ConfigDatabase()
         {
-            tables.Add(typeof(PrefixesTable), new PrefixesTable(connection));
             tables.Add(typeof(ModifyMutedTable), new ModifyMutedTable(connection));
             tables.Add(typeof(AutoSurveillanceTable), new AutoSurveillanceTable(connection));
             tables.Add(typeof(AntiZalgoTable), new AntiZalgoTable(connection));

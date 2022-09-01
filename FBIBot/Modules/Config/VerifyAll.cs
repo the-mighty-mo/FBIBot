@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
@@ -7,10 +7,9 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class VerifyAll : ModuleBase<SocketCommandContext>
+    public class VerifyAll : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("verifyall")]
-        [Alias("verify-all")]
+        [SlashCommand("verify-all", "Grants citizenship all current freedom-loving Americans")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task VerifyAllAsync()
@@ -18,7 +17,7 @@ namespace FBIBot.Modules.Config
             SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             if (role == null)
             {
-                await Context.Channel.SendMessageAsync("Our intelligence team has informed us that there is no role to give to verified citizens.");
+                await Context.Interaction.RespondAsync("Our intelligence team has informed us that there is no role to give to verified citizens.");
                 return;
             }
 
@@ -30,7 +29,7 @@ namespace FBIBot.Modules.Config
             ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync(embed: embed1.Build()),
+                Context.Interaction.RespondAsync(embed: embed1.Build()),
                 VerifyAllModLog.SendToModLogAsync(Context.User as SocketGuildUser)
             );
 
@@ -49,7 +48,7 @@ namespace FBIBot.Modules.Config
                         await Task.WhenAll
                         (
                             user.RemoveRoleAsync(role),
-                            Context.Channel.SendMessageAsync(embed: emb.Build()),
+                            Context.Interaction.RespondAsync(embed: emb.Build()),
                             VerifyAllModLog.SetStateAsync(Context.Guild, id, "Canceled (change in verification role)")
                         );
                         return;
@@ -64,7 +63,7 @@ namespace FBIBot.Modules.Config
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 VerifyAllModLog.SetStateAsync(Context.Guild, id, "Completed")
             );
         }

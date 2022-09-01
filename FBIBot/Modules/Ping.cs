@@ -1,26 +1,26 @@
 ﻿using Discord;
-using Discord.Commands;
-using Discord.Rest;
+using Discord.Interactions;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules
 {
-    public class Ping : ModuleBase<SocketCommandContext>
+    public class Ping : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("ping")]
+        [SlashCommand("ping", "Ping the bot")]
         public async Task PingAsync()
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
                 .WithDescription(":ping_pong:**Pong!**")
                 .WithCurrentTimestamp();
-            RestUserMessage msg = await Context.Channel.SendMessageAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build());
+            var response = await Context.Interaction.GetOriginalResponseAsync();
 
             embed.WithDescription(":ping_pong:**Pong!**\n" +
-                $"**Server:** {(int)(msg.Timestamp - Context.Message.Timestamp).TotalMilliseconds}ms\n" +
+                $"**Server:** {(int)(response.Timestamp - Context.Interaction.CreatedAt).TotalMilliseconds}ms\n" +
                 $"**API:** {Context.Client.Latency}ms");
 
-            await msg.ModifyAsync(x => x.Embed = embed.Build());
+            await response.ModifyAsync(x => x.Embed = embed.Build());
         }
     }
 }

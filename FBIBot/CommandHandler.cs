@@ -62,6 +62,8 @@ namespace FBIBot
         private async Task ReadyAsync()
         {
             await interactions.RegisterCommandsGloballyAsync(true);
+            //await interactions.RegisterCommandsToGuildAsync(592789445741379585, true);
+            //await new InteractionService(client).RegisterCommandsToGuildAsync(592789445741379585, true);
         }
 
         private async Task SendInteractionErrorAsync(SlashCommandInfo info, IInteractionContext context, Discord.Interactions.IResult result)
@@ -220,8 +222,7 @@ namespace FBIBot
             }
 
             SocketCommandContext Context = new(client, msg);
-            string _prefix = Context.Guild != null ? await configDatabase.Prefixes.GetPrefixAsync(Context.Guild) : prefix;
-            bool isCommand = msg.HasMentionPrefix(client.CurrentUser, ref argPos) || msg.HasStringPrefix(_prefix, ref argPos);
+            bool isCommand = msg.HasMentionPrefix(client.CurrentUser, ref argPos) || msg.HasStringPrefix(prefix, ref argPos);
 
             if (isCommand)
             {

@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.AutoMod.AutoSurveillance

@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +8,12 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Config
 {
-    public class Config : ModuleBase<SocketCommandContext>
+    public class Config : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("config")]
+        [SlashCommand("config", "Displays the current bot configuration")]
         [RequireAdmin]
         public async Task ConfigAsync()
         {
-            Task<string> prefix = configDatabase.Prefixes.GetPrefixAsync(Context.Guild);
             Task<SocketRole> verify = verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             Task<SocketRole> mute = modRolesDatabase.Muted.GetMuteRole(Context.Guild);
             Task<bool> modifyMuted = configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
@@ -33,7 +32,7 @@ namespace FBIBot.Modules.Config
             Task<bool> antiInvite = configDatabase.AntiInvite.GetAntiInviteAsync(Context.Guild);
             Task<bool> antiLink = configDatabase.AntiLink.GetAntiLinkAsync(Context.Guild);
 
-            string config = $"Prefix: **{(await prefix == @"\" ? @"\\" : await prefix)}**\n" +
+            string config =
                 $"Verification Role: **{(await verify != null ? (await verify).Mention : "(none)")}**\n" +
                 $"Mute Role: **{(await mute != null ? (await mute).Mention : "(none)")}**\n" +
                 $"Modify Muted Member's Roles: **{(await modifyMuted ? "Enabled" : "Disabled")}**\n" +
@@ -54,7 +53,7 @@ namespace FBIBot.Modules.Config
                 $"Anti-Invite: **{(await antiInvite ? "Enabled" : "Disabled")}**\n" +
                 $"Anti-Link: **{(await antiLink ? "Enabled" : "Disabled")}**\n";
 
-            string @default = $"Prefix: **{(CommandHandler.prefix == @"\" ? @"\\" : CommandHandler.prefix)}**\n" +
+            string @default =
                 $"Mute Role: Muted **(created on mute command)**\n" +
                 $"Modify Muted Member's Roles: **Disabled**\n" +
                 $"__AutoMod:__ **Disabled**";
@@ -76,7 +75,7 @@ namespace FBIBot.Modules.Config
                 .WithValue(@default);
             embed.AddField(orig);
 
-            await Context.Channel.SendMessageAsync("This isn't going to help you keep my power in check.", embed: embed.Build());
+            await Context.Interaction.RespondAsync("This isn't going to help you keep my power in check.", embed: embed.Build());
         }
     }
 }
