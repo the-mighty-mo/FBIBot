@@ -18,11 +18,11 @@ namespace FBIBot.Modules
         private const string mod1 =
             "warn [user mention/ID] (hours) (reason)\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
-            "get-warnings [user mention/ID]\n" +
+            "warnings get [user mention/ID]\n" +
             "  - Gets the number of warnings and mod logs for the warnings for the given user\n\n" +
-            "remove-warning [user mention/ID] [mod log ID]\n" +
+            "warnings remove id [user mention/ID] [mod log ID]\n" +
             "  - Removes the given warning from the user\n\n" +
-            "remove-warnings [user mention/ID] (count)\n" +
+            "warnings remove count [user mention/ID] (count)\n" +
             "  - Removes a number of warnings from the user; removes the oldest first\n\n" +
             "mute [user mention/ID] (minutes) (reason)\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
