@@ -7,9 +7,11 @@ namespace FBIBot.Modules
 {
     public class Help : InteractionModuleBase<SocketInteractionContext>
     {
-        private const string ping =
+        private const string general =
             "ping\n" +
-            "  - Returns the bot's Server and API latencies\n\u200b";
+            "  - Returns the bot's Server and API latencies\n\n" +
+            "verify [CAPTCHA response]\n" +
+            "  - Verify that you are not a spy from the CCP\n\u200b";
 
         private const string help = "Pass in a parameter to the help command to get info about a group of commands.";
 
@@ -171,8 +173,8 @@ namespace FBIBot.Modules
                 fields.Add(
                     new EmbedFieldBuilder()
                         .WithIsInline(false)
-                        .WithName("Ping Command")
-                        .WithValue(ping)
+                        .WithName("General Commands")
+                        .WithValue(general)
                 );
                 field.WithName("`help` Information")
                     .WithValue(help);
@@ -181,7 +183,7 @@ namespace FBIBot.Modules
             fields.Add(field);
             embed.WithFields(fields);
 
-            await Context.Interaction.RespondAsync("Need a little democracy, freedom, and justice?", embed: embed.Build());
+            await Context.Interaction.RespondAsync("Need a little democracy, freedom, and justice?", embed: embed.Build(), ephemeral: true);
         }
     }
 }

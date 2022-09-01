@@ -1,6 +1,6 @@
 ﻿using CaptchaGen.NetCore;
 using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
@@ -12,17 +12,17 @@ using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace FBIBot.Modules.AutoMod
 {
-    public class Verify : ModuleBase<SocketCommandContext>
+    public class Verify : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("verify")]
-        public async Task VerifyAsync([Remainder] string response = null)
+        [SlashCommand("verify", "Verify that you are not a spy from the CCP")]
+        public async Task VerifyAsync(string response = null)
         {
             if (await verificationDatabase.Verified.GetVerifiedAsync(Context.User))
             {
                 await Task.WhenAll
                 (
                     GiveVerificationAsync(),
-                    Context.User.SendMessageAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck.")
+                    Context.Interaction.RespondAsync("We already decided you *probably* aren't a communist spy. We suggest you don't try your luck.", ephemeral: true)
                 );
                 return;
             }
@@ -30,11 +30,13 @@ namespace FBIBot.Modules.AutoMod
             string captcha = await verificationDatabase.Captcha.GetCaptchaAsync(Context.User);
             if (response == null || captcha == null)
             {
-                await SendCaptchaAsync();
+                await Task.WhenAll(
+                    SendCaptchaAsync(),
+                    Context.Interaction.RespondAsync("Check your DMs", ephemeral: true)
+                );
                 return;
             }
-
-            if (response != captcha)
+            else if (response != captcha)
             {
                 await BadAttemptAsync(captcha, response);
                 return;
@@ -44,7 +46,7 @@ namespace FBIBot.Modules.AutoMod
             (
                 GiveVerificationAsync(),
                 verificationDatabase.Verified.SetVerifiedAsync(Context.User),
-                Context.User.SendMessageAsync("We have confirmed you are *probably* not a communist spy. You may proceed.")
+                Context.Interaction.RespondAsync("We have confirmed you are *probably* not a communist spy. You may proceed.", ephemeral: true)
             );
 
             List<Task> cmds = new();
@@ -73,8 +75,8 @@ namespace FBIBot.Modules.AutoMod
                 {
                     verificationDatabase.Captcha.RemoveCaptchaAsync(Context.User),
                     verificationDatabase.Attempts.RemoveAttemptsAsync(Context.User),
-                    Context.User.SendMessageAsync("You have run out of attempts, communist spy.\n" +
-                        "If you would like to try again, please get a new captcha by typing `\\verify`.")
+                    Context.Interaction.RespondAsync("You have run out of attempts, communist spy.\n" +
+                        "If you would like to try again, please get a new captcha by typing `/verify`.", ephemeral: true)
                 };
 
                 foreach (SocketGuild g in Context.User.MutualGuilds)
@@ -93,7 +95,7 @@ namespace FBIBot.Modules.AutoMod
                 List<Task> commands = new()
                 {
                     verificationDatabase.Attempts.SetAttemptsAsync(Context.User, attempts),
-                    Context.User.SendMessageAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.")
+                    Context.Interaction.RespondAsync($"Incorrect. You have {maxAttempts - attempts} {(attempts == 1 ? "attempt" : "attempts")} remaining.", ephemeral: true)
                 };
 
                 foreach (SocketGuild g in Context.User.MutualGuilds)
@@ -109,9 +111,9 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        private Task SendCaptchaAsync() => SendCaptchaAsync(Context.User);
+        private Task SendCaptchaAsync() => SendCaptchaAsync(Context.User, Context.Interaction);
 
-        public static async Task SendCaptchaAsync(SocketUser u)
+        public static async Task SendCaptchaAsync(SocketUser u, SocketInteraction interaction = null)
         {
             string captchaCode = ImageFactory.CreateCode(6);
 
@@ -129,11 +131,22 @@ namespace FBIBot.Modules.AutoMod
                 }))
 #pragma warning restore CA1416 // Validate platform compatibility
             {
-                await Task.WhenAll
-                (
-                    save,
-                    u.SendFileAsync($"{u.Id}.png", $"Please type `\\verify` followed by a space and this captcha code to continue{((u as SocketGuildUser) != null ? $" to {(u as SocketGuildUser)!.Guild.Name}" : "")}.\n")
-                );
+                if (interaction is not null)
+                {
+                    await Task.WhenAll
+                    (
+                        save,
+                        interaction.RespondWithFileAsync($"{u.Id}.png", text: $"Please type `/verify` with this captcha code to continue{((u as SocketGuildUser) != null ? $" to {(u as SocketGuildUser)!.Guild.Name}" : "")}.\n", ephemeral: true)
+                    );
+                }
+                else
+                {
+                    await Task.WhenAll
+                    (
+                        save,
+                        u.SendFileAsync($"{u.Id}.png", $"Please type `/verify` with this captcha code to continue{((u as SocketGuildUser) != null ? $" to {(u as SocketGuildUser)!.Guild.Name}" : "")}.\n")
+                    );
+                }
             }
 
             File.Delete($"{u.Id}.png");
