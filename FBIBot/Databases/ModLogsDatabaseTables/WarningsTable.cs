@@ -83,7 +83,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task RemoveWarningsAsync(SocketGuildUser u, string count = null)
+        public async Task RemoveWarningsAsync(SocketGuildUser u, int? count = null)
         {
             string delete = "DELETE FROM Warnings WHERE guild_id = @guild_id AND user_id = @user_id";
             if (count != null)
@@ -95,7 +95,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
-            cmd.Parameters.AddWithValue("@count", count);
+            cmd.Parameters.AddWithValue("@count", count?.ToString());
 
             await cmd.ExecuteNonQueryAsync();
         }

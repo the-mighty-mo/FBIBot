@@ -6,10 +6,10 @@ namespace FBIBot.Modules.Mod
 {
     public class Slowmode : InteractionModuleBase<SocketInteractionContext>
     {
-        [SlashCommand("slowmode", "Enables slowmode in the chat; *Disables slowmode if no time is given*")]
+        [SlashCommand("slowmode", "Enables slowmode in the chat. *Disables slowmode if no time is given*")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task SlowModeAsync([Summary(description: "Time in seconds; max is 21600")] int? seconds = null)
+        public async Task SlowModeAsync([Summary(description: "Time in seconds. Max: 21600")] int? seconds = null)
         {
             if (seconds == null)
             {

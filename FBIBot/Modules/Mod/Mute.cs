@@ -15,7 +15,7 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("mute", "Puts the user under house arrest so they can't type or speak in chats")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task TempMuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Summary(description: "Timeout in minutes")] string timeout = null, string reason = null)
+        public async Task TempMuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null)
         {
             IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))
@@ -42,10 +42,9 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll(cmds);
 
-            bool isTimeout = double.TryParse(timeout, out double minutes);
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 110, 24))
-                .WithDescription($"{user.Mention} has been placed under house arrest{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}.");
+                .WithDescription($"{user.Mention} has been placed under house arrest{(timeout is not null ? $" for {timeout} {(timeout == 1 ? "minute" : "minutes")}" : "")}.");
 
             EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
                     .WithIsInline(false)
@@ -59,9 +58,9 @@ namespace FBIBot.Modules.Mod
                 MuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
             );
 
-            if (isTimeout)
+            if (timeout is not null)
             {
-                await Task.Delay((int)(minutes * 60 * 1000));
+                await Task.Delay((int)(timeout * 60 * 1000));
 
                 if (!user.Roles.Contains(role))
                 {

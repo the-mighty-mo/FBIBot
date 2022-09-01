@@ -10,11 +10,11 @@ namespace FBIBot.Modules.Config
 {
     public class ClearModLog : InteractionModuleBase<SocketInteractionContext>
     {
-        [SlashCommand("clear-mod-log", "Clears the Mod Log numbers and, if specified, all Mod Log messages; **Clears all warnings**")]
+        [SlashCommand("clear-mod-log", "Clears the Mod Log numbers. *Clears all warnings*")]
         [RequireAdmin]
-        public async Task ClearModLogAsync(BoolChoice clearMsg = BoolChoice.False)
+        public async Task ClearModLogAsync([Summary(description: "Whether to clear all messages in the mod log. Default: False")] BoolChoice clear = BoolChoice.False)
         {
-            bool isClear = clearMsg == BoolChoice.True;
+            bool isClear = clear == BoolChoice.True;
             if (await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild) == 1 && !isClear)
             {
                 await Context.Interaction.RespondAsync("Our security team has informed us that there are no moderation logs.");

@@ -6,20 +6,19 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class WarnModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string timeout, string reason)
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, double? timeout, string reason)
         {
-            bool isTime = double.TryParse(timeout, out double time);
-            bool isMinutes = time < 1;
-            if (time < 1)
+            bool isMinutes = timeout < 1;
+            if (timeout < 1)
             {
-                time *= 60;
+                timeout *= 60;
             }
             await ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,
                         new Color(255, 213, 31),
-                        $"Warn User{(isTime ? $" for {time} {(time == 1 ? isMinutes ? "minute" : "hour" : isMinutes ? "minutes" : "hours")}" : "")}",
+                        $"Warn User{(timeout is not null ? $" for {timeout} {(timeout == 1 ? isMinutes ? "minute" : "hour" : isMinutes ? "minutes" : "hours")}" : "")}",
                         $"{target.Mention}"
                     ),
                     new ModLogBase.ModLogInfo.ReasonInfo(

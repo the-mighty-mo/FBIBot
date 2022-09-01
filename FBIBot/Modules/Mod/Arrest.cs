@@ -12,11 +12,11 @@ namespace FBIBot.Modules.Mod
 {
     public class Arrest : InteractionModuleBase<SocketInteractionContext>
     {
-        [SlashCommand("arrest", "Sends the user to Guantanamo Bay for a bit; **This command creates its own role and channel**")]
+        [SlashCommand("arrest", "Sends the user to Guantanamo Bay for a bit. *This command creates its own role and channel*")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Summary(description: "Timeout in minutes")] string timeout = null, string reason = null)
+        public async Task ArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null)
         {
             IRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
@@ -39,10 +39,9 @@ namespace FBIBot.Modules.Mod
                 modRolesDatabase.Prisoners.RecordPrisonerAsync(user)
             );
 
-            bool isTimeout = double.TryParse(timeout, out double minutes);
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 61, 24))
-                .WithDescription($"{user.Mention} has been sent to Guantanamo Bay{(timeout != null && isTimeout ? $" for {timeout} {(minutes == 1 ? "minute" : "minutes")}" : "")}.");
+                .WithDescription($"{user.Mention} has been sent to Guantanamo Bay{(timeout is not null ? $" for {timeout} {(timeout == 1 ? "minute" : "minutes")}" : "")}.");
 
             EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
                     .WithIsInline(false)
@@ -56,9 +55,9 @@ namespace FBIBot.Modules.Mod
                 ArrestModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
             );
 
-            if (isTimeout)
+            if (timeout is not null)
             {
-                await Task.Delay((int)(minutes * 60 * 1000));
+                await Task.Delay((int)(timeout * 60 * 1000));
                 role = Context.Guild.GetRole(role.Id);
 
                 if (!user.Roles.Contains(role))

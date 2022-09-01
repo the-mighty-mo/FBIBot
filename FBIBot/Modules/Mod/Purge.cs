@@ -13,7 +13,7 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("all", "Shreds, burns, and disposes of a number of messages from the channel")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageMessages)]
-        public async Task PurgeAsync(int count = 100)
+        public async Task PurgeAsync([Summary(description: "Default: 100")] int count = 100)
         {
             if (count > 1000)
             {
@@ -41,7 +41,7 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("user", "Shreds, burns, and disposes of a number of messages from a user in the channel")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageMessages)]
-        public async Task PurgeAsync(SocketGuildUser user, int count = 10)
+        public async Task PurgeAsync(SocketGuildUser user, [Summary(description: "Default: 10")] int count = 10)
         {
             if (count > 100)
             {

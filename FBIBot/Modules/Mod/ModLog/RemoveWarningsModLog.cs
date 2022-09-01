@@ -6,13 +6,13 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class RemoveWarningsModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string count) =>
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, int? count) =>
             await ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,
                         new Color(12, 156, 24),
-                        $"Remove {count ?? "All"} Warnings from User",
+                        $"Remove {count?.ToString() ?? "All"} Warnings from User",
                         $"{target.Mention}"
                     )
                 )

@@ -12,7 +12,7 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("warn", "Gives the user a warning to stop protesting capitalism")]
         [RequireMod]
         [RequireModLog]
-        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Summary(description: "Length of the warning in hours")] string length = null, string reason = null)
+        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Summary(description: "Length of the warning in hours. Default: permanent")] double? length = null, string reason = null)
         {
             ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
 
@@ -20,12 +20,12 @@ namespace FBIBot.Modules.Mod
                 .WithColor(new Color(255, 213, 31))
                 .WithDescription($"{user.Mention} stop protesting capitalism.");
 
-            if (double.TryParse(length, out double h))
+            if (length is not null)
             {
                 EmbedFieldBuilder lengthField = new EmbedFieldBuilder()
                         .WithIsInline(false)
                         .WithName("Length")
-                        .WithValue(h < 1 ? $"{h * 60} minutes" : $"{h} hours");
+                        .WithValue(length < 1 ? $"{length * 60} minutes" : $"{length} hours");
                 embed.AddField(lengthField);
             }
 
@@ -42,9 +42,9 @@ namespace FBIBot.Modules.Mod
                 modLogsDatabase.Warnings.AddWarningAsync(user, id)
             );
 
-            if (double.TryParse(length, out double hours))
+            if (length is not null)
             {
-                await Task.Delay((int)(hours * 60 * 60 * 1000));
+                await Task.Delay((int)(length * 60 * 60 * 1000));
 
                 if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id))
                 {
@@ -53,7 +53,7 @@ namespace FBIBot.Modules.Mod
 
                 await Task.WhenAll
                 (
-                    RemoveWarningModLog.SendToModLogAsync(Context.Guild.CurrentUser, user, id.ToString()),
+                    RemoveWarningModLog.SendToModLogAsync(Context.Guild.CurrentUser, user, id),
                     modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
                 );
             }

@@ -26,7 +26,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                RemoveWarningModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, id.ToString()),
+                RemoveWarningModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, id),
                 modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
             );
         }

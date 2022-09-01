@@ -11,7 +11,7 @@ namespace FBIBot.Modules.Config
     [Group("set-role", "Sets a role for bot actions")]
     public class SetRole : InteractionModuleBase<SocketInteractionContext>
     {
-        [SlashCommand("mute", "Sets the role for members under house arrest (muted); *Unsets if no role is given*")]
+        [SlashCommand("mute", "Sets the role for members under house arrest (muted). *Unsets if no role is given*")]
         [RequireAdmin]
         public async Task SetMuteAsync(SocketRole role = null)
         {
@@ -66,10 +66,10 @@ namespace FBIBot.Modules.Config
             );
         }
 
-        [SlashCommand("verify", "Sets the verification role and gives out the new role; *Unsets if no role is given*")]
+        [SlashCommand("verify", "Sets the verification role. *Unsets if no role is given*")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task SetVerifyAsync(SocketRole role = null, [Summary(description: "If true, gives out the new role and removes any old Verification role")] BoolChoice changeRole = BoolChoice.False)
+        public async Task SetVerifyAsync(SocketRole role = null, [Summary(description: "Whether to give out the new role and remove any old Verification role. Default: False")] BoolChoice changeRole = BoolChoice.False)
         {
             if (role is null)
             {
