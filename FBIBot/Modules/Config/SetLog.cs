@@ -7,10 +7,10 @@ using static FBIBot.DatabaseManager;
 namespace FBIBot.Modules.Config
 {
     [Group("set-log", "Sets a log channel for bot actions")]
+    [RequireAdmin]
     public class SetLog : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("captcha", "Sets the channel for the CAPTCHA Log. *Unsets if no channel is given*")]
-        [RequireAdmin]
         public async Task SetCaptchaLogAsync(SocketTextChannel channel = null)
         {
             if (channel is null)
@@ -64,7 +64,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("mod", "Sets the channel for the Mod Log. *Unsets if no channel is given*")]
-        [RequireAdmin]
         public async Task SetModLogAsync(SocketTextChannel channel = null)
         {
             if (channel is null)
@@ -118,7 +117,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("welcome", "Sets the channel for welcome messages. *Unsets if no channel is given*")]
-        [RequireAdmin]
         public async Task SetWelcomeAsync(SocketTextChannel channel = null)
         {
             if (channel is null)

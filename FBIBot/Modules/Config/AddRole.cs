@@ -8,10 +8,10 @@ using static FBIBot.DatabaseManager;
 namespace FBIBot.Modules.Config
 {
     [Group("add-role", "Adds a role to the bot")]
+    [RequireAdmin]
     public class AddRole : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("admin", "Adds the role to a list of local directors of the bureau")]
-        [RequireAdmin]
         public async Task AddAdminAsync(SocketRole role)
         {
             if ((await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
@@ -45,7 +45,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("mod", "Adds the role to a list of assistants of the bureau")]
-        [RequireAdmin]
         public async Task AddModAsync(SocketRole role)
         {
             if ((await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))

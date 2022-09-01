@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace FBIBot
 {
     public class RequireAdmin : PreconditionAttribute
     {
-        public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext Context, CommandInfo command, IServiceProvider services) =>
+        public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext Context, ICommandInfo command, IServiceProvider services) =>
             Context.User is SocketGuildUser user
                 ? await VerifyUser.IsAdmin(user)
                     ? PreconditionResult.FromSuccess()

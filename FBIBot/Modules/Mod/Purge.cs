@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace FBIBot.Modules.Mod
 {
     [Group("purge", "Shreds, burns, and disposes of a number of messages from the channel")]
+    [RequireMod]
     public class Purge : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("all", "Shreds, burns, and disposes of a number of messages from the channel")]
-        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task PurgeAsync([Summary(description: "Default: 100")] int count = 100)
         {
@@ -39,7 +39,6 @@ namespace FBIBot.Modules.Mod
         }
 
         [SlashCommand("user", "Shreds, burns, and disposes of a number of messages from a user in the channel")]
-        [RequireMod]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task PurgeAsync(SocketGuildUser user, [Summary(description: "Default: 10")] int count = 10)
         {

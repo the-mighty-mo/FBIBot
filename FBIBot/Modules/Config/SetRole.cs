@@ -9,10 +9,10 @@ using static FBIBot.DatabaseManager;
 namespace FBIBot.Modules.Config
 {
     [Group("set-role", "Sets a role for bot actions")]
+    [RequireAdmin]
     public class SetRole : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("mute", "Sets the role for members under house arrest (muted). *Unsets if no role is given*")]
-        [RequireAdmin]
         public async Task SetMuteAsync(SocketRole role = null)
         {
             if (role is null)
@@ -67,7 +67,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("verify", "Sets the verification role. *Unsets if no role is given*")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task SetVerifyAsync(SocketRole role = null, [Summary(description: "Whether to give out the new role and remove any old Verification role. Default: False")] BoolChoice changeRole = BoolChoice.False)
         {

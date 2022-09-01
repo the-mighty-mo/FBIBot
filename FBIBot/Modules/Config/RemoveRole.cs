@@ -7,10 +7,10 @@ using static FBIBot.DatabaseManager;
 namespace FBIBot.Modules.Config
 {
     [Group("remove-role", "Removes a role from the bot")]
+    [RequireAdmin]
     public class RemoveRole : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("admin", "Removes the role from the list of local directors of the bureau due to presidential disapproval")]
-        [RequireAdmin]
         public async Task RemoveAdminRoleAsync(SocketRole role)
         {
             if (!(await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
@@ -32,7 +32,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("mod", "Removes the role from the list of assistants of the bureau out of suspicion")]
-        [RequireAdmin]
         public async Task RemoveModRoleAsync(SocketRole role)
         {
             if (!(await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))

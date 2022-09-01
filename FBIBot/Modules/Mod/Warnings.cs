@@ -10,10 +10,10 @@ using static FBIBot.DatabaseManager;
 namespace FBIBot.Modules.Mod
 {
     [Group("warnings", "Manages warnings on the server")]
+    [RequireMod]
     public class Warnings : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("get", "Gets the number of warnings and mod logs for the warnings for the given user")]
-        [RequireMod]
         public async Task GetWarnsAsync(SocketGuildUser user)
         {
             List<ulong> ids = await modLogsDatabase.Warnings.GetWarningsAsync(user);
@@ -65,7 +65,6 @@ namespace FBIBot.Modules.Mod
         public class Remove : InteractionModuleBase<SocketInteractionContext>
         {
             [SlashCommand("id", "Removes the given warning from the user")]
-            [RequireMod]
             public async Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, ulong id)
             {
                 if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id))
@@ -87,7 +86,6 @@ namespace FBIBot.Modules.Mod
             }
 
             [SlashCommand("count", "Removes a number of warnings from the user. Removes the oldest first")]
-            [RequireMod]
             public async Task RemoveWarnsAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, [Summary(description: "Default: all")] int? count = null)
             {
                 if (count == 0)

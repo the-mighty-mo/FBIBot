@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
@@ -8,9 +9,9 @@ namespace FBIBot
 {
     public class RequireModLog : PreconditionAttribute
     {
-        public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext Context, CommandInfo command, IServiceProvider services) =>
+        public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext Context, ICommandInfo command, IServiceProvider services) =>
             Context.User is SocketGuildUser
-                ? await modLogsDatabase.ModLogChannel.GetModLogChannelAsync((Context as SocketCommandContext)?.Guild) != null
+                ? await modLogsDatabase.ModLogChannel.GetModLogChannelAsync((Context as SocketInteractionContext)?.Guild) != null
                     ? PreconditionResult.FromSuccess()
                     : PreconditionResult.FromError("You must set a mod log to use this command.")
                 : PreconditionResult.FromError("You must be in a server to run this command.");

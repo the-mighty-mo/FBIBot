@@ -8,10 +8,10 @@ using static FBIBot.DatabaseManager;
 namespace FBIBot.Modules.Config
 {
     [Group("automod", "Configures AutoMod")]
+    [RequireAdmin]
     public class AutoMod : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("caps", "Takes down, with a warning, VERY LOUD PROTESTS")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiCapsAsync(EnableChoice state)
         {
@@ -46,7 +46,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("invite", "Detects invites to the socialist party and *kindly* removes them")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiInviteAsync(EnableChoice state)
         {
@@ -81,7 +80,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("link", "Disposes of all messages containing links to communist propaganda websites")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiLinkAsync(EnableChoice state)
         {
@@ -116,7 +114,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("mass-mention", "Takes down, with a warning, messages mentioning all the rich people the user wants to eat")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiMassMentionAsync(EnableChoice state)
         {
@@ -151,7 +148,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("single-spam", "Detects if the user sends one big, spammy message and takes it down with a warning")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiSingleSpamAsync(EnableChoice state)
         {
@@ -186,7 +182,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("spam", "Detects if users send multiple identical messages and takes them down with a warning")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiSpamAsync(EnableChoice state)
         {
@@ -221,7 +216,6 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("zalgo", "Detects if a message was leaked from Area 51 and take it down with a warning")]
-        [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageMessages)]
         public async Task AntiZalgoAsync(EnableChoice state)
         {

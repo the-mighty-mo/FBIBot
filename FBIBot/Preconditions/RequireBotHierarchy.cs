@@ -1,4 +1,4 @@
-﻿using Discord.Commands;
+﻿using Discord.Interactions;
 using Discord.WebSocket;
 using System.Threading.Tasks;
 
@@ -8,7 +8,7 @@ namespace FBIBot
     {
         public RequireBotHierarchy(string cmd = DEFAULT_CMD) : base(cmd) { }
 
-        protected sealed override async Task<PreconditionResult> CheckPermissionsAsync(SocketCommandContext Context, SocketGuildUser target) =>
+        protected sealed override async Task<PreconditionResult> CheckRequirementsAsync(SocketInteractionContext Context, SocketGuildUser target) =>
             Context.User is SocketGuildUser
                 ? await VerifyUser.BotIsHigher(Context.Guild.CurrentUser, target)
                     ? PreconditionResult.FromSuccess()
