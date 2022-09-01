@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
@@ -7,25 +7,12 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class Warn : ModuleBase<SocketCommandContext>
+    public class Warn : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("warn")]
+        [SlashCommand("warn", "Gives the user a warning to stop protesting capitalism")]
         [RequireMod]
         [RequireModLog]
-        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Remainder] string reason = null) =>
-            await TempWarnAsync(user, null, reason);
-
-        [Command("warn")]
-        [RequireMod]
-        [RequireModLog]
-        public async Task WarnAsync(string user, [Remainder] string reason = null) =>
-            await TempWarnAsync(user, null, reason);
-
-        [Command("tempwarn")]
-        [Alias("temp-warn")]
-        [RequireMod]
-        [RequireModLog]
-        public async Task TempWarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, string length, [Remainder] string reason = null)
+        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Summary(description: "Length of the warning in hours")] string length = null, string reason = null)
         {
             ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
 
@@ -50,7 +37,7 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 WarnModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, length, reason),
                 modLogsDatabase.Warnings.AddWarningAsync(user, id)
             );
@@ -70,21 +57,6 @@ namespace FBIBot.Modules.Mod
                     modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
                 );
             }
-        }
-
-        [Command("tempwarn")]
-        [Alias("temp-warn")]
-        [RequireMod]
-        [RequireModLog]
-        public async Task TempWarnAsync(string user, string length, [Remainder] string reason = null)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await TempWarnAsync(u, length, reason);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
     }
 }

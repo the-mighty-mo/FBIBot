@@ -1,28 +1,27 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
 using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class ModifyReason : ModuleBase<SocketCommandContext>
+    public class ModifyReason : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("modifyreason")]
-        [Alias("modify-reason")]
+        [SlashCommand("modify-reason", "Modifies the reason for the given mod log")]
         [RequireMod]
         [RequireModLog]
-        public async Task ModifyReasonAsync(string id, [Remainder] string reason = null)
+        public async Task ModifyReasonAsync(ulong id, string reason = null)
         {
-            if (!ulong.TryParse(id, out ulong ID) || ID >= await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild))
+            if (id >= await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
                 return;
             }
 
-            if (!await ModLogManager.SetReasonAsync(new ModLogManager.ReasonInfo(Context.Guild, ID, reason)))
+            if (!await ModLogManager.SetReasonAsync(new ModLogManager.ReasonInfo(Context.Guild, id, reason)))
             {
-                await Context.Channel.SendMessageAsync("Our security team has informed us that the given Mod Log is not permitted to have a valid reason. Don't ask.");
+                await Context.Interaction.RespondAsync("Our security team has informed us that the given Mod Log is not permitted to have a valid reason. Don't ask.");
                 return;
             }
 
@@ -30,7 +29,7 @@ namespace FBIBot.Modules.Mod
                 .WithColor(SecurityInfo.botColor)
                 .WithDescription("The mod log's reason has been updated. Probably.");
 
-            await Context.Channel.SendMessageAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build());
         }
     }
 }

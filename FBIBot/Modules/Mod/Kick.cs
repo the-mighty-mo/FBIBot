@@ -1,17 +1,17 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
 {
-    public class Kick : ModuleBase<SocketCommandContext>
+    public class Kick : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("kick")]
+        [SlashCommand("kick", "Deports the criminal to probably Europe")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.KickMembers)]
-        public async Task KickAsync([RequireBotHierarchy("kick")] [RequireInvokerHierarchy("kick")] SocketGuildUser user, [Remainder] string reason = null)
+        public async Task KickAsync([RequireBotHierarchy("kick")][RequireInvokerHierarchy("kick")] SocketGuildUser user, string reason = null)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 12, 12))
@@ -26,23 +26,9 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 user.KickAsync(reason),
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 KickModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, reason)
             );
-        }
-
-        [Command("kick")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.KickMembers)]
-        public async Task KickAsync(string user, [Remainder] string reason = null)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await KickAsync(u, reason);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
     }
 }

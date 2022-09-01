@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Threading.Tasks;
@@ -7,22 +7,15 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class RemoveWarning : ModuleBase<SocketCommandContext>
+    public class RemoveWarning : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("removewarning")]
-        [Alias("remove-warning")]
+        [SlashCommand("remove-warning", "Removes the given warning from the user")]
         [RequireMod]
-        public async Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, string id)
+        public async Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, ulong id)
         {
-            if (!ulong.TryParse(id, out ulong ID))
+            if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
-                return;
-            }
-
-            if (!await modLogsDatabase.Warnings.GetWarningAsync(user, ID))
-            {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that the given warning does not exist.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that the given warning does not exist.");
                 return;
             }
 
@@ -32,24 +25,10 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
-                RemoveWarningModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, id),
-                modLogsDatabase.Warnings.RemoveWarningAsync(user, ID)
+                Context.Interaction.RespondAsync(embed: embed.Build()),
+                RemoveWarningModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, id.ToString()),
+                modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
             );
-        }
-
-        [Command("removewarning")]
-        [Alias("remove-warning")]
-        [RequireMod]
-        public async Task RemoveWarnAsync(string user, string id)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await RemoveWarnAsync(u, id);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
     }
 }

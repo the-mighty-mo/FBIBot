@@ -1,17 +1,17 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using System.Threading.Tasks;
 
 namespace FBIBot.Modules.Mod
 {
-    public class Slowmode : ModuleBase<SocketCommandContext>
+    public class Slowmode : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("slowmode")]
+        [SlashCommand("slowmode", "Enables slowmode in the chat; *Disables slowmode if no time is given*")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task SlowModeAsync(string length = null)
+        public async Task SlowModeAsync([Summary(description: "Time in seconds; max is 21600")] int? seconds = null)
         {
-            if (length == null)
+            if (seconds == null)
             {
                 EmbedBuilder emb = new EmbedBuilder()
                     .WithColor(SecurityInfo.botColor)
@@ -20,13 +20,8 @@ namespace FBIBot.Modules.Mod
                 await Task.WhenAll
                 (
                     Context.Guild.GetTextChannel(Context.Channel.Id).ModifyAsync(x => x.SlowModeInterval = 0),
-                    Context.Channel.SendMessageAsync(embed: emb.Build())
+                    Context.Interaction.RespondAsync(embed: emb.Build())
                 );
-                return;
-            }
-            if (!int.TryParse(length, out int seconds))
-            {
-                await Context.Channel.SendMessageAsync($"Our intelligence team has informed us that {length} is not a valid number of seconds.");
                 return;
             }
 
@@ -41,8 +36,8 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll
             (
-                Context.Guild.GetTextChannel(Context.Channel.Id).ModifyAsync(x => x.SlowModeInterval = seconds),
-                Context.Channel.SendMessageAsync(embed: embed.Build())
+                Context.Guild.GetTextChannel(Context.Channel.Id).ModifyAsync(x => x.SlowModeInterval = seconds.Value),
+                Context.Interaction.RespondAsync(embed: embed.Build())
             );
         }
     }

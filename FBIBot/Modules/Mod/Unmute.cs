@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
@@ -9,9 +9,9 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class Unmute : ModuleBase<SocketCommandContext>
+    public class Unmute : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("unmute")]
+        [SlashCommand("unmute", "Frees the house-arrested user")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task UnmuteAsync([RequireInvokerHierarchy("unmute")] SocketGuildUser user)
@@ -20,7 +20,7 @@ namespace FBIBot.Modules.Mod
             List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not muted.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not muted.");
                 return;
             }
 
@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Mod
 
             List<Task> cmds = new()
             {
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 UnmuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)
@@ -47,20 +47,6 @@ namespace FBIBot.Modules.Mod
             }
 
             await Task.WhenAll(cmds);
-        }
-
-        [Command("unmute")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task UnmuteAsync(string user)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await UnmuteAsync(u);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
     }
 }

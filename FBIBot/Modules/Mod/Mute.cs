@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.Rest;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
@@ -10,30 +10,17 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class Mute : ModuleBase<SocketCommandContext>
+    public class Mute : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("mute")]
+        [SlashCommand("mute", "Puts the user under house arrest so they can't type or speak in chats")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Remainder] string reason = null) =>
-            await TempMuteAsync(user, null, reason);
-
-        [Command("mute")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task MuteAsync(string user, [Remainder] string reason = null) =>
-            await TempMuteAsync(user, null, reason);
-
-        [Command("tempmute")]
-        [Alias("temp-mute")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task TempMuteAsync([RequireBotHierarchy("mute")] [RequireInvokerHierarchy("mute")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
+        public async Task TempMuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Summary(description: "Timeout in minutes")] string timeout = null, string reason = null)
         {
             IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
                 return;
             }
 
@@ -68,7 +55,7 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 MuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
             );
 
@@ -94,21 +81,6 @@ namespace FBIBot.Modules.Mod
 
                 await Task.WhenAll(cmds);
             }
-        }
-
-        [Command("tempmute")]
-        [Alias("temp-mute")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task TempMuteAsync(string user, string timeout = null, [Remainder] string reason = null)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await TempMuteAsync(u, timeout, reason);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
 
         private async Task<IRole> CreateMuteRoleAsync()

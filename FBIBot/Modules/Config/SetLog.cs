@@ -119,7 +119,7 @@ namespace FBIBot.Modules.Config
 
         [SlashCommand("welcome", "Sets the channel for welcome messages; *Unsets if no channel is given*")]
         [RequireAdmin]
-        public async Task SetWelcomeAsync(SocketTextChannel channel)
+        public async Task SetWelcomeAsync(SocketTextChannel channel = null)
         {
             if (channel is null)
             {

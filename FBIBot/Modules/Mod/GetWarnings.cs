@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -8,17 +8,16 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class GetWarnings : ModuleBase<SocketCommandContext>
+    public class GetWarnings : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("getwarnings")]
-        [Alias("get-warnings")]
+        [SlashCommand("get-warnings", "Gets the number of warnings and mod logs for the warnings for the given user")]
         [RequireMod]
         public async Task GetWarnsAsync(SocketGuildUser user)
         {
             List<ulong> ids = await modLogsDatabase.Warnings.GetWarningsAsync(user);
             if (ids.Count == 0)
             {
-                await Context.Channel.SendMessageAsync("Our security team has informed us that the given user does not have any warnings.");
+                await Context.Interaction.RespondAsync("Our security team has informed us that the given user does not have any warnings.");
                 return;
             }
 
@@ -27,7 +26,7 @@ namespace FBIBot.Modules.Mod
             foreach (ulong id in ids)
             {
                 IUserMessage msg = await modLogsDatabase.ModLogs.GetModLogAsync(Context.Guild, id);
-                TimeSpan timeSinceLog = Context.Message.Timestamp - msg.Timestamp;
+                TimeSpan timeSinceLog = Context.Interaction.CreatedAt - msg.Timestamp;
                 if (timeSinceLog <= TimeSpan.FromDays(1))
                 {
                     idsPastDay.Add(id);
@@ -57,21 +56,7 @@ namespace FBIBot.Modules.Mod
                                $"- Past hour: {string.Join(", ", idsPastHour)}");
             embed.AddField(modLogs);
 
-            await Context.Channel.SendMessageAsync(embed: embed.Build());
-        }
-
-        [Command("getwarnings")]
-        [Alias("get-warnings")]
-        [RequireMod]
-        public async Task GetWarnsAsync(string user)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await GetWarnsAsync(u);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
+            await Context.Interaction.RespondAsync(embed: embed.Build());
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System.Collections.Generic;
@@ -9,9 +9,9 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class Free : ModuleBase<SocketCommandContext>
+    public class Free : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("free")]
+        [SlashCommand("free", "Frees the user from Guantanamo Bay because the Constitution exists")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
@@ -21,7 +21,7 @@ namespace FBIBot.Modules.Mod
             List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not held captive.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not held captive.");
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace FBIBot.Modules.Mod
             List<Task> cmds = new()
             {
                 modRolesDatabase.Prisoners.RemovePrisonerAsync(user),
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 FreeModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
             };
             if (roles.Count > 0)
@@ -68,21 +68,6 @@ namespace FBIBot.Modules.Mod
                 }
                 await Task.WhenAll(cmds);
             }
-        }
-
-        [Command("free")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task FreeAsync(string user)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await FreeAsync(u);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
     }
 }

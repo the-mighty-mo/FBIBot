@@ -10,48 +10,43 @@ namespace FBIBot.Modules
         private const string general =
             "ping\n" +
             "  - Returns the bot's Server and API latencies\n\n" +
-            "verify [CAPTCHA response]\n" +
+            "verify (CAPTCHA response)\n" +
             "  - Verify that you are not a spy from the CCP\n\u200b";
 
         private const string help = "Pass in a parameter to the help command to get info about a group of commands.";
 
         private const string mod1 =
-            "warn [user mention/ID] (reason)\n" +
-            "tempwarn [user mention/ID] [hours] (reason)\n" +
+            "warn [user mention/ID] (hours) (reason)\n" +
             "  - Gives the user a warning to stop protesting capitalism\n\n" +
-            "getwarnings [user mention/ID]\n" +
+            "get-warnings [user mention/ID]\n" +
             "  - Gets the number of warnings and mod logs for the warnings for the given user\n\n" +
-            "removewarning [user mention/ID] [mod log ID]\n" +
+            "remove-warning [user mention/ID] [mod log ID]\n" +
             "  - Removes the given warning from the user\n\n" +
-            "removewarnings [user mention/ID] (count)\n" +
+            "remove-warnings [user mention/ID] (count)\n" +
             "  - Removes a number of warnings from the user; removes the oldest first\n\n" +
-            "mute [user mention/ID] (reason)\n" +
-            "tempmute [user mention/ID] [minutes] (reason)\n" +
+            "mute [user mention/ID] (minutes) (reason)\n" +
             "  - Puts the user under house arrest so they can't type or speak in chats\n\n" +
             "unmute [user mention/ID]\n" +
             "  - Frees the house-arrested user";
 
         private const string mod2 =
-            "arrest [user mention/ID] (reason)\n" +
-            "tempArrest [user mention/ID] [minutes] (reason)\n" +
+            "arrest [user mention/ID] (minutes) (reason)\n" +
             "  - Sends the user to Guantanamo Bay for a bit; **This command ignores modifymutedroles and creates its own role and channel**\n\n" +
             "free [user mention/ID]\n" +
             "  - Frees the user from Guantanamo Bay because the Constitution exists\n\n" +
             "kick [user mention/ID] (reason)\n" +
             "  - Deports the criminal to probably Europe\n\n" +
-            "tempban [user mention/ID] [days] (prune days / \"\") (reason)\n" +
-            "  - Temporarily exiles the user to Mexico\n\n" +
-            "ban [user mention/ID] (prune days / \"\") (reason)\n" +
+            "ban [user mention/ID] (days) (prune days / \"\") (reason)\n" +
             "  - Gives the communist the ~~ban~~ freedom hammer\n\n" +
             "unban [user mention/ID]\n" +
             "  - Permits the now-ex-KGB spy to reenter the server";
 
         private const string mod3 =
-            "modifyreason [mod log ID] (reason)\n" +
+            "modify-reason [mod log ID] (reason)\n" +
             "  - Modifies the reason for the given mod log\n\n" +
-            "purge [count (default: 100, max: 1000)]\n" +
+            "purge all [count (default: 100, max: 1000)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from the channel\n\n" +
-            "purge [user mention] [count (default: 10, max: 100)]\n" +
+            "purge user [user mention] [count (default: 10, max: 100)]\n" +
             "  - Shreds, burns, and disposes of a number of messages from a user in the channel\n\n" +
             "slowmode [seconds]\n" +
             "  - Enables slowmode in the chat; max time is 21600 seconds; *Disables slowmode if no time is given*";

@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
 using System;
@@ -10,33 +10,18 @@ using static FBIBot.DatabaseManager;
 
 namespace FBIBot.Modules.Mod
 {
-    public class Arrest : ModuleBase<SocketCommandContext>
+    public class Arrest : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("arrest")]
+        [SlashCommand("arrest", "Sends the user to Guantanamo Bay for a bit; **This command creates its own role and channel**")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync([RequireBotHierarchy("arrest")][RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Remainder] string reason = null) =>
-            await TempArrestAsync(user, null, reason);
-
-        [Command("arrest")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync(string user, [Remainder] string reason = null) =>
-            await TempArrestAsync(user, null, reason);
-
-        [Command("temparrest")]
-        [Alias("temp-arrest")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task TempArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, string timeout = null, [Remainder] string reason = null)
+        public async Task ArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Summary(description: "Timeout in minutes")] string timeout = null, string reason = null)
         {
             IRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
             {
-                await Context.Channel.SendMessageAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already held captive.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already held captive.");
                 return;
             }
 
@@ -67,7 +52,7 @@ namespace FBIBot.Modules.Mod
 
             await Task.WhenAll
             (
-                Context.Channel.SendMessageAsync(embed: embed.Build()),
+                Context.Interaction.RespondAsync(embed: embed.Build()),
                 ArrestModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
             );
 
@@ -102,22 +87,6 @@ namespace FBIBot.Modules.Mod
 
                 await Task.WhenAll(cmds);
             }
-        }
-
-        [Command("temparrest")]
-        [Alias("temp-arrest")]
-        [RequireMod]
-        [RequireBotPermission(GuildPermission.ManageRoles)]
-        [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task TempArrestAsync(string user, string timeout = null, [Remainder] string reason = null)
-        {
-            SocketGuildUser u;
-            if (ulong.TryParse(user, out ulong userID) && (u = Context.Guild.GetUser(userID)) != null)
-            {
-                await TempArrestAsync(u, timeout, reason);
-                return;
-            }
-            await Context.Channel.SendMessageAsync("Our intelligence team has informed us that the given user does not exist.");
         }
 
         private async Task<IRole> CreatePrisonerRoleAsync()
