@@ -48,7 +48,7 @@ namespace FBIBot
             config = new()
             {
                 AlwaysDownloadUsers = false,
-                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences
+                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences | GatewayIntents.GuildMessages
             };
             client = new(config);
 
