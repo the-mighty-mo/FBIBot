@@ -16,7 +16,10 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task ArrestAsync([RequireBotHierarchy("arrest")] [RequireInvokerHierarchy("arrest")] SocketGuildUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null)
+        public Task ArrestAsync([RequireBotHierarchy("arrest")][RequireInvokerHierarchy("arrest")] SocketUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null) =>
+            ArrestAsync(user as SocketGuildUser, timeout, reason);
+
+        private async Task ArrestAsync(SocketGuildUser user, double? timeout, string reason)
         {
             IRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))

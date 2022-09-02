@@ -11,7 +11,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("kick", "Deports the criminal to probably Europe")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.KickMembers)]
-        public async Task KickAsync([RequireBotHierarchy("kick")][RequireInvokerHierarchy("kick")] SocketGuildUser user, string reason = null)
+        public Task KickAsync([RequireBotHierarchy("kick")][RequireInvokerHierarchy("kick")] SocketUser user, string reason = null) =>
+            KickAsync(user as SocketGuildUser, reason);
+
+        private async Task KickAsync(SocketGuildUser user, string reason)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 12, 12))

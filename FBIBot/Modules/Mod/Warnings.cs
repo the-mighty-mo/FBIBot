@@ -14,7 +14,10 @@ namespace FBIBot.Modules.Mod
     public class Warnings : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("get", "Gets the number of warnings and mod logs for the warnings for the given user")]
-        public async Task GetWarnsAsync(SocketGuildUser user)
+        public Task GetWarnsAsync(SocketUser user) =>
+            GetWarnsAsync(user as SocketGuildUser);
+
+        private async Task GetWarnsAsync(SocketGuildUser user)
         {
             List<ulong> ids = await modLogsDatabase.Warnings.GetWarningsAsync(user);
             if (ids.Count == 0)
@@ -65,7 +68,10 @@ namespace FBIBot.Modules.Mod
         public class Remove : InteractionModuleBase<SocketInteractionContext>
         {
             [SlashCommand("id", "Removes the given warning from the user")]
-            public async Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, ulong id)
+            public Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketUser user, ulong id) =>
+                RemoveWarnAsync(user as SocketGuildUser, id);
+
+            private async Task RemoveWarnAsync(SocketGuildUser user, ulong id)
             {
                 if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id))
                 {
@@ -86,7 +92,10 @@ namespace FBIBot.Modules.Mod
             }
 
             [SlashCommand("count", "Removes a number of warnings from the user. Removes the oldest first")]
-            public async Task RemoveWarnsAsync([RequireInvokerHierarchy("remove warnings from")] SocketGuildUser user, [Summary(description: "Default: all")] int? count = null)
+            public Task RemoveWarnsAsync([RequireInvokerHierarchy("remove warnings from")] SocketUser user, [Summary(description: "Default: all")] int? count = null) =>
+                RemoveWarnsAsync(user as SocketGuildUser, count);
+
+            private async Task RemoveWarnsAsync(SocketGuildUser user, int? count = null)
             {
                 if (count == 0)
                 {

@@ -15,7 +15,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("mute", "Puts the user under house arrest so they can't type or speak in chats")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task TempMuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketGuildUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null)
+        public Task MuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null) =>
+            MuteAsync(user as SocketGuildUser, timeout, reason);
+
+        private async Task MuteAsync(SocketGuildUser user, double? timeout, string reason)
         {
             IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))

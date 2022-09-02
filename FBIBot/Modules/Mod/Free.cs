@@ -15,7 +15,10 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public async Task FreeAsync([RequireInvokerHierarchy("free")] SocketGuildUser user)
+        public Task FreeAsync([RequireInvokerHierarchy("free")] SocketUser user) =>
+            FreeAsync(user as SocketGuildUser);
+
+        private async Task FreeAsync(SocketGuildUser user)
         {
             SocketRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild);
             List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);

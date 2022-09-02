@@ -14,7 +14,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("unmute", "Frees the house-arrested user")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task UnmuteAsync([RequireInvokerHierarchy("unmute")] SocketGuildUser user)
+        public Task UnmuteAsync([RequireInvokerHierarchy("unmute")] SocketUser user) =>
+            UnmuteAsync(user as SocketGuildUser);
+
+        private async Task UnmuteAsync(SocketGuildUser user)
         {
             SocketRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild);
             List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);

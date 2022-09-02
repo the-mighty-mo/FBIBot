@@ -12,7 +12,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("warn", "Gives the user a warning to stop protesting capitalism")]
         [RequireMod]
         [RequireModLog]
-        public async Task WarnAsync([RequireInvokerHierarchy("warn")] SocketGuildUser user, [Summary(description: "Length of the warning in hours. Default: permanent")] double? length = null, string reason = null)
+        public Task WarnAsync([RequireInvokerHierarchy("warn")] SocketUser user, [Summary(description: "Length of the warning in hours. Default: permanent")] double? length = null, string reason = null) =>
+            WarnAsync(user as SocketGuildUser, length, reason);
+
+        private async Task WarnAsync(SocketGuildUser user, double? length, string reason)
         {
             ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
 

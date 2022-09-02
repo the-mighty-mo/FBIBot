@@ -11,7 +11,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("unban", "Permits the now-ex-KGB spy to reenter the server")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task UnbanAsync(SocketGuildUser user)
+        public Task UnbanAsync(SocketUser user) =>
+            UnbanAsync(user as SocketGuildUser);
+
+        private async Task UnbanAsync(SocketGuildUser user)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(12, 156, 24))

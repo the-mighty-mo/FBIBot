@@ -12,7 +12,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("ban", "Gives the communist the ~~ban~~ freedom hammer")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
-        public async Task BanAsync([RequireBotHierarchy("ban")][RequireInvokerHierarchy("ban")] SocketGuildUser user, [Summary(description: "Length of the ban in days. Default: permanent")] double? length = null, [Summary(description: "Number of days of the communist's messages to prune")] string prune = null, string reason = null)
+        public Task BanAsync([RequireBotHierarchy("ban")][RequireInvokerHierarchy("ban")] SocketUser user, [Summary(description: "Length of the ban in days. Default: permanent")] double? length = null, [Summary(description: "Number of days of the communist's messages to prune")] string prune = null, string reason = null) =>
+            BanAsync(user as SocketGuildUser, length, prune, reason);
+
+        private async Task BanAsync(SocketGuildUser user, double? length, string prune, string reason)
         {
             if (length is null)
             {
@@ -24,7 +27,7 @@ namespace FBIBot.Modules.Mod
             }
         }
 
-        private async Task BanPrivAsync(SocketGuildUser user, string prune = null, string reason = null)
+        private async Task BanPrivAsync(SocketGuildUser user, string prune, string reason)
         {
             List<Task> cmds = int.TryParse(prune, out int pruneDays)
                 ? new List<Task>() {
@@ -52,7 +55,7 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll(cmds);
         }
 
-        private async Task TempBanPrivAsync([RequireBotHierarchy("tempban")][RequireInvokerHierarchy("tempban")] SocketGuildUser user, double length, string prune = null, string reason = null)
+        private async Task TempBanPrivAsync(SocketGuildUser user, double length, string prune, string reason)
         {
             List<Task> cmds = int.TryParse(prune, out int pruneDays)
                 ? new List<Task>() {

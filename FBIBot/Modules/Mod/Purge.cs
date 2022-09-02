@@ -40,7 +40,7 @@ namespace FBIBot.Modules.Mod
 
         [SlashCommand("user", "Shreds, burns, and disposes of a number of messages from a user in the channel")]
         [RequireBotPermission(GuildPermission.ManageMessages)]
-        public async Task PurgeAsync(SocketGuildUser user, [Summary(description: "Default: 10")] int count = 10)
+        public async Task PurgeAsync(SocketUser user, [Summary(description: "Default: 10")] int count = 10)
         {
             if (count > 100)
             {

@@ -14,7 +14,10 @@ namespace FBIBot.Modules.Config
         [SlashCommand("unverify", "Removes the verification role from the user and removes the user from the list of verified users")]
         [RequireAdmin]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task UnverifyAsync([RequireInvokerHierarchy("unverify")] SocketGuildUser user, string reason = null)
+        public Task UnverifyAsync([RequireInvokerHierarchy("unverify")] SocketUser user, string reason = null) =>
+            UnverifyAsync(user as SocketGuildUser, reason);
+
+        private async Task UnverifyAsync(SocketGuildUser user, string reason)
         {
             SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             if (role == null)
