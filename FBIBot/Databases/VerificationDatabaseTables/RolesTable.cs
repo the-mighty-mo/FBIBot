@@ -16,9 +16,9 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             return cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task<SocketRole> GetVerificationRoleAsync(SocketGuild g)
+        public async Task<SocketRole?> GetVerificationRoleAsync(SocketGuild g)
         {
-            SocketRole role = null;
+            SocketRole? role = null;
 
             string getRole = "SELECT role_id FROM Roles WHERE guild_id = @guild_id;";
 

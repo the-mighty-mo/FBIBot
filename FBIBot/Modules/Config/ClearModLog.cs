@@ -29,7 +29,7 @@ namespace FBIBot.Modules.Config
 
             if (isClear)
             {
-                SocketTextChannel channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
+                SocketTextChannel? channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
                 if (channel != null)
                 {
                     var msgs = (await channel.GetMessagesAsync(int.MaxValue).FlattenAsync()).Where(x => x.Author == Context.Guild.GetUser(Context.Client.CurrentUser.Id));

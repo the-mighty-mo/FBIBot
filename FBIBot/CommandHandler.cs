@@ -108,7 +108,7 @@ namespace FBIBot
                 return;
             }
 
-            SocketTextChannel channel = await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(u.Guild);
+            SocketTextChannel? channel = await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(u.Guild);
             if (channel != null)
             {
                 List<string> messages = new()
@@ -128,7 +128,7 @@ namespace FBIBot
 
             if (await verificationDatabase.Verified.GetVerifiedAsync(u))
             {
-                SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(u.Guild);
+                SocketRole? role = await verificationDatabase.Roles.GetVerificationRoleAsync(u.Guild);
                 if (role != null && u.Guild.CurrentUser.GetPermissions(u.Guild.DefaultChannel).ManageRoles)
                 {
                     await u.AddRoleAsync(role);

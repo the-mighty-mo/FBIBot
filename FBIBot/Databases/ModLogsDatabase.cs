@@ -10,11 +10,11 @@ namespace FBIBot.Databases
         private readonly SqliteConnection connection = new("Filename=ModLogs.db");
         private readonly Dictionary<System.Type, ITable> tables = new();
 
-        public ModLogChannelTable ModLogChannel => tables[typeof(ModLogChannelTable)] as ModLogChannelTable;
-        public CaptchaLogChannelTable CaptchaLogChannel => tables[typeof(CaptchaLogChannelTable)] as CaptchaLogChannelTable;
-        public WelcomeChannelTable WelcomeChannel => tables[typeof(WelcomeChannelTable)] as WelcomeChannelTable;
-        public ModLogsTable ModLogs => tables[typeof(ModLogsTable)] as ModLogsTable;
-        public WarningsTable Warnings => tables[typeof(WarningsTable)] as WarningsTable;
+        public ModLogChannelTable ModLogChannel => (tables[typeof(ModLogChannelTable)] as ModLogChannelTable)!;
+        public CaptchaLogChannelTable CaptchaLogChannel => (tables[typeof(CaptchaLogChannelTable)] as CaptchaLogChannelTable)!;
+        public WelcomeChannelTable WelcomeChannel => (tables[typeof(WelcomeChannelTable)] as WelcomeChannelTable)!;
+        public ModLogsTable ModLogs => (tables[typeof(ModLogsTable)] as ModLogsTable)!;
+        public WarningsTable Warnings => (tables[typeof(WarningsTable)] as WarningsTable)!;
 
         public ModLogsDatabase()
         {

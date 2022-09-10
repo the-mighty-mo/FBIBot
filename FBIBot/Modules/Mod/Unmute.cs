@@ -15,11 +15,11 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public Task UnmuteAsync([RequireInvokerHierarchy("unmute")] SocketUser user) =>
-            UnmuteAsync(user as SocketGuildUser);
+            UnmuteAsync((user as SocketGuildUser)!);
 
         private async Task UnmuteAsync(SocketGuildUser user)
         {
-            SocketRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild);
+            SocketRole? role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild);
             List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)
             {
@@ -34,7 +34,7 @@ namespace FBIBot.Modules.Mod
             List<Task> cmds = new()
             {
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                UnmuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
+                UnmuteModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user)
             };
             if (roles.Count > 0)
             {

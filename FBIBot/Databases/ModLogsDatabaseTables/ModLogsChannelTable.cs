@@ -16,9 +16,9 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             return cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task<SocketTextChannel> GetModLogChannelAsync(SocketGuild g)
+        public async Task<SocketTextChannel?> GetModLogChannelAsync(SocketGuild g)
         {
-            SocketTextChannel channel = null;
+            SocketTextChannel? channel = null;
 
             string getChannel = "SELECT channel_id FROM ModLogChannel WHERE guild_id = @guild_id;";
 

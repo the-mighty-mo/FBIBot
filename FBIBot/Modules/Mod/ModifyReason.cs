@@ -11,7 +11,7 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("modify-reason", "Modifies the reason for the given mod log")]
         [RequireMod]
         [RequireModLog]
-        public async Task ModifyReasonAsync(ulong id, string reason = null)
+        public async Task ModifyReasonAsync(ulong id, string? reason = null)
         {
             if (id >= await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild))
             {

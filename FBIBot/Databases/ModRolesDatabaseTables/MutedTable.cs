@@ -17,9 +17,9 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             return cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task<SocketRole> GetMuteRole(SocketGuild g)
+        public async Task<SocketRole?> GetMuteRole(SocketGuild g)
         {
-            SocketRole role = null;
+            SocketRole? role = null;
 
             string getRole = "SELECT role_id FROM Muted WHERE guild_id = @guild_id;";
 

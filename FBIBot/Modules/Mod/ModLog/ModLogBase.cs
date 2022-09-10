@@ -27,9 +27,9 @@ namespace FBIBot.Modules.Mod.ModLog
 
             public class ReasonInfo
             {
-                public readonly string reason;
+                public readonly string? reason;
 
-                public ReasonInfo(string reason = null) =>
+                public ReasonInfo(string? reason = null) =>
                     this.reason = reason;
             }
 
@@ -40,9 +40,9 @@ namespace FBIBot.Modules.Mod.ModLog
 
             public bool HasReasonField { get; }
 
-            public string Reason { get; }
+            public string? Reason { get; }
 
-            public ModLogInfo(RequiredInfo info, ReasonInfo reasonInfo = null)
+            public ModLogInfo(RequiredInfo info, ReasonInfo? reasonInfo = null)
             {
                 Invoker = info.invoker;
                 Color = info.color;
@@ -57,7 +57,7 @@ namespace FBIBot.Modules.Mod.ModLog
         public static async Task SendToModLogAsync(ModLogInfo info)
         {
             ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(info.Invoker.Guild);
-            SocketTextChannel channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(info.Invoker.Guild);
+            SocketTextChannel? channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(info.Invoker.Guild);
 
             if (channel == null)
             {

@@ -10,10 +10,10 @@ namespace FBIBot.Databases
         private readonly SqliteConnection connection = new("Filename=Verification.db");
         private readonly Dictionary<System.Type, ITable> tables = new();
 
-        public CaptchaTable Captcha => tables[typeof(CaptchaTable)] as CaptchaTable;
-        public VerifiedTable Verified => tables[typeof(VerifiedTable)] as VerifiedTable;
-        public AttemptsTable Attempts => tables[typeof(AttemptsTable)] as AttemptsTable;
-        public RolesTable Roles => tables[typeof(RolesTable)] as RolesTable;
+        public CaptchaTable Captcha => (tables[typeof(CaptchaTable)] as CaptchaTable)!;
+        public VerifiedTable Verified => (tables[typeof(VerifiedTable)] as VerifiedTable)!;
+        public AttemptsTable Attempts => (tables[typeof(AttemptsTable)] as AttemptsTable)!;
+        public RolesTable Roles => (tables[typeof(RolesTable)] as RolesTable)!;
 
         public VerificationDatabase()
         {

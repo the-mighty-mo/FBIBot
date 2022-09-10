@@ -10,13 +10,13 @@ namespace FBIBot.Databases
         private readonly SqliteConnection connection = new("Filename=ModRoles.db");
         private readonly Dictionary<System.Type, ITable> tables = new();
 
-        public MutedTable Muted => tables[typeof(MutedTable)] as MutedTable;
-        public PrisonerRoleTable PrisonerRole => tables[typeof(PrisonerRoleTable)] as PrisonerRoleTable;
-        public PrisonerChannelTable PrisonerChannel => tables[typeof(PrisonerChannelTable)] as PrisonerChannelTable;
-        public PrisonersTable Prisoners => tables[typeof(PrisonersTable)] as PrisonersTable;
-        public UserRolesTable UserRoles => tables[typeof(UserRolesTable)] as UserRolesTable;
-        public ModsTable Mods => tables[typeof(ModsTable)] as ModsTable;
-        public AdminsTable Admins => tables[typeof(AdminsTable)] as AdminsTable;
+        public MutedTable Muted => (tables[typeof(MutedTable)] as MutedTable)!;
+        public PrisonerRoleTable PrisonerRole => (tables[typeof(PrisonerRoleTable)] as PrisonerRoleTable)!;
+        public PrisonerChannelTable PrisonerChannel => (tables[typeof(PrisonerChannelTable)] as PrisonerChannelTable)!;
+        public PrisonersTable Prisoners => (tables[typeof(PrisonersTable)] as PrisonersTable)!;
+        public UserRolesTable UserRoles => (tables[typeof(UserRolesTable)] as UserRolesTable)!;
+        public ModsTable Mods => (tables[typeof(ModsTable)] as ModsTable)!;
+        public AdminsTable Admins => (tables[typeof(AdminsTable)] as AdminsTable)!;
 
         public ModRolesDatabase()
         {

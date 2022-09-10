@@ -6,7 +6,7 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class WarnModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, double? timeout, string reason)
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, double? timeout, string? reason)
         {
             bool isMinutes = timeout < 1;
             if (timeout < 1)
@@ -18,7 +18,7 @@ namespace FBIBot.Modules.Mod.ModLog
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,
                         new Color(255, 213, 31),
-                        $"Warn User{(timeout is not null ? $" for {timeout} {(timeout == 1 ? isMinutes ? "minute" : "hour" : isMinutes ? "minutes" : "hours")}" : "")}",
+                        $"Warn User{(timeout != null ? $" for {timeout} {(timeout == 1 ? isMinutes ? "minute" : "hour" : isMinutes ? "minutes" : "hours")}" : "")}",
                         $"{target.Mention}"
                     ),
                     new ModLogBase.ModLogInfo.ReasonInfo(

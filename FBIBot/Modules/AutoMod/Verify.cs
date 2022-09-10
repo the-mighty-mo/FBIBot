@@ -15,7 +15,7 @@ namespace FBIBot.Modules.AutoMod
     public class Verify : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("verify", "Verify that you are not a spy from the CCP")]
-        public async Task VerifyAsync(string response = null)
+        public async Task VerifyAsync(string? response = null)
         {
             if (await verificationDatabase.Verified.GetVerifiedAsync(Context.User))
             {
@@ -27,7 +27,7 @@ namespace FBIBot.Modules.AutoMod
                 return;
             }
 
-            string captcha = await verificationDatabase.Captcha.GetCaptchaAsync(Context.User);
+            string? captcha = await verificationDatabase.Captcha.GetCaptchaAsync(Context.User);
             if (response == null || captcha == null)
             {
                 await Task.WhenAll(
@@ -113,7 +113,7 @@ namespace FBIBot.Modules.AutoMod
 
         private Task SendCaptchaAsync() => SendCaptchaAsync(Context.User, Context.Interaction);
 
-        public static async Task SendCaptchaAsync(SocketUser u, SocketInteraction interaction = null)
+        public static async Task SendCaptchaAsync(SocketUser u, SocketInteraction? interaction = null)
         {
             string captchaCode = ImageFactory.CreateCode(6);
 
@@ -131,7 +131,7 @@ namespace FBIBot.Modules.AutoMod
                 }))
 #pragma warning restore CA1416 // Validate platform compatibility
             {
-                if (interaction is not null)
+                if (interaction != null)
                 {
                     await Task.WhenAll
                     (
@@ -169,7 +169,7 @@ namespace FBIBot.Modules.AutoMod
             List<Task> cmds = new();
             foreach (SocketGuild g in Context.User.MutualGuilds)
             {
-                SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(g);
+                SocketRole? role = await verificationDatabase.Roles.GetVerificationRoleAsync(g);
                 if (role != null && g.CurrentUser.GetPermissions(g.DefaultChannel).ManageRoles)
                 {
                     cmds.Add(g.GetUser(Context.User.Id).AddRoleAsync(role));

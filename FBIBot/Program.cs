@@ -9,10 +9,6 @@ namespace FBIBot
 {
     public static class Program
     {
-        private static DiscordSocketConfig config;
-        private static DiscordSocketClient client;
-        private static CommandHandler handler;
-
         public static readonly Random Rng = new();
 
         public static async Task Main()
@@ -45,19 +41,19 @@ namespace FBIBot
 
         private static async Task SetupCommandHandlerAsync()
         {
-            config = new()
+            DiscordSocketConfig config = new()
             {
                 AlwaysDownloadUsers = false,
                 GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences | GatewayIntents.GuildMessages
             };
-            client = new(config);
+            DiscordSocketClient client = new(config);
 
             await client.LoginAsync(TokenType.Bot, SecurityInfo.token);
             await client.StartAsync();
             await client.SetGameAsync($"/help", null, ActivityType.Listening);
 
             IServiceProvider _services = new ServiceCollection().BuildServiceProvider();
-            handler = new CommandHandler(client, _services);
+            CommandHandler handler = new(client, _services);
             await handler.InitCommandsAsync();
         }
     }

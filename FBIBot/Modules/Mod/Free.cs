@@ -16,11 +16,11 @@ namespace FBIBot.Modules.Mod
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
         public Task FreeAsync([RequireInvokerHierarchy("free")] SocketUser user) =>
-            FreeAsync(user as SocketGuildUser);
+            FreeAsync((user as SocketGuildUser)!);
 
         private async Task FreeAsync(SocketGuildUser user)
         {
-            SocketRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild);
+            SocketRole? role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild);
             List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)
             {
@@ -36,7 +36,7 @@ namespace FBIBot.Modules.Mod
             {
                 modRolesDatabase.Prisoners.RemovePrisonerAsync(user),
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                FreeModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
+                FreeModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user)
             };
             if (roles.Count > 0)
             {
@@ -54,7 +54,7 @@ namespace FBIBot.Modules.Mod
 
             if (!await modRolesDatabase.Prisoners.HasPrisoners(Context.Guild))
             {
-                SocketTextChannel channel = await modRolesDatabase.PrisonerChannel.GetPrisonerChannelAsync(Context.Guild);
+                SocketTextChannel? channel = await modRolesDatabase.PrisonerChannel.GetPrisonerChannelAsync(Context.Guild);
 
                 cmds = new()
                 {

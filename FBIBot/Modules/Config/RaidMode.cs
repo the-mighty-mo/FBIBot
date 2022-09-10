@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Config
                 (
                     Context.Guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High),
                     Context.Interaction.RespondAsync(embed: emb.Build()),
-                    RaidModeModLog.SendToModLogAsync(Context.User as SocketGuildUser, true)
+                    RaidModeModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, true)
                 );
                 return;
             }
@@ -48,7 +48,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                RaidModeModLog.SendToModLogAsync(Context.User as SocketGuildUser, false)
+                RaidModeModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, false)
             );
             await Task.WhenAll
             (
@@ -61,75 +61,79 @@ namespace FBIBot.Modules.Config
         private async Task SendUsersAsync()
         {
             List<string> blockedUsers = await raidModeDatabase.UsersBlocked.GetBlockedUsersAsync(Context.Guild);
-            SocketTextChannel channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
-            List<EmbedFieldBuilder> fields = new();
-            int messages = 1;
 
-            if (blockedUsers.Count == 0)
+            SocketTextChannel? channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
+            if (channel != null)
             {
-                EmbedBuilder emb = new EmbedBuilder()
-                    .WithColor(new Color(12, 156, 24))
-                    .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
-                    .WithCurrentTimestamp();
+                List<EmbedFieldBuilder> fields = new();
+                int messages = 1;
 
-                EmbedFieldBuilder field = new EmbedFieldBuilder()
-                    .WithIsInline(false)
-                    .WithName("No users blocked")
-                    .WithValue("No users attempted to join the server during Raid Mode.");
-                emb.AddField(field);
-
-                await channel.SendMessageAsync(embed: emb.Build());
-            }
-            else
-            {
-                int i = 1;
-                int j = 1;
-                string blocked = "";
-                foreach (string userID in blockedUsers)
+                if (blockedUsers.Count == 0)
                 {
-                    if (j > 3)
+                    EmbedBuilder emb = new EmbedBuilder()
+                        .WithColor(new Color(12, 156, 24))
+                        .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
+                        .WithCurrentTimestamp();
+
+                    EmbedFieldBuilder field = new EmbedFieldBuilder()
+                        .WithIsInline(false)
+                        .WithName("No users blocked")
+                        .WithValue("No users attempted to join the server during Raid Mode.");
+                    emb.AddField(field);
+
+                    await channel.SendMessageAsync(embed: emb.Build());
+                }
+                else
+                {
+                    int i = 1;
+                    int j = 1;
+                    string blocked = "";
+                    foreach (string userID in blockedUsers)
                     {
-                        EmbedBuilder emb = new EmbedBuilder()
-                            .WithColor(new Color(206, 15, 65))
-                            .WithTitle($"FBI Raid Mode Surveillance Results ({messages})")
-                            .WithCurrentTimestamp()
-                            .WithFields(fields);
-                        await channel.SendMessageAsync(embed: emb.Build());
-                        j = 1;
-                        messages++;
-                        fields.Clear();
+                        if (j > 3)
+                        {
+                            EmbedBuilder emb = new EmbedBuilder()
+                                .WithColor(new Color(206, 15, 65))
+                                .WithTitle($"FBI Raid Mode Surveillance Results ({messages})")
+                                .WithCurrentTimestamp()
+                                .WithFields(fields);
+                            await channel.SendMessageAsync(embed: emb.Build());
+                            j = 1;
+                            messages++;
+                            fields.Clear();
+                        }
+
+                        blocked += $"{(i > 1 ? "\n" : "")}<@{userID}> (ID: {userID})";
+
+                        if (++i > 20)
+                        {
+                            EmbedFieldBuilder field = new EmbedFieldBuilder()
+                                .WithIsInline(false)
+                                .WithName($"Blocked Users ({3 * (messages - 1) + j})")
+                                .WithValue(blocked);
+                            fields.Add(field);
+                            i = 1;
+                            j++;
+                            blocked = "";
+                        }
                     }
-
-                    blocked += $"{(i > 1 ? "\n" : "")}<@{userID}> (ID: {userID})";
-
-                    if (++i > 20)
+                    if (i is <= 20 and > 1)
                     {
                         EmbedFieldBuilder field = new EmbedFieldBuilder()
                             .WithIsInline(false)
-                            .WithName($"Blocked Users ({3 * (messages - 1) + j})")
+                            .WithName($"Blocked Users{(j > 1 || messages > 1 ? $" ({3 * (messages - 1) + j})" : "")}")
                             .WithValue(blocked);
                         fields.Add(field);
-                        i = 1;
-                        j++;
-                        blocked = "";
                     }
-                }
-                if (i is <= 20 and > 1)
-                {
-                    EmbedFieldBuilder field = new EmbedFieldBuilder()
-                        .WithIsInline(false)
-                        .WithName($"Blocked Users{(j > 1 || messages > 1 ? $" ({3 * (messages - 1) + j})" : "")}")
-                        .WithValue(blocked);
-                    fields.Add(field);
-                }
 
-                EmbedBuilder embed = new EmbedBuilder()
-                    .WithColor(new Color(206, 15, 65))
-                    .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
-                    .WithCurrentTimestamp()
-                    .WithFields(fields);
+                    EmbedBuilder embed = new EmbedBuilder()
+                        .WithColor(new Color(206, 15, 65))
+                        .WithTitle($"FBI Raid Mode Surveillance Results{(messages > 1 ? $" ({messages})" : "")}")
+                        .WithCurrentTimestamp()
+                        .WithFields(fields);
 
-                await channel.SendMessageAsync(embed: embed.Build());
+                    await channel.SendMessageAsync(embed: embed.Build());
+                }
             }
 
             await raidModeDatabase.UsersBlocked.RemoveBlockedUsersAsync(Context.Guild);

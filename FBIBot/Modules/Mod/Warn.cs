@@ -12,10 +12,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("warn", "Gives the user a warning to stop protesting capitalism")]
         [RequireMod]
         [RequireModLog]
-        public Task WarnAsync([RequireInvokerHierarchy("warn")] SocketUser user, [Summary(description: "Length of the warning in hours. Default: permanent")] double? length = null, string reason = null) =>
-            WarnAsync(user as SocketGuildUser, length, reason);
+        public Task WarnAsync([RequireInvokerHierarchy("warn")] SocketUser user, [Summary(description: "Length of the warning in hours. Default: permanent")] double? length = null, string? reason = null) =>
+            WarnAsync((user as SocketGuildUser)!, length, reason);
 
-        private async Task WarnAsync(SocketGuildUser user, double? length, string reason)
+        private async Task WarnAsync(SocketGuildUser user, double? length, string? reason)
         {
             ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
 
@@ -23,7 +23,7 @@ namespace FBIBot.Modules.Mod
                 .WithColor(new Color(255, 213, 31))
                 .WithDescription($"{user.Mention} stop protesting capitalism.");
 
-            if (length is not null)
+            if (length != null)
             {
                 EmbedFieldBuilder lengthField = new EmbedFieldBuilder()
                         .WithIsInline(false)
@@ -41,11 +41,11 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                WarnModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, length, reason),
+                WarnModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, length, reason),
                 modLogsDatabase.Warnings.AddWarningAsync(user, id)
             );
 
-            if (length is not null)
+            if (length != null)
             {
                 await Task.Delay((int)(length * 60 * 60 * 1000));
 

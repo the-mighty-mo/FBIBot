@@ -15,7 +15,7 @@ namespace FBIBot.Modules.Mod
     {
         [SlashCommand("get", "Gets the number of warnings and mod logs for the warnings for the given user")]
         public Task GetWarnsAsync(SocketUser user) =>
-            GetWarnsAsync(user as SocketGuildUser);
+            GetWarnsAsync((user as SocketGuildUser)!);
 
         private async Task GetWarnsAsync(SocketGuildUser user)
         {
@@ -30,7 +30,12 @@ namespace FBIBot.Modules.Mod
             List<ulong> idsPastHour = new();
             foreach (ulong id in ids)
             {
-                IUserMessage msg = await modLogsDatabase.ModLogs.GetModLogAsync(Context.Guild, id);
+                IUserMessage? msg = await modLogsDatabase.ModLogs.GetModLogAsync(Context.Guild, id);
+                if (msg == null)
+                {
+                    continue;
+                }
+
                 TimeSpan timeSinceLog = Context.Interaction.CreatedAt - msg.Timestamp;
                 if (timeSinceLog <= TimeSpan.FromDays(1))
                 {
@@ -69,7 +74,7 @@ namespace FBIBot.Modules.Mod
         {
             [SlashCommand("id", "Removes the given warning from the user")]
             public Task RemoveWarnAsync([RequireInvokerHierarchy("remove warnings from")] SocketUser user, ulong id) =>
-                RemoveWarnAsync(user as SocketGuildUser, id);
+                RemoveWarnAsync((user as SocketGuildUser)!, id);
 
             private async Task RemoveWarnAsync(SocketGuildUser user, ulong id)
             {
@@ -86,14 +91,14 @@ namespace FBIBot.Modules.Mod
                 await Task.WhenAll
                 (
                     Context.Interaction.RespondAsync(embed: embed.Build()),
-                    RemoveWarningModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, id),
+                    RemoveWarningModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, id),
                     modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
                 );
             }
 
             [SlashCommand("count", "Removes a number of warnings from the user. Removes the oldest first")]
             public Task RemoveWarnsAsync([RequireInvokerHierarchy("remove warnings from")] SocketUser user, [Summary(description: "Default: all")] int? count = null) =>
-                RemoveWarnsAsync(user as SocketGuildUser, count);
+                RemoveWarnsAsync((user as SocketGuildUser)!, count);
 
             private async Task RemoveWarnsAsync(SocketGuildUser user, int? count = null)
             {
@@ -115,7 +120,7 @@ namespace FBIBot.Modules.Mod
                 await Task.WhenAll
                 (
                     Context.Interaction.RespondAsync(embed: embed.Build()),
-                    RemoveWarningsModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, count),
+                    RemoveWarningsModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, count),
                     modLogsDatabase.Warnings.RemoveWarningsAsync(user, count)
                 );
             }

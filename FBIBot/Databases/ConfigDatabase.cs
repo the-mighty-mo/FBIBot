@@ -10,15 +10,15 @@ namespace FBIBot.Databases
         private readonly SqliteConnection connection = new("Filename=Config.db");
         private readonly Dictionary<System.Type, ITable> tables = new();
 
-        public ModifyMutedTable ModifyMuted => tables[typeof(ModifyMutedTable)] as ModifyMutedTable;
-        public AutoSurveillanceTable AutoSurveillance => tables[typeof(AutoSurveillanceTable)] as AutoSurveillanceTable;
-        public AntiZalgoTable AntiZalgo => tables[typeof(AntiZalgoTable)] as AntiZalgoTable;
-        public AntiSpamTable AntiSpam => tables[typeof(AntiSpamTable)] as AntiSpamTable;
-        public AntiSingleSpamTable AntiSingleSpam => tables[typeof(AntiSingleSpamTable)] as AntiSingleSpamTable;
-        public AntiMassMentionTable AntiMassMention => tables[typeof(AntiMassMentionTable)] as AntiMassMentionTable;
-        public AntiCapsTable AntiCaps => tables[typeof(AntiCapsTable)] as AntiCapsTable;
-        public AntiInviteTable AntiInvite => tables[typeof(AntiInviteTable)] as AntiInviteTable;
-        public AntiLinkTable AntiLink => tables[typeof(AntiLinkTable)] as AntiLinkTable;
+        public ModifyMutedTable ModifyMuted => (tables[typeof(ModifyMutedTable)] as ModifyMutedTable)!;
+        public AutoSurveillanceTable AutoSurveillance => (tables[typeof(AutoSurveillanceTable)] as AutoSurveillanceTable)!;
+        public AntiZalgoTable AntiZalgo => (tables[typeof(AntiZalgoTable)] as AntiZalgoTable)!;
+        public AntiSpamTable AntiSpam => (tables[typeof(AntiSpamTable)] as AntiSpamTable)!;
+        public AntiSingleSpamTable AntiSingleSpam => (tables[typeof(AntiSingleSpamTable)] as AntiSingleSpamTable)!;
+        public AntiMassMentionTable AntiMassMention => (tables[typeof(AntiMassMentionTable)] as AntiMassMentionTable)!;
+        public AntiCapsTable AntiCaps => (tables[typeof(AntiCapsTable)] as AntiCapsTable)!;
+        public AntiInviteTable AntiInvite => (tables[typeof(AntiInviteTable)] as AntiInviteTable)!;
+        public AntiLinkTable AntiLink => (tables[typeof(AntiLinkTable)] as AntiLinkTable)!;
 
         public ConfigDatabase()
         {

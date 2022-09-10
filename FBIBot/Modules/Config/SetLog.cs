@@ -11,9 +11,9 @@ namespace FBIBot.Modules.Config
     public class SetLog : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("captcha", "Sets the channel for the CAPTCHA Log. *Unsets if no channel is given*")]
-        public async Task SetCaptchaLogAsync(SocketTextChannel channel = null)
+        public async Task SetCaptchaLogAsync(SocketTextChannel? channel = null)
         {
-            if (channel is null)
+            if (channel == null)
             {
                 await SetCaptchaLogPrivAsync();
             }
@@ -64,9 +64,9 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("mod", "Sets the channel for the Mod Log. *Unsets if no channel is given*")]
-        public async Task SetModLogAsync(SocketTextChannel channel = null)
+        public async Task SetModLogAsync(SocketTextChannel? channel = null)
         {
-            if (channel is null)
+            if (channel == null)
             {
                 await SetModLogPrivAsync();
             }
@@ -117,9 +117,9 @@ namespace FBIBot.Modules.Config
         }
 
         [SlashCommand("welcome", "Sets the channel for welcome messages. *Unsets if no channel is given*")]
-        public async Task SetWelcomeAsync(SocketTextChannel channel = null)
+        public async Task SetWelcomeAsync(SocketTextChannel? channel = null)
         {
-            if (channel is null)
+            if (channel == null)
             {
                 await SetWelcomePrivAsync();
             }

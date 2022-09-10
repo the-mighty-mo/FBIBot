@@ -16,9 +16,9 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             return cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task<string> GetCaptchaAsync(SocketUser u)
+        public async Task<string?> GetCaptchaAsync(SocketUser u)
         {
-            string captcha = null;
+            string? captcha = null;
 
             string read = "SELECT captcha FROM Captcha WHERE user_id = @user_id;";
 

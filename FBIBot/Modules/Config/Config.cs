@@ -14,14 +14,14 @@ namespace FBIBot.Modules.Config
         [RequireAdmin]
         public async Task ConfigAsync()
         {
-            Task<SocketRole> verify = verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
-            Task<SocketRole> mute = modRolesDatabase.Muted.GetMuteRole(Context.Guild);
+            Task<SocketRole?> verify = verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
+            Task<SocketRole?> mute = modRolesDatabase.Muted.GetMuteRole(Context.Guild);
             Task<bool> modifyMuted = configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
             Task<List<SocketRole>> modRoles = modRolesDatabase.Mods.GetModRolesAsync(Context.Guild);
             Task<List<SocketRole>> adminRoles = modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild);
-            Task<SocketTextChannel> modlog = modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
-            Task<SocketTextChannel> captchalog = modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild);
-            Task<SocketTextChannel> welcome = modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(Context.Guild);
+            Task<SocketTextChannel?> modlog = modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
+            Task<SocketTextChannel?> captchalog = modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild);
+            Task<SocketTextChannel?> welcome = modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(Context.Guild);
             Task<VerificationLevel?> raidMode = raidModeDatabase.RaidMode.GetVerificationLevelAsync(Context.Guild);
             Task<bool> autoSurveillance = configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
             Task<bool> antiZalgo = configDatabase.AntiZalgo.GetAntiZalgoAsync(Context.Guild);
@@ -33,14 +33,14 @@ namespace FBIBot.Modules.Config
             Task<bool> antiLink = configDatabase.AntiLink.GetAntiLinkAsync(Context.Guild);
 
             string config =
-                $"Verification Role: **{(await verify != null ? (await verify).Mention : "(none)")}**\n" +
-                $"Mute Role: **{(await mute != null ? (await mute).Mention : "(none)")}**\n" +
+                $"Verification Role: **{(await verify)?.Mention ?? "(none)"}**\n" +
+                $"Mute Role: **{(await mute)?.Mention ?? "(none)"}**\n" +
                 $"Modify Muted Member's Roles: **{(await modifyMuted ? "Enabled" : "Disabled")}**\n" +
                 $"Mod Roles: **{string.Join(", ", (await modRoles).Select(x => x.Mention))}**\n" +
                 $"Admin Roles: **{string.Join(", ", (await adminRoles).Select(x => x.Mention))}**\n" +
-                $"Mod Log: **{(await modlog != null ? (await modlog).Mention : "(none)")}**\n" +
-                $"CAPTCHA Log: **{(await captchalog != null ? (await captchalog).Mention : "(none)")}**\n" +
-                $"Welcome Channel: **{(await welcome != null ? (await welcome).Mention : "(none)")}**\n" +
+                $"Mod Log: **{(await modlog)?.Mention ?? "(none)"}**\n" +
+                $"CAPTCHA Log: **{(await captchalog)?.Mention ?? "(none)"}**\n" +
+                $"Welcome Channel: **{(await welcome)?.Mention ?? "(none)"}**\n" +
                 $"FBI RAID MODE: **{(await raidMode != null ? "ENABLED" : "Disabled")}**\n" +
                 $"\n" +
                 $"__AutoMod:__\n" +

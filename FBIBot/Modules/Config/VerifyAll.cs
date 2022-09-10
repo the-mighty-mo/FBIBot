@@ -14,7 +14,7 @@ namespace FBIBot.Modules.Config
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task VerifyAllAsync()
         {
-            SocketRole role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
+            SocketRole? role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             if (role == null)
             {
                 await Context.Interaction.RespondAsync("Our intelligence team has informed us that there is no role to give to verified citizens.");
@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Config
             await Task.WhenAll
             (
                 Context.Interaction.RespondAsync(embed: embed1.Build()),
-                VerifyAllModLog.SendToModLogAsync(Context.User as SocketGuildUser)
+                VerifyAllModLog.SendToModLogAsync((Context.User as SocketGuildUser)!)
             );
 
             foreach (SocketGuildUser user in Context.Guild.Users)

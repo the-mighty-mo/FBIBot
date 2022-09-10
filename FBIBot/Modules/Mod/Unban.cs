@@ -12,7 +12,7 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public Task UnbanAsync(SocketUser user) =>
-            UnbanAsync(user as SocketGuildUser);
+            UnbanAsync((user as SocketGuildUser)!);
 
         private async Task UnbanAsync(SocketGuildUser user)
         {
@@ -25,7 +25,7 @@ namespace FBIBot.Modules.Mod
             (
                 Context.Guild.RemoveBanAsync(user),
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                UnbanModLog.SendToModLogAsync(Context.User as SocketGuildUser, user)
+                UnbanModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user)
             );
         }
     }

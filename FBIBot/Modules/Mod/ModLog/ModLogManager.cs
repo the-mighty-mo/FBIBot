@@ -27,7 +27,7 @@ namespace FBIBot.Modules.Mod.ModLog
 
         public class ReasonInfo : StateInfo
         {
-            public ReasonInfo(SocketGuild guild, ulong logId, string reason) : base(guild, logId, "Reason", reason ?? "(none given)") { }
+            public ReasonInfo(SocketGuild guild, ulong logId, string? reason) : base(guild, logId, "Reason", reason ?? "(none given)") { }
         }
 
         public static async Task<bool> SetReasonAsync(ReasonInfo info)
@@ -35,7 +35,7 @@ namespace FBIBot.Modules.Mod.ModLog
 
         public static async Task<bool> SetStateAsync(StateInfo info)
         {
-            IUserMessage msg = await modLogsDatabase.ModLogs.GetModLogAsync(info.Guild, info.LogId);
+            IUserMessage? msg = await modLogsDatabase.ModLogs.GetModLogAsync(info.Guild, info.LogId);
             if (msg == null || msg.Embeds.Count == 0)
             {
                 return false;
@@ -48,7 +48,7 @@ namespace FBIBot.Modules.Mod.ModLog
                 .WithTitle(e.Title)
                 .WithCurrentTimestamp();
 
-            EmbedFieldBuilder field = e.Fields.FirstOrDefault(x => x.Name.Contains(info.StateName));
+            EmbedFieldBuilder? field = e.Fields.FirstOrDefault(x => x.Name.Contains(info.StateName));
             if (field == null)
             {
                 return false;

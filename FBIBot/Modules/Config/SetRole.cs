@@ -13,9 +13,9 @@ namespace FBIBot.Modules.Config
     public class SetRole : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("mute", "Sets the role for members under house arrest (muted). *Unsets if no role is given*")]
-        public async Task SetMuteAsync(SocketRole role = null)
+        public async Task SetMuteAsync(SocketRole? role = null)
         {
-            if (role is null)
+            if (role == null)
             {
                 await SetMutePrivAsync();
             }
@@ -68,9 +68,9 @@ namespace FBIBot.Modules.Config
 
         [SlashCommand("verify", "Sets the verification role. *Unsets if no role is given*")]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public async Task SetVerifyAsync(SocketRole role = null, [Summary(description: "Whether to give out the new role and remove any old Verification role. Default: False")] BoolChoice changeRole = BoolChoice.False)
+        public async Task SetVerifyAsync(SocketRole? role = null, [Summary(description: "Whether to give out the new role and remove any old Verification role. Default: False")] BoolChoice changeRole = BoolChoice.False)
         {
-            if (role is null)
+            if (role == null)
             {
                 await SetVerifyPrivAsync();
             }
@@ -102,7 +102,7 @@ namespace FBIBot.Modules.Config
 
         private async Task SetVerifyPrivAsync(SocketRole role, BoolChoice changeRole)
         {
-            SocketRole currentRole = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
+            SocketRole? currentRole = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
             if (currentRole == role)
             {
                 await Context.Interaction.RespondAsync($"Our customs team has informed us that all patriotic citizens already receive the {role.Mention} role.");
@@ -132,9 +132,8 @@ namespace FBIBot.Modules.Config
             }
         }
 
-        private async Task ManageRolesAsync(SocketRole role, SocketRole oldRole)
+        private async Task ManageRolesAsync(SocketRole role, SocketRole? oldRole)
         {
-            SocketRole newRole;
             foreach (SocketGuildUser user in Context.Guild.Users)
             {
                 if (await verificationDatabase.Verified.GetVerifiedAsync(user) || (oldRole != null && user.Roles.Contains(oldRole)))
@@ -150,6 +149,7 @@ namespace FBIBot.Modules.Config
                     if (oldRole != null)
                     {
                         await user.RemoveRoleAsync(oldRole);
+                        SocketRole? newRole;
                         // If the verification role was changed while removing the old role, and the new role is the old role, return
                         if ((newRole = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild)) != role && newRole == oldRole)
                         {

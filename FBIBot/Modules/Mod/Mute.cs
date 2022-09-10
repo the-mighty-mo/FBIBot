@@ -15,10 +15,10 @@ namespace FBIBot.Modules.Mod
         [SlashCommand("mute", "Puts the user under house arrest so they can't type or speak in chats")]
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
-        public Task MuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null) =>
-            MuteAsync(user as SocketGuildUser, timeout, reason);
+        public Task MuteAsync([RequireBotHierarchy("mute")][RequireInvokerHierarchy("mute")] SocketUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string? reason = null) =>
+            MuteAsync((user as SocketGuildUser)!, timeout, reason);
 
-        private async Task MuteAsync(SocketGuildUser user, double? timeout, string reason)
+        private async Task MuteAsync(SocketGuildUser user, double? timeout, string? reason)
         {
             IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
             if (user.Roles.Contains(role))
@@ -47,7 +47,7 @@ namespace FBIBot.Modules.Mod
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 110, 24))
-                .WithDescription($"{user.Mention} has been placed under house arrest{(timeout is not null ? $" for {timeout} {(timeout == 1 ? "minute" : "minutes")}" : "")}.");
+                .WithDescription($"{user.Mention} has been placed under house arrest{(timeout != null ? $" for {timeout} {(timeout == 1 ? "minute" : "minutes")}" : "")}.");
 
             EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
                     .WithIsInline(false)
@@ -58,10 +58,10 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                MuteModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
+                MuteModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, timeout, reason)
             );
 
-            if (timeout is not null)
+            if (timeout != null)
             {
                 await Task.Delay((int)(timeout * 60 * 1000));
 

@@ -20,13 +20,13 @@ namespace FBIBot.Modules.AutoMod
             public CaptchaType t;
             public SocketGuildUser user;
             public string code;
-            public string given;
+            public string? given;
             public int attempts;
 
-            public string result;
+            public string? result;
             public Color color;
 
-            public CaptchaLogInfo(CaptchaType t, SocketGuildUser user, string code, string given = null, int attempts = 0)
+            public CaptchaLogInfo(CaptchaType t, SocketGuildUser user, string code, string? given = null, int attempts = 0)
             {
                 this.t = t;
                 this.user = user;
@@ -36,7 +36,7 @@ namespace FBIBot.Modules.AutoMod
             }
         }
 
-        public static Task SendToCaptchaLogAsync(CaptchaType t, SocketGuildUser user, string code, string given = null, int attempts = 0)
+        public static Task SendToCaptchaLogAsync(CaptchaType t, SocketGuildUser user, string code, string? given = null, int attempts = 0)
         {
             CaptchaLogInfo info = new(t, user, code, given, attempts);
             CAPTCHATypeSwitch(ref info);
@@ -46,7 +46,7 @@ namespace FBIBot.Modules.AutoMod
 
         private static async Task SendToCaptchaLogAsync(CaptchaLogInfo info)
         {
-            SocketTextChannel channel = await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(info.user.Guild);
+            SocketTextChannel? channel = await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(info.user.Guild);
             if (channel == null)
             {
                 return;

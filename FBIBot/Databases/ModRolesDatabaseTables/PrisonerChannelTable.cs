@@ -17,9 +17,9 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             return cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task<SocketTextChannel> GetPrisonerChannelAsync(SocketGuild g)
+        public async Task<SocketTextChannel?> GetPrisonerChannelAsync(SocketGuild g)
         {
-            SocketTextChannel channel = null;
+            SocketTextChannel? channel = null;
 
             string getChannel = "SELECT channel_id FROM PrisonerChannel WHERE guild_id = @guild_id;";
 

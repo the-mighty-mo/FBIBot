@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ApplicationIcon>FBI.ico</ApplicationIcon>
     <StartupObject>FBIBot.Program</StartupObject>
-    <Nullable>warnings</Nullable>
+    <Nullable>enable</Nullable>
     <PackageId>The FBI</PackageId>
     <Description>Someone has to keep the server in check, and who better than the FBI?</Description>
     <Company>Josedolf Staller Enterprises</Company>

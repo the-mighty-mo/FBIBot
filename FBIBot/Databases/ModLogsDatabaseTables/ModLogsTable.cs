@@ -37,9 +37,9 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             return ++id;
         }
 
-        public async Task<IUserMessage> GetModLogAsync(SocketGuild g, ulong id)
+        public async Task<IUserMessage?> GetModLogAsync(SocketGuild g, ulong id)
         {
-            IUserMessage msg = null;
+            IUserMessage? msg = null;
 
             string getMessage = "SELECT channel_id, message_id FROM ModLogs WHERE guild_id = @guild_id AND id = @id;";
             using (SqliteCommand cmd = new(getMessage, connection))

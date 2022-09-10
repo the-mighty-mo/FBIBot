@@ -6,7 +6,7 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class UnverifyModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string reason) =>
+        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, string? reason) =>
             await ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(

@@ -16,10 +16,10 @@ namespace FBIBot.Modules.Mod
         [RequireMod]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         [RequireBotPermission(GuildPermission.ManageChannels)]
-        public Task ArrestAsync([RequireBotHierarchy("arrest")][RequireInvokerHierarchy("arrest")] SocketUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string reason = null) =>
-            ArrestAsync(user as SocketGuildUser, timeout, reason);
+        public Task ArrestAsync([RequireBotHierarchy("arrest")][RequireInvokerHierarchy("arrest")] SocketUser user, [Summary(description: "Timeout in minutes. Default: no timeout")] double? timeout = null, string? reason = null) =>
+            ArrestAsync((user as SocketGuildUser)!, timeout, reason);
 
-        private async Task ArrestAsync(SocketGuildUser user, double? timeout, string reason)
+        private async Task ArrestAsync(SocketGuildUser user, double? timeout, string? reason)
         {
             IRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
             if (user.Roles.Contains(role))
@@ -44,7 +44,7 @@ namespace FBIBot.Modules.Mod
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 61, 24))
-                .WithDescription($"{user.Mention} has been sent to Guantanamo Bay{(timeout is not null ? $" for {timeout} {(timeout == 1 ? "minute" : "minutes")}" : "")}.");
+                .WithDescription($"{user.Mention} has been sent to Guantanamo Bay{(timeout != null ? $" for {timeout} {(timeout == 1 ? "minute" : "minutes")}" : "")}.");
 
             EmbedFieldBuilder reasonField = new EmbedFieldBuilder()
                     .WithIsInline(false)
@@ -55,10 +55,10 @@ namespace FBIBot.Modules.Mod
             await Task.WhenAll
             (
                 Context.Interaction.RespondAsync(embed: embed.Build()),
-                ArrestModLog.SendToModLogAsync(Context.User as SocketGuildUser, user, timeout, reason)
+                ArrestModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, timeout, reason)
             );
 
-            if (timeout is not null)
+            if (timeout != null)
             {
                 await Task.Delay((int)(timeout * 60 * 1000));
                 role = Context.Guild.GetRole(role.Id);
@@ -79,8 +79,8 @@ namespace FBIBot.Modules.Mod
                 List<Task> cmds = !await modRolesDatabase.Prisoners.HasPrisoners(Context.Guild)
                     ? new List<Task>()
                     {
-                        channel?.DeleteAsync(),
-                        role?.DeleteAsync(),
+                        channel?.DeleteAsync() ?? Task.CompletedTask,
+                        role?.DeleteAsync() ?? Task.CompletedTask,
                         modRolesDatabase.PrisonerChannel.RemovePrisonerChannelAsync(Context.Guild),
                         modRolesDatabase.PrisonerRole.RemovePrisonerRoleAsync(Context.Guild)
                     }
