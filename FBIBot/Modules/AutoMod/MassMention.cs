@@ -20,7 +20,7 @@ namespace FBIBot.Modules.AutoMod
         public static Task<bool> IsMassMentionAsync(SocketCommandContext Context)
         {
             int count = Context.Message.MentionedRoles.Count + Context.Message.MentionedUsers.Count;
-            return Task.Run(() => count > 5);
+            return Task.FromResult(count > 5);
         }
     }
 }

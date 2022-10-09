@@ -189,10 +189,10 @@ namespace FBIBot
         }
 
         private Task<bool> CanBotRunCommandsAsync(SocketUser usr) =>
-            Task.Run(() => usr.Id == client.CurrentUser.Id);
+            Task.FromResult(usr.Id == client.CurrentUser.Id);
 
         private static Task<bool> ShouldDeleteBotCommands() =>
-            Task.Run(() => true);
+            Task.FromResult(true);
 
         private async Task HandleSlashCommandAsync(SocketSlashCommand m)
         {

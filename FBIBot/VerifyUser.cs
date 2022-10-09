@@ -28,10 +28,9 @@ namespace FBIBot
             return isHigher;
         }
 
-        public static async Task<bool> BotIsHigher(SocketGuildUser bot, SocketGuildUser target)
+        public static Task<bool> BotIsHigher(SocketGuildUser bot, SocketGuildUser target)
         {
-            bool isHigher = await Task.Run(() => bot.Hierarchy > target.Hierarchy);
-            return isHigher;
+            return Task.FromResult(bot.Hierarchy > target.Hierarchy);
         }
     }
 }
