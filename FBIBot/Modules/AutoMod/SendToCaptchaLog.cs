@@ -46,7 +46,7 @@ namespace FBIBot.Modules.AutoMod
 
         private static async Task SendToCaptchaLogAsync(CaptchaLogInfo info)
         {
-            SocketTextChannel? channel = await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(info.user.Guild);
+            SocketTextChannel? channel = await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(info.user.Guild).ConfigureAwait(false);
             if (channel == null)
             {
                 return;
@@ -87,7 +87,7 @@ namespace FBIBot.Modules.AutoMod
                 embed.AddField(resultGiven);
             }
 
-            await channel.SendMessageAsync(embed: embed.Build());
+            await channel.SendMessageAsync(embed: embed.Build()).ConfigureAwait(false);
         }
 
         private static void CAPTCHATypeSwitch(ref CaptchaLogInfo info)

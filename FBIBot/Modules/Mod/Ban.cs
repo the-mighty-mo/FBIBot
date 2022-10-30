@@ -15,19 +15,10 @@ namespace FBIBot.Modules.Mod
         public Task BanAsync([RequireBotHierarchy("ban")][RequireInvokerHierarchy("ban")] SocketUser user, [Summary(description: "Length of the ban in days. Default: permanent")] double? length = null, [Summary(description: "Number of days of the communist's messages to prune")] string? prune = null, string? reason = null) =>
             BanAsync((user as SocketGuildUser)!, length, prune, reason);
 
-        private async Task BanAsync(SocketGuildUser user, double? length, string? prune, string? reason)
-        {
-            if (length == null)
-            {
-                await BanPrivAsync(user, prune, reason);
-            }
-            else
-            {
-                await TempBanPrivAsync(user, length.Value, prune, reason);
-            }
-        }
+        private Task BanAsync(SocketGuildUser user, double? length, string? prune, string? reason) =>
+            length == null ? BanPrivAsync(user, prune, reason) : TempBanPrivAsync(user, length.Value, prune, reason);
 
-        private async Task BanPrivAsync(SocketGuildUser user, string? prune, string? reason)
+        private Task BanPrivAsync(SocketGuildUser user, string? prune, string? reason)
         {
             List<Task> cmds = int.TryParse(prune, out int pruneDays)
                 ? new List<Task>() {
@@ -52,7 +43,7 @@ namespace FBIBot.Modules.Mod
                 Context.Interaction.RespondAsync(embed: embed.Build()),
                 BanModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, null, reason)
             });
-            await Task.WhenAll(cmds);
+            return Task.WhenAll(cmds);
         }
 
         private async Task TempBanPrivAsync(SocketGuildUser user, double length, string? prune, string? reason)
@@ -80,14 +71,14 @@ namespace FBIBot.Modules.Mod
                 Context.Interaction.RespondAsync(embed: embed.Build()),
                 BanModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, length, reason)
             });
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
 
-            await Task.Delay((int)(length * 24 * 60 * 60 * 1000));
+            await Task.Delay((int)(length * 24 * 60 * 60 * 1000)).ConfigureAwait(false);
             await Task.WhenAll
             (
                 Context.Guild.RemoveBanAsync(user),
                 UnbanModLog.SendToModLogAsync(Context.Guild.CurrentUser, user)
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

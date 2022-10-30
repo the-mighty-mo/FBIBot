@@ -10,10 +10,10 @@ namespace FBIBot.Databases.ConfigDatabaseTables
 
         public AntiCapsTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS AntiCaps (guild_id TEXT PRIMARY KEY);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> GetAntiCapsAsync(SocketGuild g)
@@ -24,8 +24,8 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(getCaps, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            isAntiCaps = await reader.ReadAsync();
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            isAntiCaps = await reader.ReadAsync().ConfigureAwait(false);
             reader.Close();
 
             return isAntiCaps;
@@ -39,7 +39,7 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(insert, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveAntiCapsAsync(SocketGuild g)
@@ -49,7 +49,7 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

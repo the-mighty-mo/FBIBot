@@ -6,8 +6,8 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class VerifyAllModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker) =>
-            await ModLogBase.SendToModLogAsync(
+        public static Task SendToModLogAsync(SocketGuildUser invoker) =>
+            ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,
@@ -18,8 +18,8 @@ namespace FBIBot.Modules.Mod.ModLog
                 )
             );
 
-        public static async Task<bool> SetStateAsync(SocketGuild g, ulong id, string state)
-            => await ModLogManager.SetStateAsync(
+        public static Task<bool> SetStateAsync(SocketGuild g, ulong id, string state) =>
+            ModLogManager.SetStateAsync(
                 new ModLogManager.StateInfo(g, id, "Verify All Users", state)
             );
     }

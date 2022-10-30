@@ -32,8 +32,8 @@ namespace FBIBot.Databases
                     yield return table.InitAsync();
                 }
             }
-            await connection.OpenAsync();
-            await Task.WhenAll(GetTableInits());
+            await connection.OpenAsync().ConfigureAwait(false);
+            await Task.WhenAll(GetTableInits()).ConfigureAwait(false);
         }
 
         public Task CloseAsync() => connection.CloseAsync();

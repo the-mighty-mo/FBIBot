@@ -54,17 +54,13 @@ namespace FBIBot
             await Task.WhenAll(
                 interactions.AddModulesAsync(Assembly.GetEntryAssembly(), services),
                 commands.AddModulesAsync(Assembly.GetEntryAssembly(), services)
-            );
+            ).ConfigureAwait(false);
             interactions.SlashCommandExecuted += SendInteractionErrorAsync;
             commands.CommandExecuted += SendCommandErrorAsync;
         }
 
-        private async Task ReadyAsync()
-        {
-            await interactions.RegisterCommandsGloballyAsync(true);
-            //await interactions.RegisterCommandsToGuildAsync(592789445741379585, true);
-            //await new InteractionService(client).RegisterCommandsToGuildAsync(592789445741379585, true);
-        }
+        private Task ReadyAsync() =>
+            interactions.RegisterCommandsGloballyAsync(true);
 
         private async Task SendInteractionErrorAsync(SlashCommandInfo info, IInteractionContext context, Discord.Interactions.IResult result)
         {
@@ -72,11 +68,11 @@ namespace FBIBot
             {
                 if (result.Error is InteractionCommandError.UnmetPrecondition)
                 {
-                    await context.Interaction.RespondAsync($"Error: {result.ErrorReason}");
+                    await context.Interaction.RespondAsync($"Error: {result.ErrorReason}").ConfigureAwait(false);
                 }
                 else
                 {
-                    await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
+                    await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}").ConfigureAwait(false);
                 }
             }
         }
@@ -85,7 +81,7 @@ namespace FBIBot
         {
             if (!result.IsSuccess && info.GetValueOrDefault()?.RunMode == Discord.Commands.RunMode.Async && result.Error is not (CommandError.UnknownCommand or CommandError.UnmetPrecondition))
             {
-                await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
+                await context.Channel.SendMessageAsync($"Error: {result.ErrorReason}").ConfigureAwait(false);
             }
         }
 
@@ -97,18 +93,18 @@ namespace FBIBot
 
         private async Task SendWelcomeMessage(SocketGuildUser u)
         {
-            if (await raidModeDatabase.RaidMode.GetVerificationLevelAsync(u.Guild) != null && !u.IsBot)
+            if (await raidModeDatabase.RaidMode.GetVerificationLevelAsync(u.Guild).ConfigureAwait(false) != null && !u.IsBot)
             {
                 await Task.WhenAll
                 (
                     u.SendMessageAsync($":rotating_light: :rotating_light: The FBI Office of {u.Guild.Name} is currently in Raid Mode. As a result, you may not join the server at this time. :rotating_light: :rotating_light:"),
                     raidModeDatabase.UsersBlocked.AddBlockedUserAsync(u)
-                );
-                await u.KickAsync("FBI RAID MODE");
+                ).ConfigureAwait(false);
+                await u.KickAsync("FBI RAID MODE").ConfigureAwait(false);
                 return;
             }
 
-            SocketTextChannel? channel = await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(u.Guild);
+            SocketTextChannel? channel = await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(u.Guild).ConfigureAwait(false);
             if (channel != null)
             {
                 List<string> messages = new()
@@ -123,20 +119,20 @@ namespace FBIBot
                     "You want to know how we figured it out?"
                 };
                 int index = Program.Rng.Next(messages.Count);
-                await channel.SendMessageAsync($"{u.Mention} {messages[index]}");
+                await channel.SendMessageAsync($"{u.Mention} {messages[index]}").ConfigureAwait(false);
             }
 
-            if (await verificationDatabase.Verified.GetVerifiedAsync(u))
+            if (await verificationDatabase.Verified.GetVerifiedAsync(u).ConfigureAwait(false))
             {
-                SocketRole? role = await verificationDatabase.Roles.GetVerificationRoleAsync(u.Guild);
+                SocketRole? role = await verificationDatabase.Roles.GetVerificationRoleAsync(u.Guild).ConfigureAwait(false);
                 if (role != null && u.Guild.CurrentUser.GetPermissions(u.Guild.DefaultChannel).ManageRoles)
                 {
-                    await u.AddRoleAsync(role);
+                    await u.AddRoleAsync(role).ConfigureAwait(false);
                 }
             }
-            else if (!u.IsBot && await verificationDatabase.Roles.GetVerificationRoleAsync(u.Guild) != null)
+            else if (!u.IsBot && await verificationDatabase.Roles.GetVerificationRoleAsync(u.Guild).ConfigureAwait(false) != null)
             {
-                await Verify.SendCaptchaAsync(u);
+                await Verify.SendCaptchaAsync(u).ConfigureAwait(false);
             }
 
             string name = u.Nickname ?? u.Username;
@@ -146,11 +142,11 @@ namespace FBIBot
                 configDatabase.AntiZalgo.GetAntiZalgoAsync(u.Guild)
             };
 
-            if ((await Task.WhenAll(isZalgo)).All(x => x))
+            if ((await Task.WhenAll(isZalgo).ConfigureAwait(false)).All(x => x))
             {
                 try
                 {
-                    await u.ModifyAsync(async x => x.Nickname = await Zalgo.RemoveZalgoAsync(name));
+                    await u.ModifyAsync(async x => x.Nickname = await Zalgo.RemoveZalgoAsync(name).ConfigureAwait(false)).ConfigureAwait(false);
                 }
                 catch { }
             }
@@ -178,11 +174,11 @@ namespace FBIBot
                 configDatabase.AntiZalgo.GetAntiZalgoAsync(updated.Guild)
             };
 
-            if ((await Task.WhenAll(isZalgo)).All(x => x))
+            if ((await Task.WhenAll(isZalgo).ConfigureAwait(false)).All(x => x))
             {
                 try
                 {
-                    await updated.ModifyAsync(x => x.Nickname = oldName);
+                    await updated.ModifyAsync(x => x.Nickname = oldName).ConfigureAwait(false);
                 }
                 catch { }
             }
@@ -196,27 +192,27 @@ namespace FBIBot
 
         private async Task HandleSlashCommandAsync(SocketSlashCommand m)
         {
-            if (m.User.IsBot && !await CanBotRunCommandsAsync(m.User))
+            if (m.User.IsBot && !await CanBotRunCommandsAsync(m.User).ConfigureAwait(false))
             {
                 return;
             }
 
             SocketInteractionContext Context = new(client, m);
 
-            await interactions.ExecuteCommandAsync(Context, services);
+            await interactions.ExecuteCommandAsync(Context, services).ConfigureAwait(false);
 
             List<Task> cmds = new();
-            if (m.User.IsBot && await ShouldDeleteBotCommands())
+            if (m.User.IsBot && await ShouldDeleteBotCommands().ConfigureAwait(false))
             {
                 cmds.Add(m.DeleteOriginalResponseAsync());
             }
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
         }
 
         private async Task HandleCommandAsync(SocketMessage m)
         {
-            if (m is not SocketUserMessage msg || (msg.Author.IsBot && !await CanBotRunCommandsAsync(msg.Author)))
+            if (m is not SocketUserMessage msg || (msg.Author.IsBot && !await CanBotRunCommandsAsync(msg.Author).ConfigureAwait(false)))
             {
                 return;
             }
@@ -226,10 +222,10 @@ namespace FBIBot
 
             if (isCommand)
             {
-                var result = await commands.ExecuteAsync(Context, argPos, services);
+                var result = await commands.ExecuteAsync(Context, argPos, services).ConfigureAwait(false);
 
                 List<Task> cmds = new();
-                if (msg.Author.IsBot && await ShouldDeleteBotCommands())
+                if (msg.Author.IsBot && await ShouldDeleteBotCommands().ConfigureAwait(false))
                 {
                     cmds.Add(msg.DeleteAsync());
                 }
@@ -238,12 +234,12 @@ namespace FBIBot
                     cmds.Add(Context.Channel.SendMessageAsync(result.ErrorReason));
                 }
 
-                await Task.WhenAll(cmds);
+                await Task.WhenAll(cmds).ConfigureAwait(false);
             }
 
             if (!msg.Author.IsBot)
             {
-                await AutoModAsync(Context, isCommand);
+                await AutoModAsync(Context, isCommand).ConfigureAwait(false);
             }
         }
 
@@ -285,37 +281,39 @@ namespace FBIBot
                 configDatabase.AntiLink.GetAntiLinkAsync(Context.Guild)
             };
 
-            if (await configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild))
+            if (await configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild).ConfigureAwait(false))
             {
-                if (await AutoSurveillanceAsync(Context))
+                if (await AutoSurveillanceAsync(Context).ConfigureAwait(false))
                 {
                     return;
                 }
             }
 
-            if ((await Task.WhenAll(isZalgo)).All(x => x))
+            if ((await Task.WhenAll(isZalgo).ConfigureAwait(false)).All(x => x))
             {
-                await new Zalgo(Context).WarnAsync();
+                await new Zalgo(Context).WarnAsync().ConfigureAwait(false);
             }
-            else if (((await Task.WhenAll(isSpam)).All(x => x) || (await Task.WhenAll(isSingleSpam)).All(x => x)) && !isCommand)
+            else if (((await Task.WhenAll(isSpam).ConfigureAwait(false)).All(x => x)
+                || (await Task.WhenAll(isSingleSpam).ConfigureAwait(false)).All(x => x))
+                && !isCommand)
             {
-                await new Spam(Context).WarnAsync();
+                await new Spam(Context).WarnAsync().ConfigureAwait(false);
             }
-            else if ((await Task.WhenAll(isMassMention)).All(x => x))
+            else if ((await Task.WhenAll(isMassMention).ConfigureAwait(false)).All(x => x))
             {
-                await new MassMention(Context).WarnAsync();
+                await new MassMention(Context).WarnAsync().ConfigureAwait(false);
             }
-            else if ((await Task.WhenAll(isCaps)).All(x => x))
+            else if ((await Task.WhenAll(isCaps).ConfigureAwait(false)).All(x => x))
             {
-                await new CAPS(Context).WARNASYNC();
+                await new CAPS(Context).WARNASYNC().ConfigureAwait(false);
             }
-            else if ((await Task.WhenAll(isInvite)).All(x => x))
+            else if ((await Task.WhenAll(isInvite).ConfigureAwait(false)).All(x => x))
             {
-                await new Invite(Context).RemoveAsync();
+                await new Invite(Context).RemoveAsync().ConfigureAwait(false);
             }
-            else if ((await Task.WhenAll(isLink)).All(x => x))
+            else if ((await Task.WhenAll(isLink).ConfigureAwait(false)).All(x => x))
             {
-                await new Link(Context).RemoveAsync();
+                await new Link(Context).RemoveAsync().ConfigureAwait(false);
             }
         }
 
@@ -329,14 +327,14 @@ namespace FBIBot
             };
             Task<bool> noRedSam = NoRedSam.IsRedSamAsync(Context);
 
-            if ((await Task.WhenAll(shouldArrest)).Contains(true))
+            if ((await Task.WhenAll(shouldArrest).ConfigureAwait(false)).Contains(true))
             {
-                await new AutoSurveillanceArrest(Context).ArrestAsync();
+                await new AutoSurveillanceArrest(Context).ArrestAsync().ConfigureAwait(false);
                 return true;
             }
-            else if (await noRedSam)
+            else if (await noRedSam.ConfigureAwait(false))
             {
-                await new NoRedSam(Context).CleanseSamAsync();
+                await new NoRedSam(Context).CleanseSamAsync().ConfigureAwait(false);
                 return true;
             }
             return false;

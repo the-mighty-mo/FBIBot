@@ -6,9 +6,8 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class ArrestModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, double? timeout, string? reason)
-        {
-            await ModLogBase.SendToModLogAsync(
+        public static Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, double? timeout, string? reason) =>
+            ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,
@@ -21,6 +20,5 @@ namespace FBIBot.Modules.Mod.ModLog
                     )
                 )
             );
-        }
     }
 }

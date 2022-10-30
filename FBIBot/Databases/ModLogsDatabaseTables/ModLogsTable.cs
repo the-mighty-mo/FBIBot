@@ -11,10 +11,10 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
 
         public ModLogsTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS ModLogs (guild_id TEXT NOT NULL, id TEXT NOT NULL, channel_id TEXT NOT NULL, message_id TEXT NOT NULL, UNIQUE (guild_id, id));", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<ulong> GetNextModLogID(SocketGuild g)
@@ -26,8 +26,8 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             {
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+                if (await reader.ReadAsync().ConfigureAwait(false))
                 {
                     _ = ulong.TryParse(reader["id"].ToString(), out id);
                 }
@@ -47,15 +47,15 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
                 cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
                 cmd.Parameters.AddWithValue("@id", id.ToString());
 
-                SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
+                SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+                if (await reader.ReadAsync().ConfigureAwait(false))
                 {
                     _ = ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                     _ = ulong.TryParse(reader["message_id"].ToString(), out ulong messageID);
 
                     if (g.GetTextChannel(channelID) is var channel)
                     {
-                        msg = await channel.GetMessageAsync(messageID) as IUserMessage;
+                        msg = await channel.GetMessageAsync(messageID).ConfigureAwait(false) as IUserMessage;
                     }
                 }
                 reader.Close();
@@ -75,7 +75,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             cmd.Parameters.AddWithValue("@channel_id", msg.Channel.Id.ToString());
             cmd.Parameters.AddWithValue("@message_id", msg.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveModLogsAsync(SocketGuild g)
@@ -84,7 +84,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
 
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

@@ -14,12 +14,12 @@ namespace FBIBot.Modules.Config
         public async Task ModifyMutedRolesAsync(EnableChoice modify)
         {
             bool isModify = modify == EnableChoice.Enable;
-            bool isModifying = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
+            bool isModifying = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild).ConfigureAwait(false);
             string state = isModify ? "permitted to modify" : "prohibited from modifying";
 
             if (isModify == isModifying)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that we are already {state} muted member's roles.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that we are already {state} muted member's roles.").ConfigureAwait(false);
                 return;
             }
 
@@ -41,7 +41,7 @@ namespace FBIBot.Modules.Config
                 cmds.Add(configDatabase.ModifyMuted.RemoveModifyMutedAsync(Context.Guild));
             }
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
         }
     }
 }

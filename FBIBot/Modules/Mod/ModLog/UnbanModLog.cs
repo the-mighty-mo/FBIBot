@@ -6,11 +6,11 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class UnbanModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target)
-            => await SendToModLogAsync(invoker, target.Id);
+        public static Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target)
+            => SendToModLogAsync(invoker, target.Id);
 
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, ulong? target) =>
-            await ModLogBase.SendToModLogAsync(
+        public static Task SendToModLogAsync(SocketGuildUser invoker, ulong? target) =>
+            ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,

@@ -15,9 +15,9 @@ namespace FBIBot.Modules.Config
         public async Task ClearModLogAsync([Summary(description: "Whether to clear all messages in the mod log. Default: False")] BoolChoice clear = BoolChoice.False)
         {
             bool isClear = clear == BoolChoice.True;
-            if (await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild) == 1 && !isClear)
+            if (await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild).ConfigureAwait(false) == 1 && !isClear)
             {
-                await Context.Interaction.RespondAsync("Our security team has informed us that there are no moderation logs.");
+                await Context.Interaction.RespondAsync("Our security team has informed us that there are no moderation logs.").ConfigureAwait(false);
                 return;
             }
 
@@ -29,15 +29,15 @@ namespace FBIBot.Modules.Config
 
             if (isClear)
             {
-                SocketTextChannel? channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild);
+                SocketTextChannel? channel = await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild).ConfigureAwait(false);
                 if (channel != null)
                 {
-                    var msgs = (await channel.GetMessagesAsync(int.MaxValue).FlattenAsync()).Where(x => x.Author == Context.Guild.GetUser(Context.Client.CurrentUser.Id));
+                    var msgs = (await channel.GetMessagesAsync(int.MaxValue).FlattenAsync().ConfigureAwait(false)).Where(x => x.Author == Context.Guild.GetUser(Context.Client.CurrentUser.Id));
                     await channel.DeleteMessagesAsync(msgs);
 
                     try
                     {
-                        await Task.WhenAll(msgs.Select(msg => msg.DeleteAsync()));
+                        await Task.WhenAll(msgs.Select(msg => msg.DeleteAsync())).ConfigureAwait(false);
                     }
                     catch { }
                 }
@@ -52,7 +52,7 @@ namespace FBIBot.Modules.Config
             (
                 Task.WhenAll(cmds),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

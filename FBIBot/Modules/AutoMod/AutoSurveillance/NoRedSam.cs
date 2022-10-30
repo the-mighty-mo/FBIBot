@@ -20,7 +20,7 @@ namespace FBIBot.Modules.AutoMod.AutoSurveillance
                     Context.Message.DeleteAsync(),
                     user.SendMessageAsync("n o"),
                     user.RemoveRoleAsync(Context.Guild.Roles.FirstOrDefault(x => x.Name == "red"))
-                );
+                ).ConfigureAwait(false);
             }
         }
 

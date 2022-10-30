@@ -17,7 +17,7 @@ namespace FBIBot.Modules.Mod
 
         private async Task WarnAsync(SocketGuildUser user, double? length, string? reason)
         {
-            ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild);
+            ulong id = await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild).ConfigureAwait(false);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 213, 31))
@@ -43,13 +43,13 @@ namespace FBIBot.Modules.Mod
                 Context.Interaction.RespondAsync(embed: embed.Build()),
                 WarnModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, length, reason),
                 modLogsDatabase.Warnings.AddWarningAsync(user, id)
-            );
+            ).ConfigureAwait(false);
 
             if (length != null)
             {
-                await Task.Delay((int)(length * 60 * 60 * 1000));
+                await Task.Delay((int)(length * 60 * 60 * 1000)).ConfigureAwait(false);
 
-                if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id))
+                if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id).ConfigureAwait(false))
                 {
                     return;
                 }
@@ -58,7 +58,7 @@ namespace FBIBot.Modules.Mod
                 (
                     RemoveWarningModLog.SendToModLogAsync(Context.Guild.CurrentUser, user, id),
                     modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
-                );
+                ).ConfigureAwait(false);
             }
         }
     }

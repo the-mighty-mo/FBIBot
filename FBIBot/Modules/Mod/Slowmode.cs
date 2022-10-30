@@ -21,7 +21,7 @@ namespace FBIBot.Modules.Mod
                 (
                     Context.Guild.GetTextChannel(Context.Channel.Id).ModifyAsync(x => x.SlowModeInterval = 0),
                     Context.Interaction.RespondAsync(embed: emb.Build())
-                );
+                ).ConfigureAwait(false);
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace FBIBot.Modules.Mod
             (
                 Context.Guild.GetTextChannel(Context.Channel.Id).ModifyAsync(x => x.SlowModeInterval = seconds.Value),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

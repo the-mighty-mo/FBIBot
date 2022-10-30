@@ -19,11 +19,11 @@ namespace FBIBot
             {
                 if (value is SocketGuildUser user)
                 {
-                    return await CheckRequirementsAsync(Context, user);
+                    return await CheckRequirementsAsync(Context, user).ConfigureAwait(false);
                 }
                 else if (value is string userId && ulong.TryParse(userId, out ulong userID) && (user = Context.Guild.GetUser(userID)) != null)
                 {
-                    return await CheckRequirementsAsync(Context, user);
+                    return await CheckRequirementsAsync(Context, user).ConfigureAwait(false);
                 }
             }
             return PreconditionResult.FromError("Our intelligence team has informed us that the given user does not exist.");

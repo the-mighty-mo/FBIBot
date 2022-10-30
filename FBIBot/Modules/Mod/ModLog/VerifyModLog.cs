@@ -6,8 +6,8 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class VerifyModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target) =>
-            await ModLogBase.SendToModLogAsync(
+        public static Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target) =>
+            ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,

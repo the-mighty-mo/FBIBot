@@ -10,10 +10,10 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
 
         public PrisonersTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS Prisoners (guild_id TEXT NOT NULL, user_id TEXT NOT NULL, UNIQUE (guild_id, user_id));", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RecordPrisonerAsync(SocketGuildUser user)
@@ -25,7 +25,7 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
             cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> HasPrisoners(SocketGuild g)
@@ -37,8 +37,8 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             using SqliteCommand cmd = new(getUsers, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            hasPrisoners = await reader.ReadAsync();
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            hasPrisoners = await reader.ReadAsync().ConfigureAwait(false);
             reader.Close();
 
             return hasPrisoners;
@@ -52,7 +52,7 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             cmd.Parameters.AddWithValue("@guild_id", user.Guild.Id.ToString());
             cmd.Parameters.AddWithValue("@user_id", user.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

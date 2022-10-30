@@ -11,7 +11,7 @@ namespace FBIBot
     {
         public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext Context, ICommandInfo command, IServiceProvider services) =>
             Context.User is SocketGuildUser && Context is SocketInteractionContext context
-                ? await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(context.Guild) != null
+                ? await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(context.Guild).ConfigureAwait(false) != null
                     ? PreconditionResult.FromSuccess()
                     : PreconditionResult.FromError("You must set a mod log to use this command.")
                 : PreconditionResult.FromError("You must be in a server to run this command.");

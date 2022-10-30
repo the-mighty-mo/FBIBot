@@ -13,15 +13,15 @@ namespace FBIBot.Modules.Mod
         [RequireModLog]
         public async Task ModifyReasonAsync(ulong id, string? reason = null)
         {
-            if (id >= await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild))
+            if (id >= await modLogsDatabase.ModLogs.GetNextModLogID(Context.Guild).ConfigureAwait(false))
             {
                 await Context.Interaction.RespondAsync($"Our security team has informed us that {id} is not a valid Mod Log ID.");
                 return;
             }
 
-            if (!await ModLogManager.SetReasonAsync(new ModLogManager.ReasonInfo(Context.Guild, id, reason)))
+            if (!await ModLogManager.SetReasonAsync(new ModLogManager.ReasonInfo(Context.Guild, id, reason)).ConfigureAwait(false))
             {
-                await Context.Interaction.RespondAsync("Our security team has informed us that the given Mod Log is not permitted to have a valid reason. Don't ask.");
+                await Context.Interaction.RespondAsync("Our security team has informed us that the given Mod Log is not permitted to have a valid reason. Don't ask.").ConfigureAwait(false);
                 return;
             }
 
@@ -29,7 +29,7 @@ namespace FBIBot.Modules.Mod
                 .WithColor(SecurityInfo.botColor)
                 .WithDescription("The mod log's reason has been updated. Probably.");
 
-            await Context.Interaction.RespondAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

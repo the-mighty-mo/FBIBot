@@ -11,23 +11,14 @@ namespace FBIBot.Modules.Config
     public class SetLog : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("captcha", "Sets the channel for the CAPTCHA Log. *Unsets if no channel is given*")]
-        public async Task SetCaptchaLogAsync(SocketTextChannel? channel = null)
-        {
-            if (channel == null)
-            {
-                await SetCaptchaLogPrivAsync();
-            }
-            else
-            {
-                await SetCaptchaLogPrivAsync(channel);
-            }
-        }
+        public Task SetCaptchaLogAsync(SocketTextChannel? channel = null) =>
+            channel == null ? SetCaptchaLogPrivAsync() : SetCaptchaLogPrivAsync(channel);
 
         private async Task SetCaptchaLogPrivAsync()
         {
-            if (await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild) == null)
+            if (await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild).ConfigureAwait(false) == null)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that you are already lacking a CAPTCHA log channel.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that you are already lacking a CAPTCHA log channel.").ConfigureAwait(false);
                 return;
             }
 
@@ -40,14 +31,14 @@ namespace FBIBot.Modules.Config
             (
                 modLogsDatabase.CaptchaLogChannel.RemoveCaptchaLogChannelAsync(Context.Guild),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
 
         private async Task SetCaptchaLogPrivAsync(SocketTextChannel channel)
         {
-            if (await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild) == channel)
+            if (await modLogsDatabase.CaptchaLogChannel.GetCaptchaLogChannelAsync(Context.Guild).ConfigureAwait(false) == channel)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that {channel.Mention} is already configured for CAPTCHA logs.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {channel.Mention} is already configured for CAPTCHA logs.").ConfigureAwait(false);
                 return;
             }
 
@@ -60,27 +51,18 @@ namespace FBIBot.Modules.Config
             (
                 modLogsDatabase.CaptchaLogChannel.SetCaptchaLogChannelAsync(channel),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
 
         [SlashCommand("mod", "Sets the channel for the Mod Log. *Unsets if no channel is given*")]
-        public async Task SetModLogAsync(SocketTextChannel? channel = null)
-        {
-            if (channel == null)
-            {
-                await SetModLogPrivAsync();
-            }
-            else
-            {
-                await SetModLogPrivAsync(channel);
-            }
-        }
+        public Task SetModLogAsync(SocketTextChannel? channel = null) =>
+            channel == null ? SetModLogPrivAsync() : SetModLogPrivAsync(channel);
 
         private async Task SetModLogPrivAsync()
         {
-            if (await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild) == null)
+            if (await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild).ConfigureAwait(false) == null)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that you are already lacking a mod log channel.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that you are already lacking a mod log channel.").ConfigureAwait(false);
                 return;
             }
 
@@ -93,14 +75,14 @@ namespace FBIBot.Modules.Config
             (
                 modLogsDatabase.ModLogChannel.RemoveModLogChannelAsync(Context.Guild),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
 
         private async Task SetModLogPrivAsync(SocketTextChannel channel)
         {
-            if (await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild) == channel)
+            if (await modLogsDatabase.ModLogChannel.GetModLogChannelAsync(Context.Guild).ConfigureAwait(false) == channel)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that {channel.Mention} is already configured for mod logs.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {channel.Mention} is already configured for mod logs.").ConfigureAwait(false);
                 return;
             }
 
@@ -113,27 +95,18 @@ namespace FBIBot.Modules.Config
             (
                 modLogsDatabase.ModLogChannel.SetModLogChannelAsync(channel),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
 
         [SlashCommand("welcome", "Sets the channel for welcome messages. *Unsets if no channel is given*")]
-        public async Task SetWelcomeAsync(SocketTextChannel? channel = null)
-        {
-            if (channel == null)
-            {
-                await SetWelcomePrivAsync();
-            }
-            else
-            {
-                await SetWelcomePrivAsync(channel);
-            }
-        }
+        public Task SetWelcomeAsync(SocketTextChannel? channel = null) =>
+            channel == null ? SetWelcomePrivAsync() : SetWelcomePrivAsync(channel);
 
         private async Task SetWelcomePrivAsync()
         {
-            if (await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(Context.Guild) == null)
+            if (await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(Context.Guild).ConfigureAwait(false) == null)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that you are already lacking a welcome channel.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that you are already lacking a welcome channel.").ConfigureAwait(false);
                 return;
             }
 
@@ -146,14 +119,14 @@ namespace FBIBot.Modules.Config
             (
                 modLogsDatabase.WelcomeChannel.RemoveWelcomeChannelAsync(Context.Guild),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
 
         private async Task SetWelcomePrivAsync(SocketTextChannel channel)
         {
-            if (await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(Context.Guild) == channel)
+            if (await modLogsDatabase.WelcomeChannel.GetWelcomeChannelAsync(Context.Guild).ConfigureAwait(false) == channel)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that {channel.Mention} is already configured for welcome messages.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {channel.Mention} is already configured for welcome messages.").ConfigureAwait(false);
                 return;
             }
 
@@ -166,7 +139,7 @@ namespace FBIBot.Modules.Config
             (
                 modLogsDatabase.WelcomeChannel.SetWelcomeChannelAsync(channel),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace FBIBot.Modules.AutoMod
         {
             bool isSpam = false;
 
-            var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync();
+            var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync().ConfigureAwait(false);
             var userMsgs = msgs.Where(x => x.Author.Id == Context.Message.Author.Id && x.Content.Length > 0).Take(20);
 
             var message = Context.Message.Content;

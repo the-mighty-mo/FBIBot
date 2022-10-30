@@ -19,15 +19,15 @@ namespace FBIBot.Modules.Config
 
         private async Task UnverifyAsync(SocketGuildUser user, string? reason)
         {
-            SocketRole? role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild);
+            SocketRole? role = await verificationDatabase.Roles.GetVerificationRoleAsync(Context.Guild).ConfigureAwait(false);
             if (role == null)
             {
-                await Context.Interaction.RespondAsync("Our intelligence team has informed us that there is no role to give to verified members.");
+                await Context.Interaction.RespondAsync("Our intelligence team has informed us that there is no role to give to verified members.").ConfigureAwait(false);
                 return;
             }
-            if (!user.Roles.Contains(role) && !await verificationDatabase.Verified.GetVerifiedAsync(user))
+            if (!user.Roles.Contains(role) && !await verificationDatabase.Verified.GetVerifiedAsync(user).ConfigureAwait(false))
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not verified.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not verified.").ConfigureAwait(false);
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace FBIBot.Modules.Config
                 Verify.SendCaptchaAsync(user),
                 Context.Interaction.RespondAsync(embed: embed.Build()),
                 UnverifyModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, reason)
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

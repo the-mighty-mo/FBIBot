@@ -6,14 +6,14 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class WarnModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, double? timeout, string? reason)
+        public static Task SendToModLogAsync(SocketGuildUser invoker, SocketGuildUser target, double? timeout, string? reason)
         {
             bool isMinutes = timeout < 1;
             if (timeout < 1)
             {
                 timeout *= 60;
             }
-            await ModLogBase.SendToModLogAsync(
+            return ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,

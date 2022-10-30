@@ -10,10 +10,10 @@ namespace FBIBot.Databases.VerificationDatabaseTables
 
         public CaptchaTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS Captcha (user_id TEXT PRIMARY KEY, captcha TEXT NOT NULL);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<string?> GetCaptchaAsync(SocketUser u)
@@ -25,8 +25,8 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             using SqliteCommand cmd = new(read, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 captcha = (string)reader["captcha"];
             }
@@ -44,7 +44,7 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@captcha", captcha);
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveCaptchaAsync(SocketUser u)
@@ -54,7 +54,7 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

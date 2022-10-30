@@ -11,10 +11,10 @@ namespace FBIBot.Databases.RaidModeDatabaseTables
 
         public RaidModeTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS RaidMode (guild_id TEXT PRIMARY KEY, level TEXT NOT NULL);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<VerificationLevel?> GetVerificationLevelAsync(SocketGuild g)
@@ -26,8 +26,8 @@ namespace FBIBot.Databases.RaidModeDatabaseTables
             using SqliteCommand cmd = new(getLevel, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 if (int.TryParse(reader["level"].ToString(), out int levelInt))
                 {
@@ -48,7 +48,7 @@ namespace FBIBot.Databases.RaidModeDatabaseTables
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
             cmd.Parameters.AddWithValue("@level", ((int)g.VerificationLevel).ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveVerificationLevelAsync(SocketGuild g)
@@ -58,7 +58,7 @@ namespace FBIBot.Databases.RaidModeDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

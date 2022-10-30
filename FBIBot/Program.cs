@@ -16,7 +16,7 @@ namespace FBIBot
             static bool isRunning() => Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1;
             if (isRunning())
             {
-                await Task.Delay(1000);
+                await Task.Delay(1000).ConfigureAwait(false);
 
                 if (isRunning())
                 {
@@ -24,19 +24,22 @@ namespace FBIBot
                     await Task.WhenAny(
                         Task.Run(() => Console.ReadLine()),
                         Task.Delay(5000)
-                    );
+                    ).ConfigureAwait(false);
                     return;
                 }
             }
 
-            Task initSqlite = DatabaseManager.InitAsync().ContinueWith(x => Console.WriteLine($"{SecurityInfo.botName} has finished loading"));
+            Task initSqlite = DatabaseManager.InitAsync().ContinueWith(
+                _ => Console.WriteLine($"{SecurityInfo.botName} has finished loading"),
+                TaskContinuationOptions.ExecuteSynchronously
+            );
             Task initCommandHandler = SetupCommandHandlerAsync();
 
             await Task.WhenAll(
                 initSqlite,
                 initCommandHandler
-            );
-            await Task.Delay(-1);
+            ).ConfigureAwait(false);
+            await Task.Delay(-1).ConfigureAwait(false);
         }
 
         private static async Task SetupCommandHandlerAsync()
@@ -48,13 +51,13 @@ namespace FBIBot
             };
             DiscordSocketClient client = new(config);
 
-            await client.LoginAsync(TokenType.Bot, SecurityInfo.token);
-            await client.StartAsync();
-            await client.SetGameAsync($"/help", null, ActivityType.Listening);
+            await client.LoginAsync(TokenType.Bot, SecurityInfo.token).ConfigureAwait(false);
+            await client.StartAsync().ConfigureAwait(false);
+            await client.SetGameAsync($"/help", null, ActivityType.Listening).ConfigureAwait(false);
 
             IServiceProvider _services = new ServiceCollection().BuildServiceProvider();
             CommandHandler handler = new(client, _services);
-            await handler.InitCommandsAsync();
+            await handler.InitCommandsAsync().ConfigureAwait(false);
         }
     }
 }

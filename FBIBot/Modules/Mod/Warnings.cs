@@ -19,10 +19,10 @@ namespace FBIBot.Modules.Mod
 
         private async Task GetWarnsAsync(SocketGuildUser user)
         {
-            List<ulong> ids = await modLogsDatabase.Warnings.GetWarningsAsync(user);
+            List<ulong> ids = await modLogsDatabase.Warnings.GetWarningsAsync(user).ConfigureAwait(false);
             if (ids.Count == 0)
             {
-                await Context.Interaction.RespondAsync("Our security team has informed us that the given user does not have any warnings.");
+                await Context.Interaction.RespondAsync("Our security team has informed us that the given user does not have any warnings.").ConfigureAwait(false);
                 return;
             }
 
@@ -30,7 +30,7 @@ namespace FBIBot.Modules.Mod
             List<ulong> idsPastHour = new();
             foreach (ulong id in ids)
             {
-                IUserMessage? msg = await modLogsDatabase.ModLogs.GetModLogAsync(Context.Guild, id);
+                IUserMessage? msg = await modLogsDatabase.ModLogs.GetModLogAsync(Context.Guild, id).ConfigureAwait(false);
                 if (msg == null)
                 {
                     continue;
@@ -66,7 +66,7 @@ namespace FBIBot.Modules.Mod
                                $"- Past hour: {string.Join(", ", idsPastHour)}");
             embed.AddField(modLogs);
 
-            await Context.Interaction.RespondAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
         }
 
         [Group("remove", "Removes warnings from a user")]
@@ -78,9 +78,9 @@ namespace FBIBot.Modules.Mod
 
             private async Task RemoveWarnAsync(SocketGuildUser user, ulong id)
             {
-                if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id))
+                if (!await modLogsDatabase.Warnings.GetWarningAsync(user, id).ConfigureAwait(false))
                 {
-                    await Context.Interaction.RespondAsync($"Our security team has informed us that the given warning does not exist.");
+                    await Context.Interaction.RespondAsync($"Our security team has informed us that the given warning does not exist.").ConfigureAwait(false);
                     return;
                 }
 
@@ -93,7 +93,7 @@ namespace FBIBot.Modules.Mod
                     Context.Interaction.RespondAsync(embed: embed.Build()),
                     RemoveWarningModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, id),
                     modLogsDatabase.Warnings.RemoveWarningAsync(user, id)
-                );
+                ).ConfigureAwait(false);
             }
 
             [SlashCommand("count", "Removes a number of warnings from the user. Removes the oldest first")]
@@ -104,12 +104,12 @@ namespace FBIBot.Modules.Mod
             {
                 if (count == 0)
                 {
-                    await Context.Interaction.RespondAsync("Why are you trying to remove ***0*** warnings? I have more important things to do.");
+                    await Context.Interaction.RespondAsync("Why are you trying to remove ***0*** warnings? I have more important things to do.").ConfigureAwait(false);
                     return;
                 }
-                if ((await modLogsDatabase.Warnings.GetWarningsAsync(user)).Count == 0)
+                if ((await modLogsDatabase.Warnings.GetWarningsAsync(user).ConfigureAwait(false)).Count == 0)
                 {
-                    await Context.Interaction.RespondAsync("Our security team has informed us that the given user does not have any warnings.");
+                    await Context.Interaction.RespondAsync("Our security team has informed us that the given user does not have any warnings.").ConfigureAwait(false);
                     return;
                 }
 
@@ -122,7 +122,7 @@ namespace FBIBot.Modules.Mod
                     Context.Interaction.RespondAsync(embed: embed.Build()),
                     RemoveWarningsModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, count),
                     modLogsDatabase.Warnings.RemoveWarningsAsync(user, count)
-                );
+                ).ConfigureAwait(false);
             }
         }
     }

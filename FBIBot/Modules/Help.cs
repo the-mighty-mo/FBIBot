@@ -124,7 +124,7 @@ namespace FBIBot.Modules
         }
 
         [SlashCommand("help", "List of commands")]
-        public async Task HelpAsync(HelpParam? param = null)
+        public Task HelpAsync(HelpParam? param = null)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(SecurityInfo.botColor)
@@ -178,7 +178,7 @@ namespace FBIBot.Modules
             fields.Add(field);
             embed.WithFields(fields);
 
-            await Context.Interaction.RespondAsync("Need a little democracy, freedom, and justice?", embed: embed.Build(), ephemeral: true);
+            return Context.Interaction.RespondAsync("Need a little democracy, freedom, and justice?", embed: embed.Build(), ephemeral: true);
         }
     }
 }

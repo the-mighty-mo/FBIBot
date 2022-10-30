@@ -10,10 +10,10 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
 
         public CaptchaLogChannelTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS CaptchaLogChannel (guild_id TEXT PRIMARY KEY, channel_id TEXT NOT NULL);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<SocketTextChannel?> GetCaptchaLogChannelAsync(SocketGuild g)
@@ -25,8 +25,8 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             using SqliteCommand cmd = new(getChannel, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 _ = ulong.TryParse(reader["channel_id"].ToString(), out ulong channelID);
                 channel = g.GetTextChannel(channelID);
@@ -45,7 +45,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             cmd.Parameters.AddWithValue("@guild_id", channel.Guild.Id.ToString());
             cmd.Parameters.AddWithValue("@channel_id", channel.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveCaptchaLogChannelAsync(SocketGuild g)
@@ -55,7 +55,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

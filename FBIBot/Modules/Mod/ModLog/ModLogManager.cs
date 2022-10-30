@@ -30,12 +30,12 @@ namespace FBIBot.Modules.Mod.ModLog
             public ReasonInfo(SocketGuild guild, ulong logId, string? reason) : base(guild, logId, "Reason", reason ?? "(none given)") { }
         }
 
-        public static async Task<bool> SetReasonAsync(ReasonInfo info)
-            => await SetStateAsync(info);
+        public static Task<bool> SetReasonAsync(ReasonInfo info)
+            => SetStateAsync(info);
 
         public static async Task<bool> SetStateAsync(StateInfo info)
         {
-            IUserMessage? msg = await modLogsDatabase.ModLogs.GetModLogAsync(info.Guild, info.LogId);
+            IUserMessage? msg = await modLogsDatabase.ModLogs.GetModLogAsync(info.Guild, info.LogId).ConfigureAwait(false);
             if (msg == null || msg.Embeds.Count == 0)
             {
                 return false;
@@ -60,7 +60,7 @@ namespace FBIBot.Modules.Mod.ModLog
             fields.Insert(index, field);
             embed.WithFields(fields);
 
-            await msg.ModifyAsync(x => x.Embed = embed.Build());
+            await msg.ModifyAsync(x => x.Embed = embed.Build()).ConfigureAwait(false);
             return true;
         }
     }

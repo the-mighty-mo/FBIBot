@@ -10,7 +10,7 @@ namespace FBIBot
 
         protected sealed override async Task<PreconditionResult> CheckRequirementsAsync(SocketInteractionContext Context, SocketGuildUser target) =>
             Context.User is SocketGuildUser invoker
-                ? await VerifyUser.InvokerIsHigher(invoker, target)
+                ? await VerifyUser.InvokerIsHigher(invoker, target).ConfigureAwait(false)
                     ? PreconditionResult.FromSuccess()
                     : PreconditionResult.FromError($"You cannot {command} members with equal or higher authority than yourself.")
                 : PreconditionResult.FromError("You must be in a server to run this command.");

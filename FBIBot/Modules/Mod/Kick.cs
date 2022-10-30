@@ -14,7 +14,7 @@ namespace FBIBot.Modules.Mod
         public Task KickAsync([RequireBotHierarchy("kick")][RequireInvokerHierarchy("kick")] SocketUser user, string? reason = null) =>
             KickAsync((user as SocketGuildUser)!, reason);
 
-        private async Task KickAsync(SocketGuildUser user, string? reason)
+        private Task KickAsync(SocketGuildUser user, string? reason)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 12, 12))
@@ -26,7 +26,7 @@ namespace FBIBot.Modules.Mod
                     .WithValue($"{reason ?? "[none given]"}");
             embed.AddField(reasonField);
 
-            await Task.WhenAll
+            return Task.WhenAll
             (
                 user.KickAsync(reason),
                 Context.Interaction.RespondAsync(embed: embed.Build()),

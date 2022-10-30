@@ -13,9 +13,9 @@ namespace FBIBot.Modules.Config
         [SlashCommand("admin", "Removes the role from the list of local directors of the bureau due to presidential disapproval")]
         public async Task RemoveAdminRoleAsync(SocketRole role)
         {
-            if (!(await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
+            if (!(await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild).ConfigureAwait(false)).Contains(role))
             {
-                await Context.Interaction.RespondAsync($"Our agents have informed us that members with the {role.Mention} role aren't local directors.");
+                await Context.Interaction.RespondAsync($"Our agents have informed us that members with the {role.Mention} role aren't local directors.").ConfigureAwait(false);
                 return;
             }
 
@@ -28,15 +28,15 @@ namespace FBIBot.Modules.Config
             (
                 modRolesDatabase.Admins.RemoveAdminAsync(role),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
 
         [SlashCommand("mod", "Removes the role from the list of assistants of the bureau out of suspicion")]
         public async Task RemoveModRoleAsync(SocketRole role)
         {
-            if (!(await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))
+            if (!(await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild).ConfigureAwait(false)).Contains(role))
             {
-                await Context.Interaction.RespondAsync($"Our agents have informed us that members with the {role.Mention} role aren't assistants.");
+                await Context.Interaction.RespondAsync($"Our agents have informed us that members with the {role.Mention} role aren't assistants.").ConfigureAwait(false);
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace FBIBot.Modules.Config
             (
                 modRolesDatabase.Mods.RemoveModAsync(role),
                 Context.Interaction.RespondAsync(embed: embed.Build())
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

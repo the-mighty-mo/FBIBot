@@ -10,10 +10,10 @@ namespace FBIBot.Databases.ConfigDatabaseTables
 
         public AntiMassMentionTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS AntiMassMention (guild_id TEXT PRIMARY KEY);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> GetAntiMassMentionAsync(SocketGuild g)
@@ -25,8 +25,8 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(getMassMention, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            isAntiMassMention = await reader.ReadAsync();
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            isAntiMassMention = await reader.ReadAsync().ConfigureAwait(false);
             reader.Close();
 
             return isAntiMassMention;
@@ -40,7 +40,7 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(insert, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveAntiMassMentionAsync(SocketGuild g)
@@ -50,7 +50,7 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

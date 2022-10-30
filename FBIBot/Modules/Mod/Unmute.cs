@@ -19,11 +19,11 @@ namespace FBIBot.Modules.Mod
 
         private async Task UnmuteAsync(SocketGuildUser user)
         {
-            SocketRole? role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild);
-            List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user);
+            SocketRole? role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild).ConfigureAwait(false);
+            List<SocketRole> roles = await modRolesDatabase.UserRoles.GetUserRolesAsync(user).ConfigureAwait(false);
             if ((role == null || !user.Roles.Contains(role)) && roles.Count == 0)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not muted.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is not muted.").ConfigureAwait(false);
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace FBIBot.Modules.Mod
                 cmds.Add(user.RemoveRoleAsync(role));
             }
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
         }
     }
 }

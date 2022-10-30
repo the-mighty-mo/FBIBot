@@ -11,10 +11,10 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
 
         public WarningsTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS Warnings (guild_id TEXT NOT NULL, id TEXT NOT NULL, user_id TEXT NOT NULL, UNIQUE (guild_id, id));", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task AddWarningAsync(SocketGuildUser u, ulong id)
@@ -27,7 +27,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             cmd.Parameters.AddWithValue("@id", id.ToString());
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> GetWarningAsync(SocketGuildUser u, ulong id)
@@ -41,8 +41,8 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             cmd.Parameters.AddWithValue("@id", id.ToString());
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            hasWarning = await reader.ReadAsync();
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            hasWarning = await reader.ReadAsync().ConfigureAwait(false);
             reader.Close();
 
             return hasWarning;
@@ -58,8 +58,8 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             cmd.Parameters.AddWithValue("@guild_id", u.Guild.Id.ToString());
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false))
             {
                 if (ulong.TryParse(reader["id"].ToString(), out ulong id))
                 {
@@ -80,7 +80,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             cmd.Parameters.AddWithValue("@id", id.ToString());
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveWarningsAsync(SocketGuildUser u, int? count = null)
@@ -97,7 +97,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
             cmd.Parameters.AddWithValue("@count", count?.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveAllWarningsAsync(SocketGuild g)
@@ -107,7 +107,7 @@ namespace FBIBot.Databases.ModLogsDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

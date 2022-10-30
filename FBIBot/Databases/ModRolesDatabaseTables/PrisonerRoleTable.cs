@@ -11,10 +11,10 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
 
         public PrisonerRoleTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS PrisonerRole (guild_id TEXT PRIMARY KEY, role_id TEXT NOT NULL);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<SocketRole?> GetPrisonerRoleAsync(SocketGuild g)
@@ -26,8 +26,8 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             using SqliteCommand cmd = new(getRole, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 _ = ulong.TryParse(reader["role_id"].ToString(), out ulong roleID);
                 role = g.GetRole(roleID);
@@ -46,7 +46,7 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             cmd.Parameters.AddWithValue("@guild_id", role.Guild.Id.ToString());
             cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemovePrisonerRoleAsync(SocketGuild g)
@@ -56,7 +56,7 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

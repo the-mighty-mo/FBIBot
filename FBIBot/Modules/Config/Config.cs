@@ -33,25 +33,25 @@ namespace FBIBot.Modules.Config
             Task<bool> antiLink = configDatabase.AntiLink.GetAntiLinkAsync(Context.Guild);
 
             string config =
-                $"Verification Role: **{(await verify)?.Mention ?? "(none)"}**\n" +
-                $"Mute Role: **{(await mute)?.Mention ?? "(none)"}**\n" +
-                $"Modify Muted Member's Roles: **{(await modifyMuted ? "Enabled" : "Disabled")}**\n" +
-                $"Mod Roles: **{string.Join(", ", (await modRoles).Select(x => x.Mention))}**\n" +
-                $"Admin Roles: **{string.Join(", ", (await adminRoles).Select(x => x.Mention))}**\n" +
-                $"Mod Log: **{(await modlog)?.Mention ?? "(none)"}**\n" +
-                $"CAPTCHA Log: **{(await captchalog)?.Mention ?? "(none)"}**\n" +
-                $"Welcome Channel: **{(await welcome)?.Mention ?? "(none)"}**\n" +
-                $"FBI RAID MODE: **{(await raidMode != null ? "ENABLED" : "Disabled")}**\n" +
+                $"Verification Role: **{(await verify.ConfigureAwait(false))?.Mention ?? "(none)"}**\n" +
+                $"Mute Role: **{(await mute.ConfigureAwait(false))?.Mention ?? "(none)"}**\n" +
+                $"Modify Muted Member's Roles: **{(await modifyMuted.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Mod Roles: **{string.Join(", ", (await modRoles.ConfigureAwait(false)).Select(x => x.Mention))}**\n" +
+                $"Admin Roles: **{string.Join(", ", (await adminRoles.ConfigureAwait(false)).Select(x => x.Mention))}**\n" +
+                $"Mod Log: **{(await modlog.ConfigureAwait(false))?.Mention ?? "(none)"}**\n" +
+                $"CAPTCHA Log: **{(await captchalog.ConfigureAwait(false))?.Mention ?? "(none)"}**\n" +
+                $"Welcome Channel: **{(await welcome.ConfigureAwait(false))?.Mention ?? "(none)"}**\n" +
+                $"FBI RAID MODE: **{(await raidMode.ConfigureAwait(false) != null ? "ENABLED" : "Disabled")}**\n" +
                 $"\n" +
                 $"__AutoMod:__\n" +
-                $"Auto Surveillance: **{(await autoSurveillance ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Zalgo: **{(await antiZalgo ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Spam: **{(await antiSpam ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Single-Spam: **{(await antiSingleSpam ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Mass-Mention: **{(await antiMassMention ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-CAPS: **{(await antiCaps ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Invite: **{(await antiInvite ? "Enabled" : "Disabled")}**\n" +
-                $"Anti-Link: **{(await antiLink ? "Enabled" : "Disabled")}**\n";
+                $"Auto Surveillance: **{(await autoSurveillance.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Zalgo: **{(await antiZalgo.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Spam: **{(await antiSpam.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Single-Spam: **{(await antiSingleSpam.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Mass-Mention: **{(await antiMassMention.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-CAPS: **{(await antiCaps.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Invite: **{(await antiInvite.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n" +
+                $"Anti-Link: **{(await antiLink.ConfigureAwait(false) ? "Enabled" : "Disabled")}**\n";
 
             string @default =
                 $"Mute Role: Muted **(created on mute command)**\n" +
@@ -75,7 +75,7 @@ namespace FBIBot.Modules.Config
                 .WithValue(@default);
             embed.AddField(orig);
 
-            await Context.Interaction.RespondAsync("This isn't going to help you keep my power in check.", embed: embed.Build());
+            await Context.Interaction.RespondAsync("This isn't going to help you keep my power in check.", embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

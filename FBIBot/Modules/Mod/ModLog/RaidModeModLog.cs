@@ -6,8 +6,8 @@ namespace FBIBot.Modules.Mod.ModLog
 {
     public static class RaidModeModLog
     {
-        public static async Task SendToModLogAsync(SocketGuildUser invoker, bool isEnabled) =>
-            await ModLogBase.SendToModLogAsync(
+        public static Task SendToModLogAsync(SocketGuildUser invoker, bool isEnabled) =>
+            ModLogBase.SendToModLogAsync(
                 new ModLogBase.ModLogInfo(
                     new ModLogBase.ModLogInfo.RequiredInfo(
                         invoker,

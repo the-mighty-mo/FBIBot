@@ -10,10 +10,10 @@ namespace FBIBot.Databases.VerificationDatabaseTables
 
         public VerifiedTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS Verified (user_id TEXT PRIMARY KEY);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> GetVerifiedAsync(SocketUser u)
@@ -25,8 +25,8 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             using SqliteCommand cmd = new(verify, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            isVerified = await reader.ReadAsync();
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            isVerified = await reader.ReadAsync().ConfigureAwait(false);
             reader.Close();
 
             return isVerified;
@@ -34,14 +34,14 @@ namespace FBIBot.Databases.VerificationDatabaseTables
 
         public async Task SetVerifiedAsync(SocketUser u)
         {
-            await new CaptchaTable(connection).RemoveCaptchaAsync(u);
+            await new CaptchaTable(connection).RemoveCaptchaAsync(u).ConfigureAwait(false);
 
             string verify = "INSERT INTO Verified (user_id) SELECT @user_id WHERE NOT EXISTS (SELECT 1 FROM Verified WHERE user_id = @user_id);";
 
             using SqliteCommand cmd = new(verify, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveVerifiedAsync(SocketUser u)
@@ -51,7 +51,7 @@ namespace FBIBot.Databases.VerificationDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@user_id", u.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

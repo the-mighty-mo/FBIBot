@@ -21,12 +21,12 @@ namespace FBIBot.Modules.Mod
             }
             SocketTextChannel channel = Context.Guild.GetTextChannel(Context.Channel.Id);
 
-            var msgs = await channel.GetMessagesAsync(count).FlattenAsync();
-            await channel.DeleteMessagesAsync(msgs);
+            var msgs = await channel.GetMessagesAsync(count).FlattenAsync().ConfigureAwait(false);
+            await channel.DeleteMessagesAsync(msgs).ConfigureAwait(false);
 
             try
             {
-                await Task.WhenAll(msgs.Select(msg => msg.DeleteAsync()));
+                await Task.WhenAll(msgs.Select(msg => msg.DeleteAsync())).ConfigureAwait(false);
             }
             catch { }
 
@@ -35,7 +35,7 @@ namespace FBIBot.Modules.Mod
                 .WithTitle("Federal Bureau of Investigation")
                 .WithDescription($"We have successfully shredded, burned, and disposed of {count} messages. Encrypt them better next time.");
 
-            await Context.Interaction.RespondAsync(embed: embed.Build());
+            await Context.Interaction.RespondAsync(embed: embed.Build()).ConfigureAwait(false);
         }
 
         [SlashCommand("user", "Shreds, burns, and disposes of a number of messages from a user in the channel")]
@@ -47,15 +47,15 @@ namespace FBIBot.Modules.Mod
                 count = 100;
             }
             SocketTextChannel channel = Context.Guild.GetTextChannel(Context.Channel.Id);
-            IEnumerable<IMessage> msgs = await channel.GetMessagesAsync(1000).FlattenAsync();
+            IEnumerable<IMessage> msgs = await channel.GetMessagesAsync(1000).FlattenAsync().ConfigureAwait(false);
 
             try
             {
-                await Task.WhenAll(msgs.Where(x => x.Author == user).Take(count).Select(msg => msg.DeleteAsync()));
+                await Task.WhenAll(msgs.Where(x => x.Author == user).Take(count).Select(msg => msg.DeleteAsync())).ConfigureAwait(false);
             }
             catch { }
 
-            await Context.Interaction.RespondAsync($"We have successfully shredded, burned, and disposed of {count} messages sent by {user.Mention}. There goes all of the socialist propaganda.");
+            await Context.Interaction.RespondAsync($"We have successfully shredded, burned, and disposed of {count} messages sent by {user.Mention}. There goes all of the socialist propaganda.").ConfigureAwait(false);
         }
     }
 }

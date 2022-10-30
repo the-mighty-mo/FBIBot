@@ -20,10 +20,10 @@ namespace FBIBot.Modules.Mod
 
         private async Task MuteAsync(SocketGuildUser user, double? timeout, string? reason)
         {
-            IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild) ?? await CreateMuteRoleAsync();
+            IRole role = await modRolesDatabase.Muted.GetMuteRole(Context.Guild).ConfigureAwait(false) ?? await CreateMuteRoleAsync().ConfigureAwait(false);
             if (user.Roles.Contains(role))
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already under house arrest.").ConfigureAwait(false);
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace FBIBot.Modules.Mod
             roles.RemoveAll(x => x.IsManaged);
 
             List<Task> cmds = new();
-            bool modifyRoles = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild);
+            bool modifyRoles = await configDatabase.ModifyMuted.GetModifyMutedAsync(Context.Guild).ConfigureAwait(false);
             if (modifyRoles)
             {
                 cmds.AddRange(new List<Task>()
@@ -43,7 +43,7 @@ namespace FBIBot.Modules.Mod
             }
             cmds.Add(user.AddRoleAsync(role));
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 110, 24))
@@ -59,11 +59,11 @@ namespace FBIBot.Modules.Mod
             (
                 Context.Interaction.RespondAsync(embed: embed.Build()),
                 MuteModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, timeout, reason)
-            );
+            ).ConfigureAwait(false);
 
             if (timeout != null)
             {
-                await Task.Delay((int)(timeout * 60 * 1000));
+                await Task.Delay((int)(timeout * 60 * 1000)).ConfigureAwait(false);
 
                 if (!user.Roles.Contains(role))
                 {
@@ -81,7 +81,7 @@ namespace FBIBot.Modules.Mod
                     cmds.Add(user.AddRolesAsync(roles));
                 }
 
-                await Task.WhenAll(cmds);
+                await Task.WhenAll(cmds).ConfigureAwait(false);
             }
         }
 
@@ -89,9 +89,9 @@ namespace FBIBot.Modules.Mod
         {
             GuildPermissions perms = new(viewChannel: true, sendMessages: false, addReactions: false, connect: true, speak: false);
             Color color = new(54, 57, 63);
-            RestRole role = await Context.Guild.CreateRoleAsync("Muted", perms, color, false, false);
+            RestRole role = await Context.Guild.CreateRoleAsync("Muted", perms, color, false, false).ConfigureAwait(false);
 
-            await modRolesDatabase.Muted.SetMuteRoleAsync(role, Context.Guild);
+            await modRolesDatabase.Muted.SetMuteRoleAsync(role, Context.Guild).ConfigureAwait(false);
             return role;
         }
     }

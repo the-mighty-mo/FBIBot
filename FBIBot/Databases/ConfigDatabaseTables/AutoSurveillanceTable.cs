@@ -10,10 +10,10 @@ namespace FBIBot.Databases.ConfigDatabaseTables
 
         public AutoSurveillanceTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS AutoSurveillance (guild_id TEXT PRIMARY KEY);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> GetAutoSurveillanceAsync(SocketGuild g)
@@ -25,8 +25,8 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(getSurveillance, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            isAutoSurveillance = await reader.ReadAsync();
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            isAutoSurveillance = await reader.ReadAsync().ConfigureAwait(false);
             reader.Close();
 
             return isAutoSurveillance;
@@ -40,7 +40,7 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(insert, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveAutoSurveillanceAsync(SocketGuild g)
@@ -50,7 +50,7 @@ namespace FBIBot.Databases.ConfigDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

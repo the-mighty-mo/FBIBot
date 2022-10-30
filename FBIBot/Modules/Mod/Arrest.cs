@@ -21,14 +21,16 @@ namespace FBIBot.Modules.Mod
 
         private async Task ArrestAsync(SocketGuildUser user, double? timeout, string? reason)
         {
-            IRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild) ?? await CreatePrisonerRoleAsync();
+            IRole role = await modRolesDatabase.PrisonerRole.GetPrisonerRoleAsync(Context.Guild).ConfigureAwait(false)
+                ?? await CreatePrisonerRoleAsync().ConfigureAwait(false);
             if (user.Roles.Contains(role))
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already held captive.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that {user.Nickname ?? user.Username} is already held captive.").ConfigureAwait(false);
                 return;
             }
 
-            ITextChannel channel = await modRolesDatabase.PrisonerChannel.GetPrisonerChannelAsync(Context.Guild) ?? await CreateGuantanamoAsync(role);
+            ITextChannel channel = await modRolesDatabase.PrisonerChannel.GetPrisonerChannelAsync(Context.Guild).ConfigureAwait(false)
+                ?? await CreateGuantanamoAsync(role).ConfigureAwait(false);
 
             List<SocketRole> roles = user.Roles.ToList();
             roles.Remove(Context.Guild.EveryoneRole);
@@ -40,7 +42,7 @@ namespace FBIBot.Modules.Mod
                 user.RemoveRolesAsync(roles),
                 user.AddRoleAsync(role),
                 modRolesDatabase.Prisoners.RecordPrisonerAsync(user)
-            );
+            ).ConfigureAwait(false);
 
             EmbedBuilder embed = new EmbedBuilder()
                 .WithColor(new Color(255, 61, 24))
@@ -56,11 +58,11 @@ namespace FBIBot.Modules.Mod
             (
                 Context.Interaction.RespondAsync(embed: embed.Build()),
                 ArrestModLog.SendToModLogAsync((Context.User as SocketGuildUser)!, user, timeout, reason)
-            );
+            ).ConfigureAwait(false);
 
             if (timeout != null)
             {
-                await Task.Delay((int)(timeout * 60 * 1000));
+                await Task.Delay((int)(timeout * 60 * 1000)).ConfigureAwait(false);
                 role = Context.Guild.GetRole(role.Id);
 
                 if (!user.Roles.Contains(role))
@@ -74,9 +76,9 @@ namespace FBIBot.Modules.Mod
                     user.RemoveRoleAsync(role),
                     modRolesDatabase.UserRoles.RemoveUserRolesAsync(user),
                     modRolesDatabase.Prisoners.RemovePrisonerAsync(user)
-                );
+                ).ConfigureAwait(false);
 
-                List<Task> cmds = !await modRolesDatabase.Prisoners.HasPrisoners(Context.Guild)
+                List<Task> cmds = !await modRolesDatabase.Prisoners.HasPrisoners(Context.Guild).ConfigureAwait(false)
                     ? new List<Task>()
                     {
                         channel?.DeleteAsync() ?? Task.CompletedTask,
@@ -87,7 +89,7 @@ namespace FBIBot.Modules.Mod
                     : new List<Task>();
                 cmds.Add(FreeModLog.SendToModLogAsync(Context.Guild.CurrentUser, user));
 
-                await Task.WhenAll(cmds);
+                await Task.WhenAll(cmds).ConfigureAwait(false);
             }
         }
 
@@ -96,24 +98,24 @@ namespace FBIBot.Modules.Mod
             IRole role;
             GuildPermissions perms = new(viewChannel: false);
             Color color = new(127, 127, 127);
-            role = await Context.Guild.CreateRoleAsync("Prisoner", perms, color, false, true);
+            role = await Context.Guild.CreateRoleAsync("Prisoner", perms, color, false, true).ConfigureAwait(false);
 
-            await modRolesDatabase.PrisonerRole.SetPrisonerRoleAsync(role);
+            await modRolesDatabase.PrisonerRole.SetPrisonerRoleAsync(role).ConfigureAwait(false);
             return role;
         }
 
         private async Task<ITextChannel> CreateGuantanamoAsync(IRole role)
         {
-            ITextChannel channel = await Context.Guild.CreateTextChannelAsync("guantanamo");
+            ITextChannel channel = await Context.Guild.CreateTextChannelAsync("guantanamo").ConfigureAwait(false);
             OverwritePermissions perms = new(viewChannel: PermValue.Allow, sendMessages: PermValue.Allow, readMessageHistory: PermValue.Deny, addReactions: PermValue.Allow);
 
             await Task.WhenAll
             (
                 channel.AddPermissionOverwriteAsync(role, perms),
                 channel.AddPermissionOverwriteAsync(Context.Client.CurrentUser, OverwritePermissions.AllowAll(channel))
-            );
-            await channel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel));
-            await modRolesDatabase.PrisonerChannel.SetPrisonerChannelAsync(channel);
+            ).ConfigureAwait(false);
+            await channel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, OverwritePermissions.DenyAll(channel)).ConfigureAwait(false);
+            await modRolesDatabase.PrisonerChannel.SetPrisonerChannelAsync(channel).ConfigureAwait(false);
 
             return channel;
         }

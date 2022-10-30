@@ -11,10 +11,10 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
 
         public MutedTable(SqliteConnection connection) => this.connection = connection;
 
-        public Task InitAsync()
+        public async Task InitAsync()
         {
             using SqliteCommand cmd = new("CREATE TABLE IF NOT EXISTS Muted (guild_id TEXT PRIMARY KEY, role_id TEXT NOT NULL);", connection);
-            return cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task<SocketRole?> GetMuteRole(SocketGuild g)
@@ -26,8 +26,8 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             using SqliteCommand cmd = new(getRole, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id);
 
-            SqliteDataReader reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
+            SqliteDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+            if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 ulong roleID = ulong.Parse(reader["role_id"].ToString()!);
                 role = g.GetRole(roleID);
@@ -47,7 +47,7 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
             cmd.Parameters.AddWithValue("@role_id", role.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task RemoveMuteRoleAsync(SocketGuild g)
@@ -57,7 +57,7 @@ namespace FBIBot.Databases.ModRolesDatabaseTables
             using SqliteCommand cmd = new(delete, connection);
             cmd.Parameters.AddWithValue("@guild_id", g.Id.ToString());
 
-            await cmd.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

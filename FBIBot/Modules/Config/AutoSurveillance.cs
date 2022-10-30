@@ -15,11 +15,11 @@ namespace FBIBot.Modules.Config
         public async Task AutoSurveillanceAsync(EnableChoice state)
         {
             bool isEnable = state == EnableChoice.Enable;
-            bool isEnabled = await configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild);
+            bool isEnabled = await configDatabase.AutoSurveillance.GetAutoSurveillanceAsync(Context.Guild).ConfigureAwait(false);
 
             if (isEnable == isEnabled)
             {
-                await Context.Interaction.RespondAsync($"Our security team has informed us that Auto Surveillance is already {(isEnabled ? "enabled" : "disabled")}.");
+                await Context.Interaction.RespondAsync($"Our security team has informed us that Auto Surveillance is already {(isEnabled ? "enabled" : "disabled")}.").ConfigureAwait(false);
                 return;
             }
 
@@ -41,7 +41,7 @@ namespace FBIBot.Modules.Config
                 cmds.Add(configDatabase.AutoSurveillance.RemoveAutoSurveillanceAsync(Context.Guild));
             }
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
         }
     }
 }

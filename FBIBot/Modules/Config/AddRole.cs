@@ -14,9 +14,9 @@ namespace FBIBot.Modules.Config
         [SlashCommand("admin", "Adds the role to a list of local directors of the bureau")]
         public async Task AddAdminAsync(SocketRole role)
         {
-            if ((await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
+            if ((await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild).ConfigureAwait(false)).Contains(role))
             {
-                await Context.Interaction.RespondAsync($"Members with the {role.Mention} role are already local directors of the FBI.");
+                await Context.Interaction.RespondAsync($"Members with the {role.Mention} role are already local directors of the FBI.").ConfigureAwait(false);
                 return;
             }
 
@@ -25,7 +25,7 @@ namespace FBIBot.Modules.Config
                 modRolesDatabase.Admins.AddAdminRoleAsync(role)
             };
             string description;
-            if ((await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))
+            if ((await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild).ConfigureAwait(false)).Contains(role))
             {
                 description = $"Members with the {role.Mention} role have been promoted to local directors of the FBI.";
                 cmds.Add(modRolesDatabase.Mods.RemoveModAsync(role));
@@ -41,15 +41,15 @@ namespace FBIBot.Modules.Config
                 .WithDescription(description);
             cmds.Add(Context.Interaction.RespondAsync(embed: embed.Build()));
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
         }
 
         [SlashCommand("mod", "Adds the role to a list of assistants of the bureau")]
         public async Task AddModAsync(SocketRole role)
         {
-            if ((await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild)).Contains(role))
+            if ((await modRolesDatabase.Mods.GetModRolesAsync(Context.Guild).ConfigureAwait(false)).Contains(role))
             {
-                await Context.Interaction.RespondAsync($"Members with the {role.Mention} role are already assisting the FBI.");
+                await Context.Interaction.RespondAsync($"Members with the {role.Mention} role are already assisting the FBI.").ConfigureAwait(false);
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace FBIBot.Modules.Config
                 modRolesDatabase.Mods.AddModRoleAsync(role)
             };
             string description;
-            if ((await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild)).Contains(role))
+            if ((await modRolesDatabase.Admins.GetAdminRolesAsync(Context.Guild).ConfigureAwait(false)).Contains(role))
             {
                 description = $"Members with the {role.Mention} role have been demoted to assistants of the agency.";
                 cmds.Add(modRolesDatabase.Admins.RemoveAdminAsync(role));
@@ -74,7 +74,7 @@ namespace FBIBot.Modules.Config
                 .WithDescription(description);
             cmds.Add(Context.Interaction.RespondAsync(embed: embed.Build()));
 
-            await Task.WhenAll(cmds);
+            await Task.WhenAll(cmds).ConfigureAwait(false);
         }
     }
 }
