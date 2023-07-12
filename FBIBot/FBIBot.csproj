@@ -2,16 +2,16 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ApplicationIcon>FBI.ico</ApplicationIcon>
     <StartupObject>FBIBot.Program</StartupObject>
     <Nullable>enable</Nullable>
     <PackageId>The FBI</PackageId>
     <Description>Someone has to keep the server in check, and who better than the FBI?</Description>
-    <Company>Josedolf Staller Enterprises</Company>
+    <Company>The Mighty Mi</Company>
     <Product>The FBI</Product>
-    <Copyright>Copyright © The Mighty Mi® 2021</Copyright>
-    <Authors>Josedolf Staller</Authors>
+    <Copyright>Copyright © The Mighty Mi 2019-2023</Copyright>
+    <Authors>The Mighty Mi</Authors>
     <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
     <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
   </PropertyGroup>
@@ -22,10 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="3.8.1" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.10" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="Discord.Net" Version="3.11.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
   </ItemGroup>
 
 </Project>

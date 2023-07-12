@@ -1,17 +1,17 @@
-﻿using Discord;
-using Discord.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 
 namespace FBIBot.Modules.AutoMod
 {
-    public class Spam
+    public partial class Spam
     {
-        private static readonly Regex emojiRegex = new(@"<a?:\S+?:\d+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex regex = new(@"(.+?\S+)(\s*\1){3,}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regex = SpamRegex();
+        private static readonly Regex emojiRegex = EmojiRegex();
 
         private readonly SocketCommandContext Context;
 
@@ -96,5 +96,11 @@ namespace FBIBot.Modules.AutoMod
                 return isSpam;
             });
         }
+
+        [GeneratedRegex(@"(.+?\S+)(\s*\1){3,}")]
+        private static partial Regex SpamRegex();
+
+        [GeneratedRegex(@"<a?:\S+?:\d+>", RegexOptions.IgnoreCase)]
+        private static partial Regex EmojiRegex();
     }
 }

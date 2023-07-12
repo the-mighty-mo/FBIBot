@@ -1,17 +1,20 @@
-﻿using Discord.Commands;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Discord.Commands;
 
 namespace FBIBot.Modules.AutoMod.AutoSurveillance
 {
-    public static class KillThePresident
+    public static partial class KillThePresident
     {
-        private static readonly Regex regex = new(@"I(?:(?:'m|\s+am)\s+going\s+to|\s+want\s+to)(?:\w*\s+)+?(?:kill|kil(?!\w+)|assassinate|murder)\s+the(?:\w*\s+)+?president", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex regex = PresidentRegex();
 
         public static Task<bool> IsGoingToKillThePresidentAsync(SocketCommandContext Context)
         {
             var message = Context.Message.Content;
             return Task.Run(() => regex.IsMatch(message));
         }
+
+        [GeneratedRegex(@"I(?:(?:'m|\s+am)\s+going\s+to|\s+want\s+to)(?:\w*\s+)+?(?:kill|kil(?!\w+)|assassinate|murder)\s+the(?:\w*\s+)+?president", RegexOptions.IgnoreCase)]
+        private static partial Regex PresidentRegex();
     }
 }
