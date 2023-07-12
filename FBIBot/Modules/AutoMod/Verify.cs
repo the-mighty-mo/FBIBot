@@ -1,11 +1,11 @@
-﻿using CaptchaGen.NetCore;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using CaptchaGen.NetCore;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using FBIBot.Modules.Mod.ModLog;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using static FBIBot.DatabaseManager;
 using Image = System.Drawing.Image;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
@@ -30,10 +30,7 @@ namespace FBIBot.Modules.AutoMod
             string? captcha = await verificationDatabase.Captcha.GetCaptchaAsync(Context.User).ConfigureAwait(false);
             if (response == null || captcha == null)
             {
-                await Task.WhenAll(
-                    SendCaptchaAsync(),
-                    Context.Interaction.RespondAsync("Check your DMs", ephemeral: true)
-                ).ConfigureAwait(false);
+                await SendCaptchaAsync().ConfigureAwait(false);
                 return;
             }
             else if (response != captcha)
